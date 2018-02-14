@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/add_backupset.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/libs/ldap.class.inc.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/view_backupset_data.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/edit_backupset.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/view_container.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/add_tape_type.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/includes/footer.inc.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/conf/settings.inc.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/view_backupsets.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/includes/functions.inc.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/add_tapes_to_backupset.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/view_tapes.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/view_all_containers.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/add_tape.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/edit_containers.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/add_container.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/login.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/html/edit_tapes.php</file>
+            <file>file:/C:/Apache24/htdocs/tapelibrary/libs/db.class.inc.php</file>
+        </group>
+    </open-files>
+</project-private>
