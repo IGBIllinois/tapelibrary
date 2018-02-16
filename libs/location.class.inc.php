@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-class tape {
+class location {
     
     private $db; // database
     private $id;
@@ -31,7 +31,7 @@ class tape {
     }
     
     public function load_by_id($db, $id) {
-        $result = $db->get_tape_by_id($id);
+        $result = $db->get_container_by_id($id);
         $this->db = $db;
         if($result !=0) {
             //print_r($result);
@@ -64,11 +64,7 @@ class tape {
     }
     
     public function get_type_name() {
-        return $this->db->get_tape_type_name($this->type);
-    }
-    
-    public function get_type() {
-        return $this->type;
+        return $this->db->get_container_type_name($this->container);
     }
     
     public function get_backupset() {
@@ -81,6 +77,11 @@ class tape {
     
     public function is_active() {
         return $this->active;
+    }
+    
+    public function get_children() {
+        //return $this->db->get_tapes_in_container($this->id);
+        return $this->db->get_children($this->id);
     }
     
     

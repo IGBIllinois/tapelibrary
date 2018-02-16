@@ -56,15 +56,16 @@ echo("Current containers:") ;
 echo("<table id='containers' class='table table-bordered table-hover table-striped display'>");
 
 $current_containers = $db->get_containers();
+//$current_containers = array();
 if(count($current_containers)== 0) {
     echo "<tr><td>No containers have been added.</td></tr>";
 } else {
     echo("<thead><tr><th>Name</th><th>Type</th><th>Parent Container</th></tr></thead>");
     echo("<tbody>");
     foreach($current_containers as $container) {
-        echo("<tr><td><a href=view_container.php?container_id=".$container['id'].">".$container['name']."</a></td>");
-        echo("<td>".$db->get_container_type_name($container['type'])."</td>");
-        echo("<td>".$container['container_name']."</td></tr>");
+        echo("<tr><td><a href=view_container.php?container_id=".$container->get_id().">".$container->get_label()."</a></td>");
+        echo("<td>".$container->get_type_name()."</td>");
+        echo("<td>".$db->get_full_path($container->get_container_id())."</td></tr>");
         
     }
     echo("</tbody></table>");
