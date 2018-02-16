@@ -8,22 +8,43 @@
  */
 
 include 'includes/header.inc.php';
+?>
+<script type='text/javascript'>
+    var current = -1;
+function hide() {
+    // collapse?
+    //alert("hi");
+    //alert("current = "+current);
+    var value = document.getElementsByName("container_type")[0].value;
+    //alert("newval = "+value);
+    document.getElementById("containerdiv"+value).style.visibility = "visible";
+    if(current != -1) {
+        document.getElementById("containerdiv"+current).style.visibility = "collapse";
+    }
+    current = value;
+    //alert("new current = "+current);
+    return;
+}
+</script>
+<?php
 echo("<h3>Add Container</h3>");
+//$name = $_POST['container_name'];
+    $container_type=null;
+    $container_id=-1;
+    $errors = "";
+    $backupset = null;
 if(isset($_POST['submit_add_container'])) {
 if(isset($_POST['container_name'])) {
     //echo("Adding container : ".$_POST['container_name']."<BR>");
 
-    //$name = $_POST['container_name'];
-    $container_type=null;
-    $container_id=-1;
-    $errors = "";
+    
 
     if(isset($_POST['container_name']) && $_POST['container_name'] != null) {
         $name = $_POST['container_name'];
 
     } else {
         $errors .= "<div class='alert alert-danger'>Please select a valid name for this container.</div>";
-
+        
     }
 
     if(isset($_POST['container_type']) && $_POST['container_type'] != null) {
@@ -34,14 +55,14 @@ if(isset($_POST['container_name'])) {
         
     }
 
-    if(isset($_POST['container'])) {
+    if(isset($_POST['container'.$container_type])) {
 
-        $container_id = $_POST['container'];
+        $container_id = $_POST['container'.$container_type];
     }
 
     if(strlen($errors) == 0) {
 
-    $result = $db->add_container_basic(-1, $name, $container_type, $container_id, 0 );
+    $result = $db->add_tape( $name, $container_type, $container_id, $backupset, 0 );
 
     
      if($result != 0) {
@@ -54,6 +75,7 @@ if(isset($_POST['container_name'])) {
     }
 }
 }
+
 /*
 echo("Current containers:") ;
 echo("<table id='containers' class='table table-bordered table-hover table-striped display'>");
@@ -78,15 +100,26 @@ echo("<BR>");
 echo("<form name='add_container' action='add_container.php' method='POST'>");
 
 echo("<table class='table table-bordered display'>");
-echo("<tr><td width=20%>Container Name:</td><td><input type='text' name='container_name' id='container_name'></td></tr>");
+echo("<tr><td width=20%>Container Name:</td><td><input type='text' name='container_name' id='container_name'". (isset($name) ? " value='$name' " : "")."></td></tr>");
 echo("<tr><td>Container Type :</td><td>");
-    createInput("select","container_type","",$db->get_container_types());
+    createInput("select","container_type",(isset($container_type) ? $container_type : ""),$db->get_container_types(), "", "hide()");
 echo(" </td></tr>");
-echo("<tr><td>Parent Container (if any):</td><td>");
-    createInput("select","container","",$db->get_containers());
+echo("<tr><td>Location:</td><td>");
+echo("<table>");
+$all_types = $db->get_container_types();
+foreach($all_types as $type) {
+    $id = $type['id'];
+    
+    echo("<tr id='containerdiv$id' style='visibility:collapse'><td> ");
+    createInput("select","container".$id,(isset($container_id)? $container_id : ""),$db->get_containers_for_type($id));
+    echo("</td></tr>");
+}
+echo("</table>");
 echo(" </td></tr>");
 //echo("<tr><td>Service:</td><td><input type='text' name='service' id='service'></td></tr>");
-
+echo("<tr><td>Backup Set:</td><td>");
+createInput("select","backupset",$backupset,$db->get_all_backups_array());
+echo("</td></tr>");
 echo("</table>");
 echo("<input type='submit' name='submit_add_container' value='Add Container'>");
 echo("</form>");

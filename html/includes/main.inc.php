@@ -11,9 +11,14 @@ function my_autoloader($class_name) {
 	}
 
 }
+require_once '../libs/tape.class.inc.php';
+require_once '../libs/container.class.inc.php';
+require_once '../libs/backupset.class.inc.php';
+require_once '../libs/location.class.inc.php';
 
 spl_autoload_register('my_autoloader');
 
+//require_once "../libs/tape.class.inc.php";
 
 $ldap = new ldap(__LDAP_HOST__,__LDAP_SSL__,__LDAP_PORT__,__LDAP_BASE_DN__);
 $db = new db(mysql_host,mysql_database,mysql_user,mysql_password);
