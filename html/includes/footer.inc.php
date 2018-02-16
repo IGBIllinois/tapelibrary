@@ -18,6 +18,8 @@
                         <hr>
                         <li><a href='add_backupset.php'>Add Backup Set</a></li>
                         <li><a href='view_backupsets.php'>View Backup Sets</a></li>
+                        <hr>
+                        
                         <!--<li><a href='edit_backupset.php'>Edit Backup Sets</a></li>-->
                         
 			<!--<li><a href='carton.php'>Cartons</a></li>
@@ -25,9 +27,15 @@
                         
 			<li><a href='container.php'>Locations</a></li>
                         --> 
-                       <li><a href='add_container_type.php'>View and add Container Types</a></li>
-                       <li><a href='add_tape_type.php'>View and add Tape Types</a></li>
-			<li><a href='logout.php'>Log Out</a></li>
+                       <li><a href='add_container_type.php'>Add Container and Tape Types</a></li>
+                       <li><a href='edit_types.php'>Edit Container and Tape Types</a></li>
+                       <!--<li><a href='add_tape_type.php'>View and add Tape Types</a></li>
+                       <hr>
+                       <li><a href='add_location.php'>Add Location</a></li>
+                       <hr>
+                       -->
+                       <li><a href='add_program.php'>Add Program</a></li>
+		       <li><a href='logout.php'>Log Out</a></li>
 		</ul>
 
                                         

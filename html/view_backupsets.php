@@ -22,46 +22,12 @@ $begin = null;
             $filename = "fullbackupsetreport.xls";
             write_full_report($db, $filename);
         }
-if(isset($_POST['submit'])) {
-    
-    
-    if(isset($_POST['begin'])) {
-        if(is_numeric($begin)) {
-        $begin = $_POST['begin'];
-        }
-    }
-    if(isset($_POST['end'])) {
-        if(is_numeric($end)) {
-        $end = $_POST['end'];
-        }
-    }
-    
-    if(isset($_POST['type'])) {
-        $type = $_POST['type'];
-    }
-    
-    if(isset($_POST['container'])) {
-        $container = $_POST['container'];
-    }
-    
-    if(isset($_POST['active'])) {
-        $active = $_POST['active'];
-    }
-
-
-    //$result = add_item($db, $name, $container_type, $container_id, $service, 0 );
-     //if($result) {
-        
-     //} else {
-         //echo("ERROR: ");
-     //}
-}
 
 
 //
 echo("Current Backup Sets:") ;
 
-echo("<fieldset><table id='view_tapes' class='table table-bordered table-hover table-striped display'>");
+echo("<fieldset><table id='view_backupsets' class='table table-bordered table-hover table-striped display'>");
 
 $current_backupsets = $db->get_all_backup_sets();
 
@@ -72,11 +38,17 @@ if(count($current_backupsets)== 0) {
     echo("<tbody>");
     foreach($current_backupsets as $backupset) {
         //echo("<tr><td>".$tape['tape_number']."</td>");
-        echo("<td><a href=view_backupset_data.php?backupset_id=".$backupset['id'].">".$backupset['name']."</s></td>");
-echo("<td>".$backupset['begin']."</td>");
-echo("<td>".$backupset['end']."</td>");
-echo("<td>".$backupset['program']."</td>");
-        echo("<td>".$backupset['notes']."</td></tr>");
+        $id = $backupset->get_id();
+        $name = $backupset->get_name();
+        $start_date = $backupset->get_begin_date();
+        $end_date = $backupset->get_end_date();
+        $program_name = $backupset->get_program_name();
+        $notes = $backupset->get_notes();
+        echo("<td><a href=view_backupset_data.php?backupset_id=".$id.">".$name."</s></td>");
+echo("<td>".$start_date."</td>");
+echo("<td>".$end_date."</td>");
+echo("<td>".$program_name."</td>");
+        echo("<td>".$notes."</td></tr>");
         
     }
     echo("</tbody>");

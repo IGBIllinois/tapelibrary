@@ -17,16 +17,16 @@ if(isset($_POST['id'])) {
         echo("<div class='alert alert-danger'>The backupset you selected does not exist. Please try again.</div>");
         return;
     }
-    $backupset = $db->get_backupset($backupset_id);
-    if($backupset == 0) {
+    $backupset = new backupset($db, $backupset_id);
+    if($backupset == null) {
         echo("<div class='alert alert-danger'>The backupset you selected does not exist. Please try again.</div>");
 
     } else {
-    $name = $backupset['name'];
-    $begin = $backupset['begin'];
-    $end = $backupset['end'];
-    $program = $backupset['program'];
-    $notes = $backupset['notes'];
+    $name = $backupset->get_name();
+    $begin = $backupset->get_begin_date();
+    $end = $backupset->get_end_date();
+    $program = $backupset->get_program();
+    $notes = $backupset->get_notes();
 
 }
 
@@ -35,7 +35,7 @@ if(isset($_POST['submit_delete'])) {
     if(isset($_POST['backupset_id'])) {
         $backupset_id = $_POST['backupset_id'];
     }
-    $backupset = $db->get_backupset($id);
+    $backupset = new backupset($db, $backupset_id);
     $db->deactivate_backupset($backupset_id);
     echo("<div class='alert alert-success'>Backupset ". $backupset['name'] . " successfully deactivated.</div>");
     return;
@@ -96,7 +96,10 @@ echo("<table class='table table-bordered'>");
 echo("<tr><td width=30%>Backup Set Name:</td><td><input type='text' name='name' id='name' ".(isset($name) ? ("value='$name'") : "")."></td></tr>");
 echo("<tr><td>Start Date (YYYY-MM-DD):</td><td><input type='text' name='begin' pattern='[0-9]{4}-[0-9]{2}-[0-9]{2}' id='begin' ".(isset($begin) ? ("value='$begin'") : "")."></td></tr>");
 echo("<tr><td>End Date (YYYY-MM-DD):</td><td><input type='text' name='end' id='end' ".(isset($end) ? ("value='$end'") : "")."></td></tr>");
-echo("<tr><td>Program (Crashplan, Backula, etc.):</td><td><input type='text' name='program' id='program' ".(isset($program) ? ("value='$program'") : "")."></td></tr>");
+//echo("<tr><td>Program (Crashplan, Backula, etc.):</td><td><input type='text' name='program' id='program' ".(isset($program) ? ("value='$program'") : "")."></td></tr>");
+echo("<tr><td>Program: </td><td>");
+createInput("select", "program",(isset($program) ? ("$program") : ""), $db->get_programs());
+echo("</td></tr>");
 echo("<tr><td>Notes:</td><td><textarea rows='2' name='notes' id='notes'>".(isset($notes) ? $notes : "")."</textarea></td></tr>");
 
 
