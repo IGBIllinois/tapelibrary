@@ -2,6 +2,9 @@
 	require_once 'includes/main.inc.php';
 	require_once 'includes/session.inc.php';
         require_once 'includes/functions.inc.php';
+        require_once "../libs/tape.class.inc.php";
+        require_once "../libs/container.class.inc.php";
+        require_once "../libs/backupset.class.inc.php";
         
         if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == ""){
     $redirect = "https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];

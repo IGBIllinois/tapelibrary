@@ -10,45 +10,15 @@
  */
 
 include 'includes/header.inc.php';
-echo("<H3>Edit Tapes</H3>");
 ?>
-<script>
-    
 
-function toggle(source) {
-  checkboxes = document.getElementsByName('checkbox[]');
-  for(var i=0, n=checkboxes.length;i<n;i++) {
-    checkboxes[i].checked = source.checked;
-  }
-}
-
-function changeAllCheckedLocations(source) {
-    //containers = document.getElementsByName('tape_container');
-    //alert("numLocations = "+containers.length);
-    //for(var i=0, n=containers.length; i<n; i++) {
-    //    containers[i].value = source.value;
-    //}
-    checkboxes = document.getElementsByName('checkbox[]');
-    //alert("numCheckboxes = "+checkboxes.length);
-        for(var i=0, n=checkboxes.length;i<n;i++) {
-            //alert("i = "+i + ":"+checkboxes[i].checked);
-            if(checkboxes[i].checked) {
-                var id = checkboxes[i].id;
-                //alert("id = "+id);
-                newLoc = document.getElementById('tape_container_'+id);
-                //alert("newVal = "+source.value);
-                newLoc.value = source.value;
-            }
-  }
-}
-</script>
 <?php 
 $begin = null;
     $end = null;
     $select_type = null;
     $select_container = null;
     $active = 1;
-    
+echo("<H3>Edit Tapes</H3>");
 echo("Limit By:<BR>");
 
 if(isset($_POST['limit_submit'])) {
@@ -100,7 +70,7 @@ echo("<tr><td>Location Type :</td><td>");
     createInput("select","type","",$db->get_tape_types());
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    createInput("select","select_container","",$db->get_containers());
+    createInput("select","select_container","",$db->get_containers_array());
 echo(" </td></tr>");
 
 
@@ -154,26 +124,26 @@ $tapes = $db->get_tapes($begin, $end, $select_type, $select_container, $active);
   print "<fieldset>";
 echo("<form name='edit_tapes_form' method='POST'>");
 echo("<table id='edit_tapes_table' name='edit_tapes_table' class='table table-bordered table-hover table-striped display'><thead><tr>");
-echo("<th><input type=checkbox onClick='toggle(this)' /><th>Label</th><th>Type</th><th>Location<BR>Change selected containers:");
-createInput("select", "tape_container", "", $db->get_containers(), "",  "changeAllCheckedLocations(this)");
+echo("<th><input type=checkbox onClick=toggleAll(this,'checkbox') /><th>Label</th><th>Type</th><th>Location<BR>Change selected containers:");
+//createInput("select", "tape_container", "", $db->get_containers_array(), "",  "changeAllCheckedLocations(this)");
 echo("</th><th>Active</th></tr></thead>");
 foreach($tapes as $tape) {
     echo("<tr>");
     echo("<td>");
-    echo("<input type='checkbox' name=checkbox[] id='".$tape['id']."' value='".$tape['id']."'>");
+    echo("<input type='checkbox' name=checkbox[] id='".$tape->get_id()."' value='".$tape->get_id()."'>");
     echo("</td><td>");
-    createInput("text", "tape_label", $tape['label'], "", $tape['id']);
-    echo("</td><td>");
-    echo($db->get_type_name($tape['type']));
-    echo("</td><td>");
-    createInput("select", "tape_container", $tape['parent'], $db->get_containers(), $tape['id']);
+    //createInput("text", "tape_label", $tape['label'], "", $tape['id']);
+    echo($tape->get_label()."<input type=hidden name='tape_label_".$tape->get_id()."' id='tape_label_".$tape->get_id()."' value='".$tape->get_label())."'>";
+    echo("</td>");
+    echo("<td>".$tape->get_type_name()."</td><td>");
+    createInput("select", "tape_container", $tape->get_container_id(), $db->get_containers_array(), $tape->get_id());
     //createInput("text", "tape_label", $tape['label'], "", $tape['id']);
     echo("</td><td>");
     //createInput("select", "tape_type", $tape['type'], $db->get_tape_types(), $tape['id']);
     //echo("</td><td>");
     //createInput("text", "service", $tape['service'], "", $tape['id']);
     //echo("</td><td>");
-    echo("<input type='checkbox' name=active_".$tape['id']." id='active_".$tape['id']."' value='active_".$tape['id']."'". ($tape['active'] ? " checked " : "" ). " >");
+    echo("<input type='checkbox' name=active_".$tape->get_id()." id='active_".$tape->get_id()."' value='active_".$tape->get_id()."'". ($tape->is_active() ? " checked " : "" ). " >");
     echo("</td></tr>");
 
 }

@@ -74,7 +74,7 @@ echo("<tr><td>Tape Type :</td><td>");
     createInput("select","type","",$db->get_tape_types());
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    createInput("select","container","",$db->get_containers());
+    createInput("select","container","",$db->get_containers_array());
 echo(" </td></tr>");
 
 
@@ -95,24 +95,28 @@ if(count($current_tapes)== 0) {
     echo("<thead><tr><th>Label</th><th>Type</th><th>Parent Location</th><th>Backup Set</th></thead>");
     echo("<tbody>");
     foreach($current_tapes as $tape) {
-        $backupset_id = $tape['backupset'];
-        //echo("backupset = $backupset_id<BR>");
-        $backupset_name = "";
+        //echo("id = ".$tape_result['id']);
+        //$tape = new tape($db, $tape_result['id']);
+        $backupset_id = $tape->get_backupset();
+        
         if($backupset_id == null || $backupset_id == -1) {
             $backupset_name = "None";
         } else {
-            $backupset = $db->get_backupset($backupset_id);
-            if($backupset == 0) {
-                $backupset_name = "None";
-            } else {
-                $backupset_name = $backupset['name'];
-            }
+            $backupset= new backupset($db, $backupset_id);
+            $backupset_name = $backupset->get_name();
+            //$backupset = $db->get_backupset($backupset_id);
+            //if($backupset == 0) {
+            //    $backupset_name = "None";
+            //} else {
+            //    $backupset_name = $backupset['name'];
+            //}
             
         }
         //echo("<tr><td>".$tape['tape_number']."</td>");
-        echo("<td>".$tape['label']."</td>");
-        echo("<td>".$db->get_container_type_name($tape['type'])."</td>");
-        echo("<td><a href=view_container.php?container_id=".$tape['parent'].">".$tape['container_name']."</a></td>");
+        echo("<td>".$tape->get_label()."</td>");
+        echo("<td>".$tape->get_type_name()."</td>");
+        //echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$tape->get_container_name()."</a></td>");
+        echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$db->get_full_path($tape->get_container_id())."</a></td>");
         if($backupset_id != -1) {
             echo("<td><a href=view_backupset_data.php?backupset_id=".$backupset_id.">".$backupset_name."</a></td></tr>");
         } else {

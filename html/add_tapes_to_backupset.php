@@ -7,36 +7,9 @@
  */
 
 include_once 'includes/header.inc.php';
-echo("<fieldset>");
-?>
-<script>
-function toggle(source) {
-  checkboxes = document.getElementsByName('checkbox[]');
-  for(var i=0, n=checkboxes.length;i<n;i++) {
-    checkboxes[i].checked = source.checked;
-  }
-}
 
-function changeAllCheckedLocations(source) {
-    //containers = document.getElementsByName('tape_container');
-    //alert("numLocations = "+containers.length);
-    //for(var i=0, n=containers.length; i<n; i++) {
-    //    containers[i].value = source.value;
-    //}
-    checkboxes = document.getElementsByName('checkbox[]');
-    //alert("numCheckboxes = "+checkboxes.length);
-        for(var i=0, n=checkboxes.length;i<n;i++) {
-            //alert("i = "+i + ":"+checkboxes[i].checked);
-            if(checkboxes[i].checked) {
-                var id = checkboxes[i].id;
-                //alert("id = "+id);
-                newLoc = document.getElementById('tape_container_'+id);
-                //alert("newVal = "+source.value);
-                newLoc.value = source.value;
-            }
-  }
-}
-</script>
+?>
+
 <?php
 $begin = null;
     $end = null;
@@ -54,12 +27,13 @@ if(isset($_POST['backupset_id'])) {
 
     
 
-$backupset = $db->get_backupset($backupset_id);
+//$backupset = $db->get_backupset($backupset_id);
+$backupset = new backupset($db, $backupset_id);
 
-if($backupset == 0) {
-    echo("Please select a valid backup set.");
+if($backupset == null) {
+    echo("<div class='alert alert-danger'>Please select a valid backup set.</div");
 } else {
-
+$messages = "";
 //echo("Add tapes to backup set: ".$backupset['name']);
 if(isset($_POST['add_tapes_submit'])) {
     //print_r($_POST);
@@ -73,12 +47,14 @@ if(isset($_POST['add_tapes_submit'])) {
             $id = $checked;
             
             $result = $db->set_backupset($id, $backupset_id);
-            $tape = $db->get_tape_by_id($id);
-            $backupset = $db->get_backupset($backupset_id);
+            //$tape = $db->get_tape_by_id($id);
+            //$backupset = $db->get_backupset($backupset_id);
+            $tape = new tape($db, $id);
+            $backupset = new backupset($db, $backupset_id);
             if($result != 0) {
-                echo("<div class='alert alert-success'>Tape ".$tape['label'] ." successfully added to ".$backupset['name'] ."</div>");
+                $messages .= ("<div class='alert alert-success'>Tape ".$tape->get_label() ." successfully added to ".$backupset->get_name() ."</div>");
             } else {
-                echo("<div class='alert alert-danger'>There was an error adding".$tape['label']. " to ".$backupset['name'] ."</div>" );
+                $messages .=("<div class='alert alert-danger'>There was an error adding".$tape->get_label(). " to ".$backupset->get_name() ."</div>" );
             }
             
             
@@ -106,10 +82,11 @@ if(isset($_POST['add_tapes_submit'])) {
              
         }
     } else {
-        echo("<div class='alert alert-warning'>Nothing checked</div>");
+        $messages .= ("<div class='alert alert-warning'>Nothing checked</div>");
     }
 }
-echo("<h3>Adding tapes to ".$backupset['name']."</h3>");
+echo("<h3>Adding tapes to ".$backupset->get_name()."</h3>");
+echo("<fieldset>");
 echo("<form method=POST action=add_tapes_to_backupset.php>");
 
 /*
@@ -146,8 +123,9 @@ echo("<BR>");
  * 
  */
 //
-$backupset = $db->get_backupset($backupset_id);
-$backupset_name = $backupset['name'];
+//$backupset = $db->get_backupset($backupset_id);
+$backupset = new backupset($db, $backupset_id);
+$backupset_name = $backupset->get_name();
 echo("Current tapes not assigned to a backup set:</B>:") ;
 echo("<form method='POST' name='add_tapes_submit' action='add_tapes_to_backupset.php'>");
 echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
@@ -158,28 +136,28 @@ $current_unassigned_tapes = $db->get_tapes_without_backupset();
 if(count($current_unassigned_tapes)== 0) {
     echo "<tr><td>No tapes have been added.</td></tr>";
 } else {
-    echo("<thead><th><input type=checkbox onClick='toggle(this)' /></th><th>Label</th><th>Type</th><th>Parent Location</th><th>Current Backup set</th></thead>");
+    echo("<thead><th><input type=checkbox onClick=toggleAll(this,'checkbox') /></th><th>Label</th><th>Type</th><th>Parent Location</th><th>Current Backup set</th></thead>");
     echo("<tbody>");
     foreach($current_unassigned_tapes as $tape) {
         
         //echo("<tr><td>".$tape['tape_number']."</td>");
         echo("<tr><td>");
-        echo("<input type='checkbox' name=checkbox[] id='".$tape['id']."' value='".$tape['id']."'>");
+        echo("<input type='checkbox' name=checkbox[] id='".$tape->get_id()."' value='".$tape->get_id()."'>");
         echo("</td>");
-        echo("<td>".$tape['label']."</td>");
-        echo("<td>".$db->get_container_type_name($tape['type'])."</td>");
-        echo("<td>".$tape['container_name']."</td>");
+        echo("<td>".$tape->get_label()."</td>");
+        echo("<td>".$db->get_container_type_name($tape->get_type())."</td>");
+        echo("<td>".$tape->get_container_name()."</td>");
         // Shouldn't have a backupset
-        $curr_backupset_id = $tape['backupset'];
+        $curr_backupset_id = $tape->get_backupset();
         $backupset = ""; 
         if($curr_backupset_id == -1) {
             $backupset = "None";
         } else {
             if($curr_backupset_id != null && $curr_backupset_id != "") {
-                 $fullbackupset = $db->get_backupset($curr_backupset_id);
-                 
+                 //$fullbackupset = $db->get_backupset($curr_backupset_id);
+                 $fullbackupset = new backupset($db, $curr_backupset_id);
                  //if(isset($fullbackupset['name'])) {
-                     $backupset = $fullbackupset['name'];
+                     $backupset = $fullbackupset->get_name();
                  //}
              }
         }
@@ -200,5 +178,10 @@ echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
 
 //list_all($db);
 echo("</fieldset>");
+
+if($messages != "") {
+    echo("<BR>");
+    echo($messages);
+}
 }
 include 'includes/footer.inc.php';
