@@ -340,18 +340,13 @@ class db {
     }
     */
     function get_container_types() {
-        $query = "SELECT container_type_id as id, name from container_type";
+        $query = "SELECT container_type_id as id, name from container_type  where can_contain_types is not null and can_contain_types != ''";
         $statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $result = $this->query($query);
         return $result;
     }
     
-    function get_location_types() {
-        $query = "SELECT container_type_id as id, name, container from container_type where container=2";
-        $statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $result = $this->query($query);
-        return $result;
-    }
+
      
      
     /*
