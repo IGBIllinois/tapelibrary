@@ -33,7 +33,7 @@ function createInput($type, $name, $default, $array=array(), $id="", $onChange="
     switch ($type) {
       
     case "select":
-      print "<select name='{$formName}' ". ($onChange != "" ? " onChange='$onChange' " : "") . (($id != "") ? " id='{$name}_{$id}' ": "") .">";
+      print "<select id='{$formName}' name='{$formName}' ". ($onChange != "" ? " onChange='$onChange' " : "") . (($id != "") ? " id='{$name}_{$id}' ": "") .">";
       print "<option value=''>Select {$formName}</option>";
       $i=0;
       foreach ($array as $value) {
@@ -549,8 +549,9 @@ function get_all_from_type($db, $type_id, $active=1) {
     function write_container_report($db, $container_id, $filename) {
         
         try {
-            $container = $db->get_container_by_id($container_id);
-            if($container == 0) {
+            //$container = $db->get_container_by_id($container_id);
+            $container = new container($db, $container_id);
+            if($container == null) {
                 echo("No such container.<BR>");
                 return;
             }
@@ -560,8 +561,8 @@ function get_all_from_type($db, $type_id, $active=1) {
             //$backupset = get_backupset($db, $container['backupset']);
             //print_r($backupset);
             //$backupset_name = $backupset['name'];
-            $type_name = $db->get_container_type_name($container['type']);
-            $header = array("Report for ".$container['label'], "Type: ".$type_name);
+            $type_name = $container->get_type_name();
+            $header = array("Report for ".$container->get_label(), "Type: ".$type_name);
 
             $tapes = $db->get_tapes(null, null, null, $container_id);
             $titles = array("<B>Tape Label</B>", "<B>Tape Type</B>", "<B>Backupset</B>");
@@ -572,10 +573,10 @@ function get_all_from_type($db, $type_id, $active=1) {
             $excel->writeLine($titles);
 
             foreach($tapes as $tape) {
-                $backupset = $db->get_backupset( $tape['backupset']);
+                $backupset = new backupset($db, $tape->get_backupset());
                 
-                $backupset_name = $backupset['name'];
-                $tape_array = array($tape['label'], $db->get_container_type_name( $tape['type']), $backupset_name);
+                $backupset_name = $backupset->get_name();
+                $tape_array = array($tape->get_label(), $tape->get_type_name(), $backupset_name);
                 $excel->writeLine($tape_array);
             }
             $excel->close();
@@ -591,8 +592,9 @@ function get_all_from_type($db, $type_id, $active=1) {
     function write_backupset_report($db, $backupset_id, $filename) {
         
         try {
-            $backupset = $db->get_backupset($backupset_id);
-            if($backupset == 0) {
+            //$backupset = $db->get_backupset($backupset_id);
+            $backupset = new backupset($db, $backupset_id);
+            if($backupset == null) {
                 echo("No such backupset.<BR>");
                 return;
             }
@@ -603,9 +605,9 @@ function get_all_from_type($db, $type_id, $active=1) {
             //print_r($backupset);
             //$backupset_name = $backupset['name'];
             //$backupset = $db->get_backupset($backupset_id);
-            $header = array("<B>".$backupset['name']."</B>");
-            $start_line = array("<B>Start Date</B>", $backupset['begin']);
-            $end_line = array("<B>End Date</B>", $backupset['end']);
+            $header = array("<B>".$backupset->get_name()."</B>");
+            $start_line = array("<B>Start Date</B>", $backupset->get_begin_date());
+            $end_line = array("<B>End Date</B>", $backupset->get_end_date());
             $tapes = $db->get_tapes_for_backupset($backupset_id);
             $titles = array("<B>Tape Label</B>", "<B>Tape Type</B>", "<B>Container</B>");
 
@@ -619,11 +621,11 @@ function get_all_from_type($db, $type_id, $active=1) {
 
             foreach($tapes as $tape) {
                 
-                $container_id = $tape['parent'];
-                $container = $db->get_container_by_id($container_id);
-                $container_name = $container['label'];
+                $container_id = $tape->get_container_id();
+                $container_name = $tape->get_container_name();
+                //$container_name = $container['label'];
                 
-                $tape_array = array($tape['label'], $db->get_container_type_name( $tape['type']), $container_name);
+                $tape_array = array($tape->get_label(), $tape->get_type_name(), $container_name);
                 $excel->writeLine($tape_array);
             }
             $excel->close();
@@ -644,11 +646,11 @@ function get_all_from_type($db, $type_id, $active=1) {
         //$excel->writeLine($backupsets);
         foreach($backupsets as $backupset_info) {
             
-            $backupset_id = $backupset_info['id'];
+            $backupset_id = $backupset_info->get_id();
 
-            $backupset_name = $backupset_info['name'];
-            $backupset_begin = $backupset_info['begin'];
-            $backupset_end = $backupset_info['end'];
+            $backupset_name = $backupset_info->get_name();
+            $backupset_begin = $backupset_info->get_begin_date();
+            $backupset_end = $backupset_info->get_end_date();
             
             $header = array("<B>".$backupset_name."</B>");
             $start_line = array("<B>Start Date</B>", $backupset_begin);
@@ -664,11 +666,11 @@ function get_all_from_type($db, $type_id, $active=1) {
             $tapes = $db->get_tapes_for_backupset($backupset_id);
             foreach($tapes as $tape) {
                 
-                $container_id = $tape['parent'];
-                $container = $db->get_container_by_id($container_id);
-                $container_name = $container['label'];
+                $container_id = $tape->get_container_id();
+                //$container = $db->get_container_by_id($container_id);
+                $container_name = $tape->get_container_name();
                 
-                $tape_array = array($tape['label'], $db->get_container_type_name( $tape['type']), $container_name);
+                $tape_array = array($tape->get_label(), $tape->get_type_name(), $container_name);
                 $excel->writeLine($tape_array);
             }
         $excel->writeLine(array());
@@ -683,11 +685,11 @@ function get_all_from_type($db, $type_id, $active=1) {
             $excel->writeLine(array());
             foreach($unassigned_tapes as $tape) {
 
-                    $container_id = $tape['parent'];
-                    $container = $db->get_container_by_id($container_id);
-                    $container_name = $container['label'];
+                    $container_id = $tape->get_id();
+                    //$container = $db->get_container_by_id($container_id);
+                    $container_name = $tape->get_container_name();
 
-                    $tape_array = array($tape['label'], $db->get_container_type_name( $tape['type']), $container_name);
+                    $tape_array = array($tape->get_label(), $tape->get_type_name(), $container_name);
                     $excel->writeLine($tape_array);
             }
         }
@@ -711,11 +713,11 @@ function get_all_from_type($db, $type_id, $active=1) {
         //$excel->writeLine($backupsets);
         foreach($containers as $container) {
             
-            $container_id = $container['id'];
+            $container_id = $container->get_id();
 
-            $container_name = $container['name'];
-            $container_type = $db->get_container_type_name($container['type']);
-            $container_location = $container['container_name'];
+            $container_name = $container->get_label();
+            //$container_type = $db->get_container_type_name($container['type']);
+            $container_location = $container->get_container_name();
             
             $header = array("<B>".$container_name."</B>");
             $type_line = array("Type:".$container_type);
@@ -736,7 +738,7 @@ function get_all_from_type($db, $type_id, $active=1) {
                 //$container = $db->get_container_by_id($container_id);
                 //$container_name = $container['label'];
                 
-                $tape_array = array($tape['label'], $db->get_container_type_name( $tape['type']));
+                $tape_array = array($tape->get_label(), $tape->get_type_name());
                 $excel->writeLine($tape_array);
             }
         $excel->writeLine(array());
