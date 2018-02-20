@@ -93,4 +93,18 @@ class container {
         return ($this->container == -1);
     }
     
+    public function get_max_slots() {
+        $type = new type($this->db, $this->get_type());
+        return $type->get_max_slots();
+    }
+    
+    /* returns the number of objects currently in this container
+     * 
+     */
+    public function get_object_count() {
+        return count($this->get_children());
+    }
+    
+
+    
 }

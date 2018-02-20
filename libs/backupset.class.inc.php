@@ -49,7 +49,7 @@ class backupset {
             $this->main_location = $result['main_location'];
             
         } else {
-            //return null;
+            return null;
         }
         
     }

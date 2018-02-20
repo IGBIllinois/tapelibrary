@@ -27,12 +27,21 @@ function hide() {
 }
 </script>
 <?php
+if(isset($_POST['container_type']) && $_POST['container_type'] != null) {
+    ?>
+    <script type='text/javascript'>
+        current = <?php echo( $_POST['container_type']); ?>;
+    </script>
+    
+<?php
+}
 echo("<h3>Add Container</h3>");
 //$name = $_POST['container_name'];
     $container_type=null;
     $container_id=-1;
-    $errors = "";
+    //$errors = "";
     $backupset = null;
+    $messages = "";
 if(isset($_POST['submit_add_container'])) {
 if(isset($_POST['container_name'])) {
     //echo("Adding container : ".$_POST['container_name']."<BR>");
@@ -43,7 +52,7 @@ if(isset($_POST['container_name'])) {
         $name = $_POST['container_name'];
 
     } else {
-        $errors .= "<div class='alert alert-danger'>Please select a valid name for this container.</div>";
+        $messages .= "<div class='alert alert-danger'>Please select a valid name for this container.</div>";
         
     }
 
@@ -51,7 +60,7 @@ if(isset($_POST['container_name'])) {
         $container_type = $_POST['container_type'];
 
     } else {
-        $errors .= "<div class='alert alert-danger'>Please select a type for this container.</div>";
+        $messages .= "<div class='alert alert-danger'>Please select a type for this container.</div>";
         
     }
 
@@ -60,18 +69,19 @@ if(isset($_POST['container_name'])) {
         $container_id = $_POST['container'.$container_type];
     }
 
-    if(strlen($errors) == 0) {
+    if(strlen($messages) == 0) {
 
     $result = $db->add_tape( $name, $container_type, $container_id, $backupset, 0 );
-
     
-     if($result != 0) {
-        echo("<div class='alert alert-success'>Container ".$_POST['container_name']." successfully added.</div>");
-     } else {
-         echo("<div class='alert alert-danger'>ERROR: Container not added.</div>");
-     }
+     $is_num = is_numeric($result);
+
+        if ($is_num) {
+            $messages .=("<div class='alert alert-success'>Container ".$name." successfully added.</div>");
+        } else {
+            $messages .=("<div class='alert alert-danger'>Error in adding container: ".$name.".<BR>$result</div>");
+        }
     } else {
-        echo($errors);
+        //echo($errors);
     }
 }
 }
@@ -110,7 +120,7 @@ $all_types = $db->get_container_types();
 foreach($all_types as $type) {
     $id = $type['id'];
     
-    echo("<tr id='containerdiv$id' style='visibility:collapse'><td> ");
+    echo("<tr id='containerdiv$id' ".((isset($container_type) && $container_type == $id) ? " style='visibility:visible' ": " style='visibility:collapse' ") ."><td> ");
     createInput("select","container".$id,(isset($container_id)? $container_id : ""),$db->get_containers_for_type($id));
     echo("</td></tr>");
 }
@@ -123,5 +133,8 @@ echo("</td></tr>");
 echo("</table>");
 echo("<input type='submit' name='submit_add_container' value='Add Container'>");
 echo("</form>");
-
+echo("<BR>");
+if(strlen($messages) > 0) {
+    echo($messages);
+}
 include 'includes/footer.inc.php';

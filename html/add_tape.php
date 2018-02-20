@@ -26,6 +26,14 @@ function hide() {
 }
 </script>
 <?php
+if(isset($_POST['tape_type']) && $_POST['tape_type'] != null) {
+    ?>
+    <script type='text/javascript'>
+        current = <?php echo( $_POST['tape_type']); ?>;
+    </script>
+    
+<?php
+}
 echo("<H3>Add Tapes</H3>");
     
     $tape_type=null;
@@ -102,11 +110,12 @@ if(isset($_POST['submit'])) {
 
 			//mysql_query("insert into tape (type,capacity,tape_number,container,backup_set,carton,label) values ('$type','$capacity','$i','$container','$backup_set','$carton','$label[$i]')");
                     $result = $db->add_tape($label[$i], $tape_type, $container_id, $backupset, 0 ); //TODO: userid?
+                    $is_num = is_numeric($result);
 
-                    if ($result  !=0) {
+                    if ($is_num) {
                         $messages .=("<div class='alert alert-success'>Tape ".$label[$i]." successfully added.</div>");
                     } else {
-                        $messages .=("<div class='alert alert-danger'>Error in adding tape: ".$label[$i].".</div>");
+                        $messages .=("<div class='alert alert-danger'>Error in adding tape: ".$label[$i].".<BR>$result</div>");
                     }
                 }
 		//print "<script type=\"text/javascript\">parent.window.container.href='index.php'</script>";
@@ -172,7 +181,7 @@ $all_types = $db->get_tape_types();
 foreach($all_types as $type) {
     $id = $type['id'];
     
-    echo("<tr id='tapediv$id' style='visibility:collapse'><td> ");
+    echo("<tr id='tapediv$id' ".((isset($tape_type) && $tape_type == $id) ? " style='visibility:visible' ": " style='visibility:collapse' ") ."><td> ");
     createInput("select","container".$id,(isset($container_id)? $container_id : ""),$db->get_containers_for_type($id));
     echo("</td></tr>");
 }
