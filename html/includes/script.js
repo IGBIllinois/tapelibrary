@@ -63,32 +63,32 @@ $('#addform').ready(function(){
 $(document).ready(function(){
 
     $('#view_tapes').DataTable( {
-        "order": [[ 0, "desc" ]],
+        "order": [[ 0, "asc" ]],
         "pageLength": 50,
         "lengthChange": false
     } );
     $('#containers').DataTable( {
-        "order": [[ 0, "desc" ]],
+        "order": [[ 0, "asc" ]],
         "pageLength": 50,
         "lengthChange": false
     } );
     $('#container_types').DataTable( {
-        "order": [[ 0, "desc" ]],
+        "order": [[ 0, "asc" ]],
         "pageLength": 50,
         "lengthChange": false
     } );
     $('#tapes_in_backupset').DataTable( {
-        "order": [[ 0, "desc" ]],
+        "order": [[ 0, "asc" ]],
         "pageLength": 50,
         "lengthChange": false
     } );
     $('#curr_tapes').DataTable( {
-        "order": [[ 0, "desc" ]],
+        "order": [[ 0, "asc" ]],
         "pageLength": 50,
         "lengthChange": false
     } );
     $('#edit_tapes_table').DataTable( {
-        "order": [[ 1, "desc" ]],
+        "order": [[ 1, "asc" ]],
         "bSort": false,
         "searching": false,
         "pageLength": 50,
@@ -96,7 +96,7 @@ $(document).ready(function(){
         
     } );
     $('#edit_container').DataTable( {
-        "order": [[ 1, "desc" ]],
+        "order": [[ 1, "asc" ]],
         "bSort": false,
         "searching": false,
         "pageLength": 50,
@@ -168,5 +168,26 @@ function toggle(id) {
         disable(id);
     }
 
+}
+
+function changeAllCheckedLocations(source, checkbox_name, id_name) {
+    //containers = document.getElementsByName('tape_container');
+    //alert("numLocations = "+containers.length);
+    //for(var i=0, n=containers.length; i<n; i++) {
+    //    containers[i].value = source.value;
+    //}
+    checkboxes = document.getElementsByName(checkbox_name+'[]');
+    //alert("numCheckboxes = "+checkboxes.length);
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+            //alert("i = "+i + ":"+checkboxes[i].checked);
+            if(checkboxes[i].checked) {
+                var id = checkboxes[i].id;
+                //alert("id = "+id);
+                //alert("newLoc="+id_name+id);
+                newLoc = document.getElementById(id_name+"_"+id);
+                //alert("newVal = "+source.value);
+                newLoc.value = source.value;
+            }
+  }
 }
 

@@ -7,7 +7,10 @@
  */
 
 include_once 'includes/header.inc.php';
-if(!isset($_GET['backupset_id'])&& !isset($_POST['backupset_id'])) {
+if((!isset($_GET['backupset_id'])&& !isset($_POST['backupset_id']) || 
+        (isset($_POST['backupset_id']) && $_POST['backupset_id']=="") ||
+        (isset($_GET['backupset_id']) && $_GET['backupset_id'] == ""))) {
+                
     echo("Error: Please select a backup set.");
     
 } else{
@@ -49,7 +52,7 @@ if(count($tapes)== 0) {
         //echo("<tr><td>".$tape['tape_number']."</td>");
         echo("<td>".$tape->get_label()."</td>");
         echo("<td>".$tape->get_type_name()."</td>");
-        echo("<td>".$tape->get_container_name()."</td></tr>");
+        echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$db->get_full_path($tape->get_container_id())."</a></td></tr>");
         
     }
     echo("</tbody>");

@@ -62,7 +62,7 @@ echo("<table class='table table-bordered'><tr>");
 		print "</div>";
         print "</td>";
       print "</tr>";
-echo("<tr><td>Location Type :</td><td>");
+echo("<tr><td>Container Type :</td><td>");
     createInput("select","type","",$db->get_container_types());
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
@@ -120,15 +120,15 @@ if(isset($_POST['submit'])) {
         echo("<div class='alert alert-warning'>Nothing checked</div>");
     }
 }
+$containers = $db->get_containers($begin, $select_type, $select_container, $active, 1);
 
-$containers = $db->get_containers($begin, $end, $select_type, $select_container, $active, 1);
   print "<fieldset>";
 echo("<form name='edit_containers' method='POST'>");
 echo("<table id='edit_container' class='table table-bordered table-hover table-striped display'><thead><tr>");
-echo("<th><input type=checkbox onClick=toggleAll(this, 'checkbox') /></th><th>Label</th><th>Type</th><th>Location");
+echo("<th><input type=checkbox onClick='toggleAll(this,\"checkbox\")' /></th><th>Label</th><th>Type</th><th>Location");
 // Does this make sense anymore?
-// echo("<BR>Change selected containers:");
-//createInput("select", "tape_container", "", $db->get_containers_and_locations(), "",  "changeAllCheckedLocations(this)");
+//echo("<BR>Move selected containers to:");
+//createInput("select", "tape_container", "", $db->get_containers_array(), "",  "changeAllCheckedLocations(this, \"checkbox\", \"container_location\")");
 echo("</th><th>Active</th></tr></thead>");
 foreach($containers as $container) {
     //$container_id = $container_info['id'];

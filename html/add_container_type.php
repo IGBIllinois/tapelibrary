@@ -12,6 +12,7 @@ include 'includes/header.inc.php';
 <?php
 $types = null;
 $placed_types = null;
+$max_slots = -1;
 
 echo("<H3>Add Container Types</H3>");
 if(isset($_POST['submit'])) {
@@ -32,6 +33,12 @@ if($types != null && $placed_types != null) {
         }
     }
 }
+
+if(isset($_POST['max_slots'])) {
+    if(is_numeric($_POST['max_slots'])) {
+        $max_slots = $_POST['max_slots'];
+    }
+}
     //print_r($types);
     $can_contain_types = "";
     if($types != null) {
@@ -39,10 +46,10 @@ if($types != null && $placed_types != null) {
         if($can_contain_types != "") {
             $can_contain_types .= ",";
         }
-        echo("Can contain type " . $type ." <BR>");
+        //echo("Can contain type " . $type ." <BR>");
         $can_contain_types .= $type;
     }
-    echo("type list = $can_contain_types");
+    //echo("type list = $can_contain_types");
     }
     
     
@@ -53,7 +60,7 @@ if($types != null && $placed_types != null) {
     //print_r($placed_types);
     $loop_error = $db->find_loop($placed_types, $types);
     if($loop_error == 0) {
-        $result = $db->add_type($_POST['container_type_name'], $can_contain_types);
+        $result = $db->add_type($_POST['container_type_name'], $can_contain_types, $max_slots);
         if($placed_types != null) {
             foreach($placed_types as $placed_type) {
 
@@ -93,8 +100,15 @@ echo("<BR>");
 echo("<form name='add_container_type' action='add_container_type.php' method='POST'>");
 
 echo("<table id='container_types' class='table table-bordered'>");
-echo("<tr><td>New Location type name</td>");
-echo("<tr><td><input type='text' name='container_type_name' id='container_type_name'></td></tr>");
+echo("<tr><td width=40%>New Location type name</td>");
+echo("<td><input type='text' name='container_type_name' id='container_type_name'></td></tr>");
+
+echo("<tr><td>How many objects can be put in a container? (if there is a limit)</td><td><input name='max_slots' value='Any'></td></tr>");
+echo("</td></tr></table>");
+
+
+echo("<table class='table table-bordered'><tr><td>");
+
 echo("<tr><Td>What types can this container contain?</td></tr>");
 echo("<TR><TD>");
 $types = $db->get_all_types();

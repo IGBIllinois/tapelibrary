@@ -66,7 +66,7 @@ echo("<table class='table table-bordered display'><tr>");
 	//	print "</div>";
         //print "</td>";
       print "</tr>";
-echo("<tr><td>Location Type :</td><td>");
+echo("<tr><td>Tape Type :</td><td>");
     createInput("select","type","",$db->get_tape_types());
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
@@ -124,9 +124,10 @@ $tapes = $db->get_tapes($begin, $end, $select_type, $select_container, $active);
   print "<fieldset>";
 echo("<form name='edit_tapes_form' method='POST'>");
 echo("<table id='edit_tapes_table' name='edit_tapes_table' class='table table-bordered table-hover table-striped display'><thead><tr>");
-echo("<th><input type=checkbox onClick=toggleAll(this,'checkbox') /><th>Label</th><th>Type</th><th>Location<BR>Change selected containers:");
+echo("<th><input type=checkbox onClick=toggleAll(this,'checkbox') /><th>Label</th><th>Type</th><th>Location");
+//echo("<BR>Change selected containers:");
 //createInput("select", "tape_container", "", $db->get_containers_array(), "",  "changeAllCheckedLocations(this)");
-echo("</th><th>Active</th></tr></thead>");
+echo("</th><th>Backup Set</th><th>Active</th></tr></thead>");
 foreach($tapes as $tape) {
     echo("<tr>");
     echo("<td>");
@@ -138,12 +139,14 @@ foreach($tapes as $tape) {
     echo("<td>".$tape->get_type_name()."</td><td>");
     createInput("select", "tape_container", $tape->get_container_id(), $db->get_containers_array(), $tape->get_id());
     //createInput("text", "tape_label", $tape['label'], "", $tape['id']);
-    echo("</td><td>");
+    echo("</td>");
     //createInput("select", "tape_type", $tape['type'], $db->get_tape_types(), $tape['id']);
     //echo("</td><td>");
     //createInput("text", "service", $tape['service'], "", $tape['id']);
     //echo("</td><td>");
-    echo("<input type='checkbox' name=active_".$tape->get_id()." id='active_".$tape->get_id()."' value='active_".$tape->get_id()."'". ($tape->is_active() ? " checked " : "" ). " >");
+    $backupset = new backupset($db, $tape->get_backupset());
+    echo("<td>".$backupset->get_name()."</td>");
+    echo("<td><input type='checkbox' name=active_".$tape->get_id()." id='active_".$tape->get_id()."' value='active_".$tape->get_id()."'". ($tape->is_active() ? " checked " : "" ). " >");
     echo("</td></tr>");
 
 }

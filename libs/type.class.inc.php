@@ -13,6 +13,7 @@ class type {
     //private $item_id;
     private $name;
     private $can_contain_types; // array
+    private $max_slots;
     
     private $time_last_modified;
     private $user_last_modified;
@@ -43,7 +44,7 @@ class type {
             } else {
                 $this->can_contain_types = array();
             }
-            
+            $this->max_slots = $result['max_slots'];
             //print_r($this->can_contain_types);
             
         } else {
@@ -62,6 +63,10 @@ class type {
     
     public function get_can_contain_types() {
         return $this->can_contain_types;
+    }
+    
+    public function get_max_slots() {
+        return $this->max_slots;
     }
     
 
