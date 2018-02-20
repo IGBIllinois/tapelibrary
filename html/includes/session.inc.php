@@ -35,9 +35,8 @@ elseif ($_SERVER['REMOTE_ADDR'] != $session->get_var('ipaddress')) {
     header('Location: logout.php');
     die();
 }
-
 else {
-	$login_user = new user($db,$ldap,$session->get_var('username'));
+	$login_user = new user($ldap,$session->get_var('username'));
 	$ldap->set_bind_user($login_user->get_user_rdn());
 	$ldap->set_bind_pass($session->get_var('password'));
 	//Reset Timeout

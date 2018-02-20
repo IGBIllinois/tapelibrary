@@ -84,7 +84,6 @@ class ldap {
 				$result = @ldap_bind($this->get_resource());
 			}
 		}
-                
 		return $result;
 
 	}

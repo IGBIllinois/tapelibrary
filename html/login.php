@@ -17,6 +17,7 @@ if ($session->get_var('webpage') != "") {
 }
 
 if (isset($_POST['login'])) {
+
 	$username = trim(rtrim($_POST['username']));
 	$password = $_POST['password'];
 
@@ -31,9 +32,9 @@ if (isset($_POST['login'])) {
 	}
 	if ($error == false) {
 // 		$ldap = new ldap(__LDAP_HOST__,__LDAP_SSL__,__LDAP_PORT__,__LDAP_BASE_DN__);
-		$login_user = new user($db,$ldap,$username);
+		$login_user = new user($ldap,$username);
 		$success = $login_user->authenticate($password);
-		if ($success==1) {
+		if ($success==0) {
 			$session_vars = array('login'=>true,
                 'username'=>$username,
                 'password'=>$password,
@@ -45,11 +46,11 @@ if (isset($_POST['login'])) {
             $ldap->set_bind_pass($password);
 
 
-		$location = "http://" . $_SERVER['SERVER_NAME'] . $webpage;
+			$location = "http://" . $_SERVER['SERVER_NAME'] . $webpage;
         	header("Location: " . $location);
 		}
 		else {
-			$message .= html::error_message("Invalid username or password. Please try again. Error: ".$success);
+			$message .= html::error_message("Invalid username or password. Please try again.");
 		}
 	}
 }

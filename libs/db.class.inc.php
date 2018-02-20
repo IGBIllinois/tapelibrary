@@ -665,7 +665,7 @@ class db {
 
 
 
-
+/*
 function is_admin($username) {
     
     $query = "SELECT admin from users where username=:username and active=1";
@@ -680,7 +680,7 @@ function is_admin($username) {
     
     return false;
 }
-
+*/
 function get_container_type_name($container_type_id) {
     //echo("container_type_id = $container_type_id<BR>");
     $query = "SELECT name from container_type where container_type_id=:container_type_id";
