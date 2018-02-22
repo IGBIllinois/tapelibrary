@@ -159,12 +159,12 @@ echo("<BR>");
  */
 
 echo("<form id='addform' name='add_tape' action='add_tape.php' method='POST'>");
-echo("<table><tr><td valign='top'>");
+echo("<table class='table  display'><tr><td width=50% valign='top'>");
 echo("<table class='table table-bordered display'>");
 //echo("<tr><td>Location Name:</td><td><input type='text' name='container_name' id='container_name'></td></tr>");
 
       print "<tr >";
-        print "<td width=20%>Tapes to add:</td>";
+        print "<td width=40%>Tapes to add:</td>";
         print "<td>From:";
         createInput("text","tape_from",isset($tape_from) ? $tape_from : "");
         print "<br />To: ";
@@ -172,10 +172,15 @@ echo("<table class='table table-bordered display'>");
         print "</td>";
         
       print "</tr>";
-echo("<tr><td>Tape Type :</td><td>");
+echo("<tr><td>Tape Type: ");
+echo("<BR><a href=add_container_type.php>(Add a new tape type?)</a>");
+echo("</td><td>");
     createInput("select","tape_type",$tape_type, $db->get_tape_types(),"","hide()");
+
 echo(" </td></tr>");
-echo("<tr><td>Parent Location:</td><td>");
+echo("<tr><td>Parent Location:");
+echo("<BR><a href=add_container.php>(Add a new container?)</a>");
+echo("</td><td>");
 echo("<table>");
 $all_types = $db->get_tape_types();
 foreach($all_types as $type) {
@@ -188,11 +193,14 @@ foreach($all_types as $type) {
 echo("</table>");
 echo(" </td></tr>");
 //echo("<tr><td>Service:</td><td><input type='text' name='backupset' id='service'></td></tr>");
-echo("<tr><td>Backup Set:</td><td>");
+echo("<tr><td>Backup Set:");
+echo("<BR><a href=add_backupset.php>(Add a new backup set?)</a>");
+echo("</td><td>");
 createInput("select","backupset",$backupset,$db->get_all_backups_array());
 echo("</td></tr>");
 
 echo("</table>");
+
 echo("<input type='submit' name='submit' value='Add Tapes'>");
 
 echo("</td><td>");
