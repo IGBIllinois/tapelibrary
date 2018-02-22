@@ -390,6 +390,23 @@ class db {
         //print_r($result);
         return $result;
     }
+    
+    
+    /* Gets the types that can be put into a container type
+     * (For example, a type of "TeraPack" can hold types "LTO4", "LTO5", "LTO6").
+     */
+    function get_tape_types_for_container_type($container_type_id) {
+        
+            $type = new type($this, $container_type_id);
+            $can_contain_string = implode(",", $type->get_can_contain_types());
+            //$query = "SELECT container_type_id as id, name, container from container_type where container=0";
+            $query = "SELECT container_type_id as id, name, container from container_type where container_type_id in ($can_contain_string) and (can_contain_types is null or can_contain_types='')";
+            //echo($query);
+            $statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            $result = $this->query($query);
+            //print_r($result);
+            return $result;
+    }
    
     
     function get_container_data($id) {
@@ -544,8 +561,8 @@ class db {
         }
         return $containers;
     }
-    
-    function get_locations() {
+     
+   function get_locations() {
         //$query = "select tape_library.id as id, tape_library.item_id as tape_id, tape_library.label as name, tape_library.type as type, tape_library.container as parent, (SELECT label from tape_library where parent = id) as container_name, (SELECT container from container_type where container_type_id=tape_library.type) as is_container from tape_library left join tape_library on (tape_library.container = tape_library.id)  join  container_type on  (container_type.container=1 and container_type_id=type)";
         $query = "select id, label as name from tape_library where container is null or container=-1";
         $statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -1007,6 +1024,29 @@ function get_container_types_for_type($type_id) {
     //print_r($containers);
     //echo("<BR>");
     return $containers;
+}
+
+/* gets a list of all top-level locations, those that can't be placed in anything else
+ * 
+ */
+function get_location_types() {
+    $location_types = array();
+    $all_types = array();
+    $container_types = array();
+    $all_types_query = "SELECT container_type_id as id, name, can_contain_types from container_type";
+    //$statement = $this->get_link()->prepare($all_types_query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $result = $this->query($all_types_query);
+    foreach($result as $type) {
+        $type_id  = $type['id'];
+        
+        $these_types = $this->get_container_types_for_type($type_id);
+        if(count($these_types) == 0) {
+            $location_types[] = $type;
+        }
+    }
+
+    return $location_types;
+    
 }
 
 function get_containers_for_type($type_id) {

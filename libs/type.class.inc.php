@@ -65,6 +65,7 @@ class type {
         return $this->can_contain_types;
     }
     
+   
     public function get_max_slots() {
         return $this->max_slots;
     }

@@ -14,7 +14,7 @@ $types = null;
 $placed_types = null;
 $max_slots = -1;
 
-echo("<H3>Add Container Types</H3>");
+echo("<H3>Add Container or Tape Types</H3>");
 if(isset($_POST['submit'])) {
 
 if(!isset($_POST['container_type_name']) || $_POST['container_type_name'] == "") {
@@ -100,7 +100,7 @@ echo("<BR>");
 echo("<form name='add_container_type' action='add_container_type.php' method='POST'>");
 
 echo("<table id='container_types' class='table table-bordered'>");
-echo("<tr><td width=40%>New Location type name</td>");
+echo("<tr><td width=40%>New type name</td>");
 echo("<td><input type='text' name='container_type_name' id='container_type_name'></td></tr>");
 
 echo("<tr><td>How many objects can be put in a container? (if there is a limit)</td><td><input name='max_slots' value='Any'></td></tr>");

@@ -46,8 +46,6 @@ if(isset($_POST['submit_add_container'])) {
 if(isset($_POST['container_name'])) {
     //echo("Adding container : ".$_POST['container_name']."<BR>");
 
-    
-
     if(isset($_POST['container_name']) && $_POST['container_name'] != null) {
         $name = $_POST['container_name'];
 
@@ -111,7 +109,9 @@ echo("<form name='add_container' action='add_container.php' method='POST'>");
 
 echo("<table class='table table-bordered display'>");
 echo("<tr><td width=20%>Container Name:</td><td><input type='text' name='container_name' id='container_name'". (isset($name) ? " value='$name' " : "")."></td></tr>");
-echo("<tr><td>Container Type :</td><td>");
+echo("<tr><td>Container Type :");
+echo("<BR><a href='add_container_type.php'>(Add a new container type?)</a>");
+echo("</td><td>");
     createInput("select","container_type",(isset($container_type) ? $container_type : ""),$db->get_container_types(), "", "hide()");
 echo(" </td></tr>");
 echo("<tr><td>Location:</td><td>");
