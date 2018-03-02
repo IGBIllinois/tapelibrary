@@ -282,7 +282,6 @@ if(isset($_POST['create_heirarchy_report'])) {
     $type = $_POST['report_type'];
 }
 
-echo("type = $type");
 switch ($type) {
     
 	case 'csv':
