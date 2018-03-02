@@ -9,8 +9,8 @@
 class backupset {
     
     private $db; // database
-    private $id;
-    private $name;
+    private $id = -1;
+    private $name = "None";
     //private $item_id;
     private $begin_date;
     private $end_date;

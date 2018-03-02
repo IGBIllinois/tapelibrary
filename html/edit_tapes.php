@@ -18,6 +18,7 @@ $begin = null;
     $select_type = null;
     $select_container = null;
     $active = 1;
+    $messages = "";
 echo("<H3>Edit Tapes</H3>");
 echo("Limit By:<BR>");
 
@@ -57,9 +58,9 @@ echo("<table class='table table-bordered display'><tr>");
       print "<tr>";
         print "<td>Tape Number(s)</td>";
         print "<td>From: ";
-        createInput("text","begin","");
+        createInput("text","begin",$begin);
         print "<br />To: ";
-        createInput("text","end","");
+        createInput("text","end",$end);
         print "</td>";
         //        print "<td rowspan=6>";
         //print "<div id='add_multi_labels'>";
@@ -67,16 +68,16 @@ echo("<table class='table table-bordered display'><tr>");
         //print "</td>";
       print "</tr>";
 echo("<tr><td>Tape Type :</td><td>");
-    createInput("select","type","",$db->get_tape_types());
+    createInput("select","type",$select_type,$db->get_tape_types());
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    createInput("select","select_container","",$db->get_containers_array());
+    createInput("select","select_container",$select_container,$db->get_containers_array());
 echo(" </td></tr>");
 
 
 echo("</table>");
 echo("<input type='submit' name='limit_submit' value='Select'>");
-echo("</form>");
+echo("</form><BR>");
 
 if(isset($_POST['submit'])) {
     //print_r($_POST);
@@ -106,27 +107,37 @@ if(isset($_POST['submit'])) {
             echo("active = $active<BR>");
              * 
              */
-            $result = $db->edit_tape_basic($id, $tape_label, $container, $active);
-            if($result != 0) {
-                echo("<div class='alert alert-success'>$tape_label successfully modified.</div>");
+            //$result = $db->edit_tape_basic($id, $tape_label, $container, $active);
+            $result = $db->move_object($id, $container);
+            if(!is_string($result)) {
+                $messages .=("<div class='alert alert-success'>$tape_label successfully modified.</div>");
             } else {
-                echo("<div class='alert alert-danger'>There was an error in modifying $tape_label.</div>");
+                $messages .= ("<div class='alert alert-danger'>".$result."</div>");
             }
              
              
         }
     } else {
-        echo("<div class='alert alert-warning'>Nothing checked</div>");
+        $messages .= ("<div class='alert alert-warning'>Nothing checked</div>");
     }
 }
-
+/*
+echo("Testing fake move:<BR>");
+$result = $db->move_object(187, -5);
+echo($result);
+echo("<BR>ending fake move1<BR>");
+ * 
+ */
 $tapes = $db->get_tapes($begin, $end, $select_type, $select_container, $active);
+  if(strlen($messages) > 0) {
+      echo($messages);
+  }
   print "<fieldset>";
 echo("<form name='edit_tapes_form' method='POST'>");
 echo("<table id='edit_tapes_table' name='edit_tapes_table' class='table table-bordered table-hover table-striped display'><thead><tr>");
 echo("<th><input type=checkbox onClick=toggleAll(this,'checkbox') /><th>Label</th><th>Type</th><th>Location");
-//echo("<BR>Change selected containers:");
-//createInput("select", "tape_container", "", $db->get_containers_array(), "",  "changeAllCheckedLocations(this)");
+echo("<BR>Change selected containers:");
+createInput("select", "tape_container", "", $db->get_containers_array(), "",  "changeAllCheckedLocations(this, \"checkbox\", \"tape_container\")");
 echo("</th><th>Backup Set</th><th>Active</th></tr></thead>");
 foreach($tapes as $tape) {
     echo("<tr>");
@@ -145,7 +156,7 @@ foreach($tapes as $tape) {
     //createInput("text", "service", $tape['service'], "", $tape['id']);
     //echo("</td><td>");
     $backupset = new backupset($db, $tape->get_backupset());
-    echo("<td>".$backupset->get_name()."</td>");
+    echo("<td><a href='view_backupset.php?backupset_id=".$backupset->get_id()."'>".$backupset->get_name()."</a></td>");
     echo("<td><input type='checkbox' name=active_".$tape->get_id()." id='active_".$tape->get_id()."' value='active_".$tape->get_id()."'". ($tape->is_active() ? " checked " : "" ). " >");
     echo("</td></tr>");
 
@@ -159,5 +170,6 @@ echo("<BR><BR>");
     echo("<input type=button onclick=\"window.location='edit_tapes.php'\" name=cancel value='Cancel'>");
     echo("</form>");
   print "</fieldset>";
+
 include 'includes/footer.inc.php';
 

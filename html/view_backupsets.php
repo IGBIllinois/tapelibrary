@@ -14,15 +14,23 @@ $begin = null;
     $type = null;
     $container = null;
     $active = 1;
-    
     /*
+        if(isset($_POST['report_submit'])) {
+
+            echo("Writing Report...");
+            $filename = "fullbackupsetreport.xls";
+            write_full_report($db, $filename);
+        }
+     * 
+     
+    
     if(isset($_POST['report_submit'])) {
 
             echo("Writing Report...");
             $filename = "fullbackupsetreport";
             $data = array();
             $containers = $db->get_containers();
-        //$excel->writeLine($backupsets);
+        $excel->writeLine($backupsets);
         foreach($containers as $container) {
             
             $container_id = $container->get_id();
@@ -37,9 +45,11 @@ $begin = null;
             
             
         }
-        report::create_excel_2003_report($data, $filename);
+        //report::test();
     }
-        */
+     */
+     
+        
 
 
 //
@@ -73,21 +83,26 @@ echo("<td>".$program_name."</td>");
 }
 
 echo("</table></fieldset>");
-
+/*
 echo("<form method='POST' action='view_backupsets.php' name='get_report'>");
 echo("<input type='submit' name='report_submit' value='Get Full Report'>");
 echo("</form>");
+
+ * 
+ */
 ?>
 <form class='form-inline' action='report.php' method='post'>
+<!-- <input class='btn btn-primary' type='submit'-->
+<input type='submit'
+                name='create_full_report' value='Download Full Report'>
  <select
                 name='report_type' class='input-medium'>
                 <option value='xls'>Excel 2003</option>
                 <option value='xlsx'>Excel 2007</option>
                 <option value='csv'>CSV</option>
-        </select> <input class='btn btn-primary' type='submit'
-                name='create_full_report' value='Download Full Report'>
-
+        </select>
 </form>
+
         <?php
 //list_all($db);
 echo("</fieldset>");

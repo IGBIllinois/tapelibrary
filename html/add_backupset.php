@@ -75,11 +75,11 @@ echo("<tr><td>Start Date (YYYY-MM-DD):</td><td><input type='text' name='start_da
 echo("<tr><td>End Date (YYYY-MM-DD):</td><td><input type='text' name='end_date' id='end_date' ".(isset($end_date) ? ("value='$end_date'") : "")."></td></tr>");
 //echo("<tr><td>Program (Crashplan, Bacula, etc.):</td><td><input type='text' name='program' id='program' ".(isset($program) ? ("value='$program'") : "")."></td></tr>");
 //createInput("select", "program",(isset($program) ? ("$program") : ""), $db->get_programs());
-echo("<tr><td>Program</td><td>");
+echo("<tr><td>Program: <a href='add_program.php'>(Add a new program?)</a></td><td>");
 createInput("select", "program",(isset($program) ? ("$program") : ""), $db->get_programs());
 echo("</td></tr>");
 
-echo("<tr><td>Main Location</td><td>");
+echo("<tr><td>Main Location <a href='add_location.php'>(Add a new location?)</a></td><td>");
 createInput("select", "main_location",(isset($main_location) ? ("$main_location") : ""), $db->get_locations());
 echo("</td></tr>");
 

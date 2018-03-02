@@ -75,10 +75,29 @@ echo("<form method='POST' action='edit_backupset.php' name='edit_backupset'>");
 echo("<input type='hidden' name='id' value='$backupset_id'>");
 echo("<input type='submit' name='submit' value='Edit this Backup set'>");
 echo("</form>");
-
+/*
 echo("<form method='POST' action='view_backupset_data.php' name='get_report'>");
 echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
 echo("<input type='submit' name='report_submit' value='Get Report'>");
 echo("</form>");
+}=
+ */
 }
+?>
+<form class='form-inline' action='report.php' method='post'>
+    <!--class='btn btn-primary'-->
+ <input  type='submit' 
+                name='create_backupset_report' value='Download Backup Set Report'>
+  <select
+                name='report_type' class='input-medium'>
+                <option value='xls'>Excel 2003</option>
+                <option value='xlsx'>Excel 2007</option>
+                <option value='csv'>CSV</option>
+        </select>
+        <?php echo("<input type='hidden' name='backupset_id' value='$backupset_id'>"); ?>
+
+</form>
+<?php
+
 include_once 'includes/footer.inc.php';
+

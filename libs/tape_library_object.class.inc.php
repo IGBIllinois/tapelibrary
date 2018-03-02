@@ -6,21 +6,21 @@
  * and open the template in the editor.
  */
 
-class container extends tape_library_object {
-    /*
-    private $db; // database
-    private $id;
-    //private $item_id;
-    private $label;
-    private $container;
-    private $type;
-    private $time_created;
-    private $backupset;
-    private $active;
+class tape_library_object {
     
-    private $time_last_modified;
-    private $user_last_modified;
-    */
+    protected $db; // database
+    protected $id =-1;
+    //private $item_id;
+    protected $label;
+    protected $container=-1;
+    protected $type;
+    protected $time_created;
+    protected $backupset;
+    protected $active;
+    
+    protected $time_last_modified;
+    protected $user_last_modified;
+    
     public function __construct($db, $id) {
         
         $this->load_by_id($db, $id);
@@ -29,12 +29,12 @@ class container extends tape_library_object {
     public function __destruct() {
        
     }
-    /*
+    
     public function load_by_id($db, $id) {
-        $result = $db->get_container_data($id);
+        $result = $db->get_tape_library_object_data($id);
+
         $this->db = $db;
         if($result !=0) {
-            //print_r($result);
             
             $this->id = $result['id'];
             $this->label = $result['label'];
@@ -69,11 +69,21 @@ class container extends tape_library_object {
     }
     
     public function get_type_name() {
+
         return $this->db->get_container_type_name($this->type);
     }
     
     public function get_backupset() {
         return $this->backupset;
+    }
+    
+    public function get_backupset_name() {
+        $backupset = new backupset($this->db, $this->backupset);
+        if($backupset->get_id() == -1) {
+            return "None";
+        } else {
+            return $backupset->get_name();
+        }
     }
     
     public function get_id() {
@@ -83,28 +93,45 @@ class container extends tape_library_object {
     public function is_active() {
         return $this->active;
     }
-    */
+    
     public function get_children() {
         //return $this->db->get_tapes_in_container($this->id);
         return $this->db->get_children($this->id);
     }
     
-    public function is_location() {
-        return ($this->container == -1);
-    }
+
     
     public function get_max_slots() {
         $type = new type($this->db, $this->get_type());
         return $type->get_max_slots();
     }
     
-    /* returns the number of objects currently in this container
-     * 
-     */
-    public function get_object_count() {
-        return count($this->get_children());
+    public function is_location() {
+        if($this->container == null || $this->container == -1) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    
+    public function is_tape() {
+        if(count($this->can_contain_types()) == 0) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+        
+    public function can_contain_types() {
+        $this_type = new type($this->db, $this->type);
+        return $this_type->get_can_contain_types();
     }
     
+    public function can_contain_tapes() {
+        $this_type = new type($this->db, $this->type);
+        return $this_type->can_contain_tapes();
+    }
 
     
 }

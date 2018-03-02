@@ -67,11 +67,14 @@ if(isset($_POST['max_slots'])) {
                 $add_result = $db->add_container_to_type($placed_type, $result);
             }
         }
-     if($result != 0) {
-         echo("<div class='alert alert-success'>Container ".$_POST['container_type_name']." successfully added.</div>");
+     if(is_numeric($result)) {
+         header('Location:edit_types.php?type_id='.$result.'&add_success=1');
+         //echo("<div class='alert alert-success'>Container ".$_POST['container_type_name']." successfully added.</div>");
+     } else {
+         echo("<div class='alert alert-danger'>Error:".$result."</div>");
      }
     } else {
-        echo("Loop error = $loop_error<BR>");
+        //echo("Loop error = $loop_error<BR>");
         $loop_type = new type($db,$loop_error);
         $name = $loop_type->get_name();
         echo("<div class='alert alert-danger'>There is an error in where this container can be placed. <BR> It could both contain and be placed in a <B>$name</B>.<BR>Please double check and try again.</div>");

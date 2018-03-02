@@ -27,7 +27,14 @@ function hide() {
 }
 </script>
 <?php
-
+if(isset($_POST['container_type']) && $_POST['container_type'] != null) {
+    ?>
+    <script type='text/javascript'>
+        current = <?php echo( $_POST['container_type']); ?>;
+    </script>
+    
+<?php
+}
 echo("<h3>Add Container</h3>");
 //$name = $_POST['container_name'];
     $container_type=null;
@@ -35,26 +42,11 @@ echo("<h3>Add Container</h3>");
     //$errors = "";
     $backupset = null;
     $messages = "";
-if(isset($_POST['container_type']) && $_POST['container_type'] != null) {
-?>
-    <script type='text/javascript'>
-        current = <?php echo( $_POST['container_type']); ?>;
-    </script>
-    
-<?php
-}
-if(isset($_GET['container_type'])) {
-    $container_type = $_GET['container_type'];
-?>
-    <script type='text/javascript'>
-        current = <?php echo( $_GET['container_type']); ?>;
-    </script>
-    
-<?php
-}
 if(isset($_POST['submit_add_container'])) {
 if(isset($_POST['container_name'])) {
     //echo("Adding container : ".$_POST['container_name']."<BR>");
+
+    
 
     if(isset($_POST['container_name']) && $_POST['container_name'] != null) {
         $name = $_POST['container_name'];
@@ -62,10 +54,6 @@ if(isset($_POST['container_name'])) {
     } else {
         $messages .= "<div class='alert alert-danger'>Please select a valid name for this container.</div>";
         
-    }
-    
-    if(isset($_POST['backupset'])) {
-        $backupset = $_POST['backupset'];
     }
 
     if(isset($_POST['container_type']) && $_POST['container_type'] != null) {
@@ -88,8 +76,7 @@ if(isset($_POST['container_name'])) {
      $is_num = is_numeric($result);
 
         if ($is_num) {
-            header('Location:view_container.php?container_id='.$result.'&add_success=1');
-            //$messages .=("<div class='alert alert-success'>Container ".$name." successfully added.</div>");
+            $messages .=("<div class='alert alert-success'>Container ".$name." successfully added.</div>");
         } else {
             $messages .=("<div class='alert alert-danger'>Error in adding container: ".$name.".<BR>$result</div>");
         }
@@ -123,13 +110,13 @@ echo("<BR>");
 echo("<form name='add_container' action='add_container.php' method='POST'>");
 
 echo("<table class='table table-bordered display'>");
-echo("<tr><td width=20%>Container Name:</td><td><input type='text' name='container_name' id='container_name'". (isset($name) ? " value='$name' " : "")."></td></tr>");
-echo("<tr><td>Container Type :");
-echo("<BR><a href='add_container_type.php'>(Add a new container type?)</a>");
+echo("<tr><td width=20%>Location Name:</td><td><input type='text' name='container_name' id='container_name'". (isset($name) ? " value='$name' " : "")."></td></tr>");
+echo("<tr><td>Location Type :");
+echo("<BR><a href='add_container_type.php'>(Add a new type?)</a>");
 echo("</td><td>");
-    createInput("select","container_type",(isset($container_type) ? $container_type : ""),$db->get_container_types_array(), "", "hide()");
+    createInput("select","container_type",(isset($container_type) ? $container_type : ""),$db->get_location_types(), "");
 echo(" </td></tr>");
-echo("<tr><td>Parent Location:</td><td>");
+
 echo("<table>");
 $all_types = $db->get_container_types();
 foreach($all_types as $type) {
@@ -141,12 +128,8 @@ foreach($all_types as $type) {
 }
 echo("</table>");
 echo(" </td></tr>");
-//echo("<tr><td>Service:</td><td><input type='text' name='service' id='service'></td></tr>");
-echo("<tr><td>Backup Set:</td><td>");
-createInput("select","backupset",$backupset,$db->get_all_backups_array());
-echo("</td></tr>");
 echo("</table>");
-echo("<input type='submit' name='submit_add_container' value='Add Container'>");
+echo("<input type='submit' name='submit_add_container' value='Add Location'>");
 echo("</form>");
 echo("<BR>");
 if(strlen($messages) > 0) {

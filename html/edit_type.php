@@ -11,7 +11,7 @@ include 'includes/header.inc.php';
 ?>
 
 <?php
-echo("<h3>Edit Type</H3>");
+
 $type_id = -1;
 $errors=0;
 if(!isset($_GET['type_id']) && !isset($_POST['type_id'])) {
@@ -23,7 +23,8 @@ if(!isset($_GET['type_id']) && !isset($_POST['type_id'])) {
     } else {
         $type_id = $_GET['type_id'];
     }
-    
+$type = new type($db, $type_id);
+echo("<h3>Edit Type: ".$type->get_name()."</H3>");
 if(isset($_POST['submit_type_edit'])) {
 
     $types = array();

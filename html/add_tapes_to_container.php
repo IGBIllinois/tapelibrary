@@ -34,10 +34,18 @@ if(isset($_POST['tape_type']) && $_POST['tape_type'] != null) {
     
 <?php
 }
-echo("<H3>Add Tapes</H3>");
-    
+
+if(isset($_POST['container_id']) && $_POST['container_id'] != null) {
+    $container_id = $_POST['container_id'];
+    $container = new container($db, $container_id); 
+
+
+echo("<H3>Add Tapes to ".$container->get_label()."</H3>");
+echo("Type:".$container->get_type_name());
+echo("<BR>");
+echo("Located in:".$db->get_full_path($container->get_container_id())."<BR><BR>");    
     $tape_type=null;
-    $container_id=null;
+
     $service=null;
     $errors = "";
     $backupset = null;
@@ -50,11 +58,7 @@ if(isset($_POST['submit'])) {
     } else {
         $errors .= "<div class='alert alert-danger'>Please input a tape type</div>";
     }
-    if(isset($_POST['container'.$tape_type]) && $_POST['container'.$tape_type] != null) {
-        $container_id = $_POST['container'.$tape_type];
-    } else {
-        $errors .= "<div class='alert alert-danger'>Please input a container</div>";
-    }
+    
 
     if(isset($_POST['backupset'])) {
         $backupset = $_POST['backupset'];
@@ -128,10 +132,6 @@ if(isset($_POST['submit'])) {
     }
     }
     }
-    
-    if(isset($_GET['tape_type'])) {
-        $tape_type = $_GET['tape_type'];
-    }
     //$result = add_item($db, $name, $tape_type, $container_id, $service, 0 );
      //if($result) {
         
@@ -162,13 +162,14 @@ echo("<BR>");
  * 
  */
 
-echo("<form id='addform' name='add_tape' action='add_tape.php' method='POST'>");
-echo("<table class='table  display'><tr><td width=50% valign='top'>");
+echo("<form id='addform' name='add_tape' action='add_tapes_to_container.php' method='POST'>");
+echo("<input type=hidden name='container_id' value='$container_id'>");
+echo("<table><tr><td valign='top'>");
 echo("<table class='table table-bordered display'>");
 //echo("<tr><td>Location Name:</td><td><input type='text' name='container_name' id='container_name'></td></tr>");
 
       print "<tr >";
-        print "<td width=40%>Tapes to add:</td>";
+        print "<td width=20%>Tapes to add:</td>";
         print "<td>From:";
         createInput("text","tape_from",isset($tape_from) ? $tape_from : "");
         print "<br />To: ";
@@ -176,35 +177,16 @@ echo("<table class='table table-bordered display'>");
         print "</td>";
         
       print "</tr>";
-echo("<tr><td>Tape Type: ");
-echo("<BR><a href=add_container_type.php>(Add a new tape type?)</a>");
-echo("</td><td>");
-    createInput("select","tape_type",$tape_type, $db->get_tape_types(),"","hide()");
+echo("<tr><td>Tape Type :</td><td>");
+    createInput("select","tape_type",$tape_type, $db->get_tape_types_for_container_type($container->get_type()),"","hide()");
+echo(" </td></tr>");
 
-echo(" </td></tr>");
-echo("<tr><td>Parent Location:");
-echo("<BR><a href=add_container.php>(Add a new container?)</a>");
-echo("</td><td>");
-echo("<table>");
-$all_types = $db->get_tape_types();
-foreach($all_types as $type) {
-    $id = $type['id'];
-    
-    echo("<tr id='tapediv$id' ".((isset($tape_type) && $tape_type == $id) ? " style='visibility:visible' ": " style='visibility:collapse' ") ."><td> ");
-    createInput("select","container".$id,(isset($container_id)? $container_id : ""),$db->get_containers_for_type($id));
-    echo("</td></tr>");
-}
-echo("</table>");
-echo(" </td></tr>");
 //echo("<tr><td>Service:</td><td><input type='text' name='backupset' id='service'></td></tr>");
-echo("<tr><td>Backup Set:");
-echo("<BR><a href=add_backupset.php>(Add a new backup set?)</a>");
-echo("</td><td>");
+echo("<tr><td>Backup Set:</td><td>");
 createInput("select","backupset",$backupset,$db->get_all_backups_array());
 echo("</td></tr>");
 
 echo("</table>");
-
 echo("<input type='submit' name='submit' value='Add Tapes'>");
 
 echo("</td><td>");
@@ -218,6 +200,7 @@ echo("</td></tr></table>");
 
 echo("</form>");
 echo("<BR>");
+
 if(strlen($errors) > 0) {
     echo($errors);
 }
@@ -226,5 +209,53 @@ if(strlen($name_errors) > 0) {
 }
 if(strlen($messages) > 0) {
     echo($messages);
+}
+
+echo("Current tapes in ".$container->get_label().":<BR>") ;
+echo("<fieldset><table id='view_tapes' class='table table-bordered table-hover table-striped display'>");
+
+$current_tapes = $container->get_children();
+
+if(count($current_tapes)== 0) {
+    echo "<tr><td>No tapes have been added.</td></tr>";
+} else {
+    echo("<thead><tr><th>Label</th><th>Type</th><th>Backup Set</th></thead>");
+    echo("<tbody>");
+    foreach($current_tapes as $tape_data) {
+        $tape_id = $tape_data['id'];
+        $tape = new tape($db, $tape_id);
+        $backupset_id = $tape->get_backupset();
+        //$backupset_id = $tape['backupset'];
+        //echo("backupset = $backupset_id<BR>");
+        $backupset_name = "";
+        if($backupset_id == null || $backupset_id == -1) {
+            $backupset_name = "None";
+        } else {
+            $backupset = new backupset($db, $backupset_id);
+            $backupset_name = $backupset->get_name();
+            
+            //$backupset = $db->get_backupset($backupset_id);
+            //if($backupset == 0) {
+            //    $backupset_name = "None";
+            //} else {
+            //    $backupset_name = $backupset['name'];
+            //}
+            
+        }
+        //echo("<tr><td>".$tape['tape_number']."</td>");
+        echo("<td>".$tape->get_label()."</td>");
+        echo("<td>".$tape->get_type_name()."</td>");
+        echo("<td><a href='view_backupset_data.php?backupset_id=$backupset_id'>".$backupset_name."</a></td></tr>");
+        
+    }
+    echo("</tbody>");
+
+}
+
+echo("</table></fieldset>");
+
+echo("<BR>");
+} else {
+    $errors = "Please input a proper container";
 }
 include 'includes/footer.inc.php';

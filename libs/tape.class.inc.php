@@ -6,8 +6,8 @@
  * and open the template in the editor.
  */
 
-class tape {
-    
+class tape extends tape_library_object {
+    /*
     private $db; // database
     private $id;
     //private $item_id;
@@ -20,7 +20,7 @@ class tape {
     
     private $time_last_modified;
     private $user_last_modified;
-    
+    */
     public function __construct($db, $id) {
         
         $this->load_by_id($db, $id);
@@ -29,7 +29,7 @@ class tape {
     public function __destruct() {
        
     }
-    
+    /*
     public function load_by_id($db, $id) {
         $result = $db->get_tape_by_id($id);
         $this->db = $db;
@@ -82,6 +82,6 @@ class tape {
     public function is_active() {
         return $this->active;
     }
-    
+    */
     
 }

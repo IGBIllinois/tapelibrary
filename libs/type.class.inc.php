@@ -9,10 +9,10 @@
 class type {
     
     private $db; // database
-    private $id;
+    private $id = -1;
     //private $item_id;
     private $name;
-    private $can_contain_types; // array
+    private $can_contain_types; // array of type ids
     private $max_slots;
     
     private $time_last_modified;
@@ -70,7 +70,29 @@ class type {
         return $this->max_slots;
     }
     
-
+    
+    public function is_tape() {
+        if(count($this->get_can_contain_types()) == 0) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+    
+    public function can_contain_types() {
+        return $this->get_can_contain_types();
+    }
+    
+    public function can_contain_tapes() {
+        $types = $this->can_contain_types();
+        foreach($types as $type) {
+            $new_type = new type($this->db, $type);
+            if($new_type->is_tape()) {
+                return 1;
+            }
+        }
+        return 0;
+    }
     
     
 }

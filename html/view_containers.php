@@ -7,7 +7,6 @@
  */
 
 include_once 'includes/header.inc.php';
-echo("<H3>View Tapes</H3>");
 echo("<fieldset>");
 $begin = null;
     $end = null;
@@ -51,7 +50,7 @@ if(isset($_POST['submit'])) {
      //}
 }
 
-echo("<form method=POST action=view_tapes.php>");
+echo("<form method=POST action=view_containers.php>");
 //
 //echo("<form id='addform' name='add_tape' action='add_tape.php' method='POST'>");
 echo("Limit By:<BR>");
@@ -60,7 +59,7 @@ echo("<table  class='table table-bordered display'><tr>");
 
       print "<tr >";
         print "<td>Tape Number(s)</td>";
-        print "<td>From: ";
+        print "<td>";
         createInput("text","begin","");
         print "<br />To: ";
         createInput("text","end","");
@@ -70,11 +69,11 @@ echo("<table  class='table table-bordered display'><tr>");
 	//	print "</div>";
         //print "</td>";
       print "</tr>";
-echo("<tr><td>Tape Type :</td><td>");
-    createInput("select","type","",$db->get_tape_types());
+echo("<tr><td>Container Type :</td><td>");
+    createInput("select","type","",$db->get_container_types_array());
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    createInput("select","container","",$db->get_containers_array());
+    createInput("select","container","",$db->get_containers());
 echo(" </td></tr>");
 
 
@@ -83,11 +82,11 @@ echo("<input type='submit' name='submit' value='Select'>");
 echo("</form>");
 echo("<BR>");
 //
-echo("Current tapes:") ;
+echo("Current containers:") ;
 
 echo("<fieldset><table id='view_tapes' class='table table-bordered table-hover table-striped display'>");
 
-$current_tapes = $db->get_tapes($begin, $end, $type, $container, $active);
+$current_tapes = $db->get_containers($begin, $end, $type, $container, $active);
 
 if(count($current_tapes)== 0) {
     echo "<tr><td>No tapes have been added.</td></tr>";
@@ -95,29 +94,24 @@ if(count($current_tapes)== 0) {
     echo("<thead><tr><th>Label</th><th>Type</th><th>Parent Location</th><th>Backup Set</th></thead>");
     echo("<tbody>");
     foreach($current_tapes as $tape) {
-        //echo("id = ".$tape->get_id());
-        //echo("id = ".$tape_result['id']);
-        //$tape = new tape($db, $tape_result['id']);
-        $backupset_id = $tape->get_backupset();
-        
+        $backupset_id = $tape['backupset'];
+        //echo("backupset = $backupset_id<BR>");
+        $backupset_name = "";
         if($backupset_id == null || $backupset_id == -1) {
             $backupset_name = "None";
         } else {
-            $backupset= new backupset($db, $backupset_id);
-            $backupset_name = $backupset->get_name();
-            //$backupset = $db->get_backupset($backupset_id);
-            //if($backupset == 0) {
-            //    $backupset_name = "None";
-            //} else {
-            //    $backupset_name = $backupset['name'];
-            //}
+            $backupset = $db->get_backupset($backupset_id);
+            if($backupset == 0) {
+                $backupset_name = "None";
+            } else {
+                $backupset_name = $backupset['name'];
+            }
             
         }
         //echo("<tr><td>".$tape['tape_number']."</td>");
-        echo("<td>".$tape->get_label()."</td>");
-        echo("<td>".$tape->get_type_name()."</td>");
-        //echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$tape->get_container_name()."</a></td>");
-        echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$db->get_full_path($tape->get_container_id())."</a></td>");
+        echo("<td>".$tape['label']."</td>");
+        echo("<td>".$db->get_container_type_name($tape['type'])."</td>");
+        echo("<td><a href=view_container.php?container_id=".$tape['parent'].">".$tape['container_name']."</a></td>");
         if($backupset_id != -1) {
             echo("<td><a href=view_backupset_data.php?backupset_id=".$backupset_id.">".$backupset_name."</a></td></tr>");
         } else {
@@ -130,7 +124,7 @@ if(count($current_tapes)== 0) {
 
 echo("</table></fieldset>");
 
-echo("<BR><a href='add_tape.php'>Add new tapes</a><BR>");
+echo("<BR><a href='add_container.php'>Add new container</a><BR>");
 
 //list_all($db);
 echo("</fieldset>");

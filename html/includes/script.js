@@ -77,6 +77,11 @@ $(document).ready(function(){
         "pageLength": 50,
         "lengthChange": false
     } );
+    $('#tape_types').DataTable( {
+        "order": [[ 0, "asc" ]],
+        "pageLength": 50,
+        "lengthChange": false
+    } );
     $('#tapes_in_backupset').DataTable( {
         "order": [[ 0, "asc" ]],
         "pageLength": 50,
@@ -186,8 +191,23 @@ function changeAllCheckedLocations(source, checkbox_name, id_name) {
                 //alert("newLoc="+id_name+id);
                 newLoc = document.getElementById(id_name+"_"+id);
                 //alert("newVal = "+source.value);
-                newLoc.value = source.value;
+                if(newLoc != null) {
+                    newLoc.value = source.value;
+                }
             }
   }
+}
+
+function format_backupset_table(tape_array) {
+    html = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<th>Name</th><th>Type</th><th>Location</th>';
+        for(i=0; i<tape_array.length; i++) {
+            html += '<tr><td>'+tape_array[i][0]+"</td>"+
+                    '<td>'+tape_array[i][1]+"</td>"+
+                    '<td>'+tape_array[i][2]+"</td></tr>";
+        }
+
+    html += '</table>';
+    return html;
 }
 
