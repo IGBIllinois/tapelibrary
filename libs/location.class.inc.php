@@ -6,8 +6,8 @@
  * and open the template in the editor.
  */
 
-class location {
-    
+class location extends tape_library_object {
+    /*
     private $db; // database
     private $id;
     //private $item_id;
@@ -83,6 +83,6 @@ class location {
         //return $this->db->get_tapes_in_container($this->id);
         return $this->db->get_children($this->id);
     }
-    
+    */
     
 }

@@ -34,7 +34,7 @@ function createInput($type, $name, $default, $array=array(), $id="", $onChange="
       
     case "select":
       print "<select id='{$formName}' name='{$formName}' ". ($onChange != "" ? " onChange='$onChange' " : "") . (($id != "") ? " id='{$name}_{$id}' ": "") .">";
-      print "<option value=''>Select {$formName}</option>";
+      print "<option value=''>None</option>";
       $i=0;
       foreach ($array as $value) {
         print "<option value={$value['id']}";
@@ -772,4 +772,11 @@ function get_all_from_type($db, $type_id, $active=1) {
             echo($e->getTrace());
         }
     
+    }
+    
+    function redirect($url) {
+        ob_start();
+        header('Location: '.$url);
+        ob_end_flush();
+        die();
     }

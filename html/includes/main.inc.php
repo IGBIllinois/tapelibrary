@@ -11,10 +11,13 @@ function my_autoloader($class_name) {
 	}
 
 }
+require_once '../libs/tape_library_object.class.inc.php';
 require_once '../libs/tape.class.inc.php';
 require_once '../libs/container.class.inc.php';
 require_once '../libs/backupset.class.inc.php';
 require_once '../libs/location.class.inc.php';
+require_once 'PHPExcel-1.8/Classes/PHPExcel.php';
+require_once '../libs/report.class.inc.php';
 
 spl_autoload_register('my_autoloader');
 
