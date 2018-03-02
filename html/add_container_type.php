@@ -120,7 +120,7 @@ foreach($types as $type) {
     echo("<input type=checkbox  id='type$id' onclick=toggle('placedtype$id') name=types[".$type['id']."] value='".$type['id']."'>".$type['name']."<BR>");
 }
 echo("</td></tr><tr><td>");
-echo("In what types can this container be placed?</td></tr><tr><td>");
+echo("In what types can this container be placed?<BR>(If it cannot be placed in anything, it will be considered a top-level location type)</td></tr><tr><td>");
 $types = $db->get_all_types();
 foreach($types as $type) {
     $id = $type['id'];

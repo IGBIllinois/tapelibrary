@@ -246,7 +246,7 @@ class db {
         try {
         $query = "INSERT INTO tape_library (label, type, container, user_id, last_update, active) VALUES(:label, :type, :container_id, :user_id, NOW(),1)";
         $params = array('label'=>$label, 'type'=>$type, 'container_id'=>$container_id, 'user_id'=>0);
-        echo("query = $query<BR>");
+        //echo("query = $query<BR>");
         //echo("item_id = $item_id, type = $type, container_id = $container_id, service=$service, user_id=$user_id");
         $result = $this->get_insert_result($query, $params);
         ////$statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -360,7 +360,7 @@ class db {
     }
     */
     function get_container_types_array() {
-        $query = "SELECT container_type_id as id, name from container_type  where can_contain_types is not null and can_contain_types != ''";
+        $query = "SELECT container_type_id as id, name from container_type  where can_contain_types is not null and can_contain_types != '' order by name";
         $statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $result = $this->query($query);
         return $result;
@@ -407,7 +407,7 @@ class db {
     function get_tape_types() {
         
         //$query = "SELECT container_type_id as id, name, container from container_type where container=0";
-        $query = "SELECT container_type_id as id, name, container from container_type where can_contain_types is null or can_contain_types=''";
+        $query = "SELECT container_type_id as id, name, container from container_type where can_contain_types is null or can_contain_types='' order by name";
 
         $statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $result = $this->query($query);
@@ -1152,7 +1152,7 @@ function get_containers_for_type($type_id) {
         $type_string .= $type;
     }
     if($type_string != "") {
-    $query = "SELECT id, label as name from tape_library where type in (".$type_string.")";
+    $query = "SELECT id, label as name from tape_library where type in (".$type_string.") order by label";
     //echo("gcft query = $query<BR>");
     $statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $result = $this->query($query);
@@ -1334,6 +1334,13 @@ function get_heirarchy($object_list, $level=0) {
     //$data = $db->get_tape_library_object($id);
     
     $data= array();
+    $this_row = array();
+            
+        for($i=0; $i<$level; $i++) {
+            $this_row[] = "";
+        }
+        $headers = array_merge($this_row, array("Name","Type","Backupset","Location"));
+        $data[] = $headers;
     //print_r($object_list);
     foreach($object_list as $object) {
         //print_r($object);
@@ -1341,31 +1348,28 @@ function get_heirarchy($object_list, $level=0) {
         $tape_library_object = new tape_library_object($this, $id);
         //$headers = array();
         
+        //test
         //echo("adding:"+$tape_library_object->get_label());
         //echo("<BR>");
         //$this_row = array();
         ////for($i=0; $i<$level; $i++) {
         //    $this_row[] = "";
         //}
-        $this_row = array();
-            
-                for($i=0; $i<$level; $i++) {
-                    $this_row[] = "";
-                }
-        $data_row = array_merge($this_row, array($tape_library_object->get_label(), $tape_library_object->get_type_name(), $tape_library_object->get_backupset_name()));
+        
+        $data_row = array_merge($this_row, array($tape_library_object->get_label(), $tape_library_object->get_type_name(), $tape_library_object->get_backupset_name(), $tape_library_object->get_container_name()));
 
         $data[] = $data_row;
 
         $children = $this->get_children_objects($id);
         if(count($children) > 0) {
             $data[] = array();
-            $this_row = array();
+            //$this_row = array();
             
-                for($i=0; $i<=$level; $i++) {
-                    $this_row[] = "";
-                }
-                $headers = array_merge($this_row, array("Name","Type","Backupset"));
-                $data[] = $headers;
+                //for($i=0; $i<=$level; $i++) {
+                //    $this_row[] = "";
+                //}
+               // $headers = array_merge($this_row, array("Name","Type","Backupset","Location"));
+                //$data[] = $headers;
         
             $data = array_merge($data, $this->get_heirarchy($children, (1+$level)));
             $data[] = array();

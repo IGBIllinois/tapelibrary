@@ -129,7 +129,7 @@ echo("<BR><a href='add_container_type.php'>(Add a new container type?)</a>");
 echo("</td><td>");
     createInput("select","container_type",(isset($container_type) ? $container_type : ""),$db->get_container_types_array(), "", "hide()");
 echo(" </td></tr>");
-echo("<tr><td>Parent Location:</td><td>");
+echo("<tr><td>Parent Location:<BR>(Leave blank for a top-level location)</td><td>");
 echo("<table>");
 $all_types = $db->get_container_types();
 foreach($all_types as $type) {
