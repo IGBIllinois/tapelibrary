@@ -1,0 +1,25 @@
+<?php
+
+
+define("mysql_host", "");
+define("mysql_user", "");
+define("mysql_password", "");
+define("mysql_database", "");
+
+define("__TITLE__", "Backup Tape Library");
+
+define("__LDAP_HOST__","");
+define("__LDAP_BASE_DN__","");
+define("__LDAP_SSL__",FALSE);
+define("__LDAP_PEOPLE_OU__","");
+define("__LDAP_ADMIN_GROUP__","");
+define("__LDAP_PORT__",389);
+define("__SESSION_TIMEOUT__",36000);
+define("__SESSION_NAME__","");
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+?>
