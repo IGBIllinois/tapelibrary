@@ -956,7 +956,7 @@ function edit_backupset($id, $name, $begin, $end, $program, $location, $notes) {
         echo("<div class='alert alert-danger'>A backupset with the name '$name' already exists. Please choose a different name.</div>");
         return 0;
     }
-    $query = "UPDATE backupset set name=:name, begin=:begin, end=:end, program=:program, :main_location, notes=:notes where id=:id";
+    $query = "UPDATE backupset set name=:name, begin=:begin, end=:end, program=:program, main_location=:main_location, notes=:notes where id=:id";
     $params = array("id"=>$id, "name"=>$name, "begin"=>$begin, "end"=>$end, "program"=>$program, "main_location"=>$location, "notes"=>$notes);
     $result = $this->get_query_result($query, $params);
     return $result;

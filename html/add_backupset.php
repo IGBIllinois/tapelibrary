@@ -43,7 +43,7 @@ if(isset($_POST['backupset_name'])) {
     }
     
     if(isset($_POST['main_location'])) {
-        $backupset = $_POST['main_location'];
+        $main_location = $_POST['main_location'];
     }
     
     if(isset($_POST['notes'])) {

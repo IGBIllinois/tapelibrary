@@ -27,6 +27,7 @@ if(isset($_POST['id'])) {
     $end = $backupset->get_end_date();
     $program = $backupset->get_program();
     $notes = $backupset->get_notes();
+    $main_location = $backupset->get_main_location();
 
 }
 
@@ -41,6 +42,7 @@ if(isset($_POST['submit_delete'])) {
     return;
     
 }
+
 if(isset($_POST['submit_edit'])) {
     
 $backupset_id = $_POST['backupset_id'];
@@ -68,6 +70,9 @@ $backupset_id = $_POST['backupset_id'];
     if(isset($_POST['program'])) {
         $program = $_POST['program'];
     }
+    if(isset($_POST['main_location'])) {
+        $main_location = $_POST['main_location'];
+    }
     if(isset($_POST['notes'])) {
         $notes = $_POST['notes'];
     }
@@ -76,7 +81,7 @@ $backupset_id = $_POST['backupset_id'];
     }
     if(strlen($error) == 0) {
         //echo("name = $name, begin = $begin, end = $end, program = $program, notes = $notes <BR>");
-        $result = $db->edit_backupset($backupset_id, $name, $begin, $end, $program, $notes);
+        $result = $db->edit_backupset($backupset_id, $name, $begin, $end, $program, $main_location, $notes);
         //echo("result = $result<BR>");
         if($result != 0) {
             echo("<div class='alert alert-success'>Backup Set ".$_POST['name']." successfully edited.</div>");
@@ -99,6 +104,9 @@ echo("<tr><td>End Date (YYYY-MM-DD):</td><td><input type='text' name='end' id='e
 //echo("<tr><td>Program (Crashplan, Backula, etc.):</td><td><input type='text' name='program' id='program' ".(isset($program) ? ("value='$program'") : "")."></td></tr>");
 echo("<tr><td>Program: </td><td>");
 createInput("select", "program",(isset($program) ? ("$program") : ""), $db->get_programs());
+echo("</td></tr>");
+echo("<tr><td>Main Location <a href='add_location.php'>(Add a new location?)</a></td><td>");
+createInput("select", "main_location",(isset($main_location) ? ("$main_location") : ""), $db->get_locations());
 echo("</td></tr>");
 echo("<tr><td>Notes:</td><td><textarea rows='2' name='notes' id='notes'>".(isset($notes) ? $notes : "")."</textarea></td></tr>");
 

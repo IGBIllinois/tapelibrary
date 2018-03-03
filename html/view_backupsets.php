@@ -93,6 +93,7 @@ echo("</form>");
 ?>
 <form class='form-inline' action='report.php' method='post'>
 <!-- <input class='btn btn-primary' type='submit'-->
+<!--
 <input type='submit'
                 name='create_full_report' value='Download Full Report'>
  <select
@@ -102,7 +103,7 @@ echo("</form>");
                 <option value='csv'>CSV</option>
         </select>
 </form>
-
+-->
         <?php
 //list_all($db);
 echo("</fieldset>");
