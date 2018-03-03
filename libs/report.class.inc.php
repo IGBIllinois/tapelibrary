@@ -90,17 +90,18 @@ $excel_file->setActiveSheetIndex(0)
 		$excel_file->setActiveSheetIndex(0);
 		if (count($data) !== 0 ) {
 			//Creates headers
-			$headings = array_keys($data[0]);
-			for ($i=0;$i<count($headings);$i++) {
-				$excel_file->getActiveSheet()->setCellValueByColumnAndRow($i,1,$headings[$i]);
-				$excel_file->getActiveSheet()->getStyleByColumnAndRow($i,1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-				$excel_file->getActiveSheet()->getStyleByColumnAndRow($i,1)->getFont()->setBold(true);
-				$excel_file->getActiveSheet()->getStyleByColumnAndRow($i,1)->getFont()->setUnderline(PHPExcel_STYLE_Font::UNDERLINE_SINGLE);
-				$excel_file->getActiveSheet()->getColumnDimensionByColumn($i)->setAutoSize(true);
-			}
+			//$headings = array_keys($data[0]);
+			//for ($i=0;$i<count($headings);$i++) {
+			//	$excel_file->getActiveSheet()->setCellValueByColumnAndRow($i,1,$headings[$i]);
+			//	$excel_file->getActiveSheet()->getStyleByColumnAndRow($i,1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+			//	$excel_file->getActiveSheet()->getStyleByColumnAndRow($i,1)->getFont()->setBold(true);
+			//	$excel_file->getActiveSheet()->getStyleByColumnAndRow($i,1)->getFont()->setUnderline(PHPExcel_STYLE_Font::UNDERLINE_SINGLE);
+			//	$excel_file->getActiveSheet()->getColumnDimensionByColumn($i)->setAutoSize(true);
+			//}
+                        //
 			//Adds data
 			$rows = count($data);
-			$start_row = 2;
+			$start_row = 1;
 			foreach ($data as $row_data) {
 				$column=0;
 				foreach ($row_data as $key => $value) {
@@ -133,9 +134,9 @@ $excel_file->setActiveSheetIndex(0)
 	public static function create_csv_report($data,$filename) {
 		$delimiter = ",";
 		$file_handle = fopen('php://output','w');
-		$headings = array_keys($data[0]);
-		ob_start();
-		fputcsv($file_handle,$headings,$delimiter);
+		//$headings = array_keys($data[0]);
+		//ob_start();
+		//fputcsv($file_handle,$headings,$delimiter);
 		foreach ($data as $row) {
 			fputcsv($file_handle,$row,$delimiter);
 		}

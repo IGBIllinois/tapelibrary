@@ -120,8 +120,8 @@ if (isset($_POST['create_full_report'])) {
             //header("Location: excel/". $filename);
             //unlink("excel/".$filename);
         } catch(Exception $e) {
-            echo($e);
-            echo($e->getTrace());
+            //echo($e);
+            //echo($e->getTrace());
         }
 
 }
@@ -136,7 +136,7 @@ if(isset($_POST['create_container_report'])) {
             //$container = $db->get_container_by_id($container_id);
             $container = new container($db, $container_id);
             if($container->get_id() == -1) {
-                echo("No such container.<BR>");
+                //echo("No such container.<BR>");
                 return;
             }
             
@@ -219,7 +219,7 @@ if(isset($_POST['create_backupset_report'])) {
             //$backupset = $db->get_backupset($backupset_id);
             $backupset = new backupset($db, $backupset_id);
             if($backupset == null) {
-                echo("No such backupset.<BR>");
+                //echo("No such backupset.<BR>");
                 return;
             }
             
@@ -232,16 +232,23 @@ if(isset($_POST['create_backupset_report'])) {
             $header = array($backupset->get_name());
             $start_line = array("Start Date", $backupset->get_begin_date());
             $end_line = array("End Date", $backupset->get_end_date());
+            $program_line = array("Program", $backupset->get_program_name());
+            $notes_line = array("Notes", $backupset->get_notes());
+            
             $tapes = $db->get_tapes_for_backupset($backupset_id);
-            $titles = array("Tape Label", "Tape Type", "Container");
+            $titles = array("Tape Label", "Tape Type", "Container", "Full Path");
 
             
             $data[] = ($header);
             $data[] = ($start_line);
             $data[] = ($end_line);
+            $data[] = $program_line;
+            $data[] = $notes_line;
             $data[] = (array());
+            
             $data[] = ($titles);
             $data[] = array();
+            
 
             foreach($tapes as $tape) {
                 
@@ -249,13 +256,13 @@ if(isset($_POST['create_backupset_report'])) {
                 $container_name = $tape->get_container_name();
                 //$container_name = $container['label'];
                 
-                $tape_array = array($tape->get_label(), $tape->get_type_name(), $container_name);
+                $tape_array = array($tape->get_label(), $tape->get_type_name(), $container_name, $db->get_full_path($container_id));
                 $data[] = ($tape_array);
             }
 
         } catch(Exception $e) {
-            echo($e);
-            echo($e->getTrace());
+            //echo($e);
+            //echo($e->getTrace());
         }
         
 }
@@ -281,6 +288,8 @@ if(isset($_POST['create_heirarchy_report'])) {
     $filename = "heirarchyreport";
     $type = $_POST['report_type'];
 }
+
+$filename = $filename . "." . $type;
 
 switch ($type) {
     
