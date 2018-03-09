@@ -342,6 +342,17 @@ class db {
         $result = $this->query($query);
         return $result;
     }
+    
+    function get_program_objects() {
+        $results = array();
+        $programs = $this->get_programs();
+        foreach($programs as $program) {
+            $program = new program($this, $program['id']);
+            $results[] = $program;
+        }
+        
+        return $results;
+    }
     /*
     function add_item($item_id, $label, $type, $container_id, $service ,$user_id) {
         
@@ -1063,6 +1074,19 @@ function get_full_linked_path($container_id) {
         $i++;
     }
     return $path;
+}
+
+function get_program($program_id) {
+    $query = "SELECT * from programs where id = :program_id";
+    $params = array("program_id"=>$program_id);
+    $result = $this->get_query_result($query, $params);
+    if(count($result)==1) {
+            $result = $result[0];
+        } else {
+            $result = 0;
+        }
+    return $result;
+
 }
 
 function get_program_name($program_id) {

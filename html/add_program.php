@@ -63,4 +63,19 @@ echo("</table>");
 echo("<input type='submit' name='submit_add_program' value='Add Program'>");
 echo("</form>");
 
+echo("<BR>");
+
+echo("Current programs:");
+echo("<table  class='table table-bordered table-hover table-striped display'><tr>");
+echo("<th>Program Name</th>");
+$programs = $db->get_program_objects();
+if(count($programs)== 0) {
+    echo "<tr><td>No tapes have been added.</td></tr>";
+} else {
+foreach($programs as $program) {
+    echo("<tr><td>".$program->get_name()."</td></tr>");
+}
+}
+echo("</table>");
+
 include 'includes/footer.inc.php';
