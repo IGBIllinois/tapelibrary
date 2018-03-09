@@ -46,7 +46,7 @@ if (isset($_POST['login'])) {
             $ldap->set_bind_pass($password);
 
 
-			$location = "http://" . $_SERVER['SERVER_NAME'] . $webpage;
+			$location = "https://" . $_SERVER['SERVER_NAME'] . $webpage;
         	header("Location: " . $location);
 		}
 		else {
