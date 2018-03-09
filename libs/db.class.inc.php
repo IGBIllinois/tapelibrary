@@ -304,7 +304,7 @@ class db {
     
     function add_program($name) {
         try {
-        $find_query = "SELECT * from program where name=:name";
+        $find_query = "SELECT * from programs where name=:name";
         $params = array("name"=>$name);
         $result = $this->get_query_result($find_query, $params);
         if(count($result) > 0) {
