@@ -156,7 +156,7 @@ foreach($tapes as $tape) {
     //createInput("text", "service", $tape['service'], "", $tape['id']);
     //echo("</td><td>");
     $backupset = new backupset($db, $tape->get_backupset());
-    echo("<td><a href='view_backupset.php?backupset_id=".$backupset->get_id()."'>".$backupset->get_name()."</a></td>");
+    echo("<td><a href='view_backupset_data.php?backupset_id=".$backupset->get_id()."'>".$backupset->get_name()."</a></td>");
     echo("<td><input type='checkbox' name=active_".$tape->get_id()." id='active_".$tape->get_id()."' value='active_".$tape->get_id()."'". ($tape->is_active() ? " checked " : "" ). " >");
     echo("</td></tr>");
 
