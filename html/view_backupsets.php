@@ -60,7 +60,7 @@ echo("<fieldset><table id='view_backupsets' class='table table-bordered table-ho
 $current_backupsets = $db->get_all_backup_sets();
 
 if(count($current_backupsets)== 0) {
-    echo "<tr><td>No tapes have been added.</td></tr>";
+    echo "<tr><td>No backup sets have been added.</td></tr>";
 } else {
     echo("<thead><tr><th>Name</th><th>Begin Date</th><th>End Date</th><th>Program</th><th>Notes</th></thead>");
     echo("<tbody>");
