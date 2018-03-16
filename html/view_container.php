@@ -96,7 +96,7 @@ echo("</fieldset>");
 if($container->can_contain_tapes()) {
     echo("<form method='POST' action='add_tapes_to_container.php' id='add_tapes_to_container' name='add_tapes_to_container'>");
     echo("<input type='hidden' name='container_id' value='$container_id'>");
-    echo("<input type='submit' name='report_submit' value='Add tapes to this container'>");
+    echo("<input type='submit' name='report_submit' value='Add new tapes to this container'>");
     echo("</form>");
 }
  
