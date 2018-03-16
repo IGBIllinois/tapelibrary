@@ -83,11 +83,11 @@ echo("<BR>");
 
 echo("Current Tape Types:");
 echo("<table id='tape_types' class='table table-striped table-bordered'>");
-echo("<thead><tr><th>Container Type</th><th>Can contain types</th><th>Can be placed in</th><th>Max slots</th></tr></thead>");
+echo("<thead><tr><th>Tape Type</th><th>Can contain types</th><th>Can be placed in</th><th>Max slots</th></tr></thead>");
 echo("<tbody>");
 $current_tape_types = $db->get_tape_type_objects();
 if(count($current_tape_types)== 0) {
-    echo "<tr><td>No container types have been added.</td></tr>";
+    echo "<tr><td>No tape types have been added.</td></tr>";
     
 } else {
     foreach($current_tape_types as $tape_type) {
