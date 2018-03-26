@@ -187,9 +187,7 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
             // If $pFilename is php://output or php://stdout, make it a temporary file...
             $originalFilename = $pFilename;
             if (strtolower($pFilename) == 'php://output' || strtolower($pFilename) == 'php://stdout') {
-                echo("tmpdir = ".PHPExcel_Shared_File::sys_get_temp_dir()."<BR>");
                 $pFilename = @tempnam(PHPExcel_Shared_File::sys_get_temp_dir(), 'phpxltmp');
-                echo("tempfilename = $pFilename<BR>");
                 if ($pFilename == '') {
                     $pFilename = $originalFilename;
                 }
