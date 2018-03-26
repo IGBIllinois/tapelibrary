@@ -25,7 +25,7 @@ class report {
 	public static function create_excel_2007_report($data,$filename) {
 		$excel_file = self::create_generic_excel($data);
 		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		header("Content-Disposition: attachment;filename=" . $filename);
+		header('Content-Disposition: attachment;filename=' . $filename);
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header('Pragma: public');
 		$writer = PHPExcel_IOFactory::createWriter($excel_file,'Excel2007');
@@ -35,51 +35,6 @@ class report {
 	}
 
         
-        public static function test() {
-            
-            $filename="test.xls";
-            $excel_file = new PHPExcel();
-            $excel_file->setActiveSheetIndex(0);
-            //for($row = 0; $row<10; $row++) {
-                //for($col=0; $col<2; $col++) {
-             //       $excel_file->getActiveSheet()->setCellValueByColumnAndRow("A", $row, "A,$row");
-                //}
-            //}
-            //
-            
-            header('Content-Type: application/vnd.ms-excel');
-            header('Content-Disposition: attachment;filename="' . $filename.'"');
-            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-            header('Pragma: public');
-            
-
-
-
-$excel_file->getProperties()->setCreator("Maarten Balliauw")
-							 ->setLastModifiedBy("Maarten Balliauw")
-							 ->setTitle("PHPExcel Test Document")
-							 ->setSubject("PHPExcel Test Document")
-							 ->setDescription("Test document for PHPExcel, generated using PHP classes.")
-							 ->setKeywords("office PHPExcel php")
-							 ->setCategory("Test result file");
-
-
-// Add some data
-
-$excel_file->setActiveSheetIndex(0)
-            ->setCellValue('A1', 'Hello')
-            ->setCellValue('B2', 'world!')
-            ->setCellValue('C1', 'Hello')
-            ->setCellValue('D2', 'world!');
-
-            $writer = PHPExcel_IOFactory::createWriter($excel_file,'Excel5');
-            
-            //$writer->save("$filename");
-            ob_end_clean();
-            $writer->save('php://output');
-            //$excelFileContents = ob_get_clean();
-            
-        }
 	//create_generic_excel()
 	//$data - double array - data values
 	//returns a PHPExcel object with data in correct columns and rows.
@@ -134,9 +89,9 @@ $excel_file->setActiveSheetIndex(0)
 	public static function create_csv_report($data,$filename) {
 		$delimiter = ",";
 		$file_handle = fopen('php://output','w');
-		//$headings = array_keys($data[0]);
-		//ob_start();
-		//fputcsv($file_handle,$headings,$delimiter);
+		$headings = array_keys($data[0]);
+		ob_start();
+		fputcsv($file_handle,$headings,$delimiter);
 		foreach ($data as $row) {
 			fputcsv($file_handle,$row,$delimiter);
 		}
