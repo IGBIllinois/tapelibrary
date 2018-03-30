@@ -64,10 +64,10 @@ echo("<table class='table table-bordered'><tr>");
         print "</td>";
       print "</tr>";
 echo("<tr><td>Container Type :</td><td>");
-    createInput("select","type","",$db->get_container_types_array());
+    createInput("select","type","",type::get_container_types($db));
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    createInput("select","select_container","",$db->get_containers_array());
+    createInput("select","select_container","", tape_library_object::get_containers($db));
 echo(" </td></tr>");
 
 
@@ -115,12 +115,13 @@ if(isset($_POST['submit'])) {
              */
              
             //$result = $db->edit_tape_basic($id, $tape_label, $container, $active);
-            $result = $db->move_object($id, $container);
+            $container_object = new tape_library_object($db, $container);
+            $result = $container_object->move_object($id);
             
-            if(!is_string($result)) {
-                $messages.=("<div class='alert alert-success'>$tape_label successfully modified.</div>");
+            if($result['RESULT']) {
+                $messages.=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
             } else {
-                $messages .= ("<div class='alert alert-danger'>".$result."</div>");
+                $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
             }
              
              
@@ -129,7 +130,7 @@ if(isset($_POST['submit'])) {
         $messages .= ("<div class='alert alert-warning'>Nothing checked</div>");
     }
 }
-$containers = $db->get_containers($begin, $select_type, $select_container, $active, 1);
+$containers = tape_library_object::get_container_objects($db, $begin, $select_type, $select_container, $active, 1);
   if(strlen($messages) > 0) {
       echo($messages);
   }
@@ -139,7 +140,7 @@ echo("<table id='edit_container' class='table table-bordered table-hover table-s
 echo("<th><input type=checkbox onClick='toggleAll(this,\"checkbox\")' /></th><th>Label</th><th>Type</th><th>Location");
 // Does this make sense anymore?
 echo("<BR>Move selected containers to:");
-createInput("select", "tape_container", "", $db->get_containers_array(), "",  "changeAllCheckedLocations(this, \"checkbox\", \"container_location\")");
+createInput("select", "tape_container", "", tape_library_object::get_containers($db), "",  "changeAllCheckedLocations(this, \"checkbox\", \"container_location\")");
 echo("</th><th>Active</th></tr></thead>");
 foreach($containers as $container) {
     //$container_id = $container_info['id'];
@@ -149,24 +150,21 @@ foreach($containers as $container) {
     echo("<td>");
     echo("<input type='checkbox' name=checkbox[] id='".$container_id."' value='".$container_id."'>");
     echo("</td><td>");
-    //createInput("text", "tape_id", $tape['tape_number'], "", $tape['id']);
+
     echo("<input type='hidden' name='container_label_".$container->get_id()."' id='container_label_".$container->get_id()."' value='".$container->get_label()."'>");
     //echo("</td><td>");
-    //createInput("text", "container_label", $container->get_label(), "", $container_id);
+
     echo("<a href='edit_container.php?container_id=".$container->get_id()."'>".$container->get_label()."</a>");
     echo("</td>");
     echo("<td>".$container->get_type_name()."</td><td>");
     if(!$container->is_location()) {
-        
-    createInput("select", "container_location", $container->get_container_id(), $db->get_containers_for_type($container->get_type()), $container_id);
+    $this_type = new type($db, $container->get_type());   
+    createInput("select", "container_location", $container->get_container_id(), $this_type->get_containers_for_type(), $container_id);
     } else {
         echo "None";
     }
     echo("</td><td>");
-    //createInput("select", "tape_type", $tape['type'], $db->get_container_types(), $tape['id']);
-    //echo("</td><td>");
-    //createInput("text", "service", $tape['service'], "", $tape['id']);
-    //echo("</td><td>");
+
     echo("<input type='checkbox' name=active_".$container_id." id='active_".$container_id."' value='active_".$container_id."'". ($container->is_active() ? " checked " : "" ). " >");
     echo("</td></tr>");
 

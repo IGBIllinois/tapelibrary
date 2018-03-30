@@ -70,28 +70,36 @@ if(isset($_POST['container_name'])) {
 
     if(isset($_POST['container_type']) && $_POST['container_type'] != null) {
         $container_type = $_POST['container_type'];
-
-    } else {
-        $messages .= "<div class='alert alert-danger'>Please select a type for this container.</div>";
         
-    }
+        if(isset($_POST['container'.$container_type])) {
+            $container_id = $_POST['container'.$container_type];
+        }
+        if($container_id == "" || $container_id == -1) {
+            $this_type = new type($db, $container_type);
+            if(!$this_type->is_location()) {
+                $messages .= "<div class='alert alert-danger'>Please select a valid parent location for this container.</div>";
+            } else {
+                //$this_type = new type($db, $type);
+                $container_id=-1;
+            }
+        }
+    
+        } else {
+            $messages .= "<div class='alert alert-danger'>Please select a type for this container.</div>";
+        }
 
-    if(isset($_POST['container'.$container_type])) {
-
-        $container_id = $_POST['container'.$container_type];
-    }
+    
 
     if(strlen($messages) == 0) {
 
-    $result = $db->add_tape( $name, $container_type, $container_id, $backupset, 0 );
-    
-     $is_num = is_numeric($result);
+        $result = tape_library_object::add_tape($db, $name, $container_type, $container_id, $backupset, 0 );
+   
 
-        if ($is_num) {
-            header('Location:view_container.php?container_id='.$result.'&add_success=1');
-            //$messages .=("<div class='alert alert-success'>Container ".$name." successfully added.</div>");
+        if ($result['RESULT']) {
+            //header('Location:view_container.php?container_id='.$result['id'].'&add_success=1');
+            $messages .=("<div class='alert alert-success'>Container ".$name." successfully added.</div>");
         } else {
-            $messages .=("<div class='alert alert-danger'>Error in adding container: ".$name.".<BR>$result</div>");
+            $messages .=("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
         }
     } else {
         //echo($errors);
@@ -99,27 +107,7 @@ if(isset($_POST['container_name'])) {
 }
 }
 
-/*
-echo("Current containers:") ;
-echo("<table id='containers' class='table table-bordered table-hover table-striped display'>");
 
-$current_containers = $db->get_containers();
-if(count($current_containers)== 0) {
-    echo "<tr><td>No containers have been added.</td></tr>";
-} else {
-    echo("<thead><tr><th>Name</th><th>Type</th><th>Parent Container</th></tr></thead>");
-    echo("<tbody>");
-    foreach($current_containers as $container) {
-        echo("<tr><td>".$container['name']."</td>");
-        echo("<td>".$db->get_container_type_name($container['type'])."</td>");
-        echo("<td>".$container['container_name']."</td></tr>");
-        
-    }
-    echo("</tbody></table>");
-}
-echo("<BR>");
- * 
- */
 echo("<form name='add_container' action='add_container.php' method='POST'>");
 
 echo("<table class='table table-bordered display'>");
@@ -127,23 +115,23 @@ echo("<tr><td width=20%>Container Name:</td><td><input type='text' name='contain
 echo("<tr><td>Container Type :");
 echo("<BR><a href='add_container_type.php'>(Add a new container type?)</a>");
 echo("</td><td>");
-    createInput("select","container_type",(isset($container_type) ? $container_type : ""),$db->get_container_types_array(), "", "hide()");
+    createInput("select","container_type",(isset($container_type) ? $container_type : ""),type::get_container_types($db), "", "hide()");
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:<BR>(Leave blank for a top-level location)</td><td>");
 echo("<table>");
-$all_types = $db->get_container_types();
+$all_types = type::get_container_type_objects($db);
 foreach($all_types as $type) {
     $id = $type->get_id();
     
     echo("<tr id='containerdiv$id' ".((isset($container_type) && $container_type == $id) ? " style='visibility:visible' ": " style='visibility:collapse' ") ."><td> ");
-    createInput("select","container".$id,(isset($container_id)? $container_id : ""),$db->get_containers_for_type($id));
+    createInput("select","container".$id,(isset($container_id)? $container_id : ""),$type->get_containers_for_type());
     echo("</td></tr>");
 }
 echo("</table>");
 echo(" </td></tr>");
 //echo("<tr><td>Service:</td><td><input type='text' name='service' id='service'></td></tr>");
 echo("<tr><td>Backup Set:</td><td>");
-createInput("select","backupset",$backupset,$db->get_all_backups_array());
+createInput("select","backupset",$backupset,backupset::get_all_backupsets_array($db));
 echo("</td></tr>");
 echo("</table>");
 echo("<input type='submit' name='submit_add_container' value='Add Container'>");

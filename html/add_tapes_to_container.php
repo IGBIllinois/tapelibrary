@@ -43,7 +43,7 @@ if(isset($_POST['container_id']) && $_POST['container_id'] != null) {
 echo("<H3>Add Tapes to ".$container->get_label()."</H3>");
 echo("Type:".$container->get_type_name());
 echo("<BR>");
-echo("Located in:".$db->get_full_path($container->get_container_id())."<BR><BR>");    
+echo("Located in:".$container->get_full_path()."<BR><BR>");    
     $tape_type=null;
 
     $service=null;
@@ -90,7 +90,7 @@ if(isset($_POST['submit'])) {
         // check for duplicates before starting to commit
         //echo ("i = $i, label = "+$_POST['label'.$i]);
         if(isset($_POST['label'.$i])  && $_POST['label'.$i]!="") {
-            if($db->does_tape_exist($_POST['label'.$i])) {
+            if(tape_library_object::does_tape_exist($db, $_POST['label'.$i])) {
                 $name_errors .= "<div class='alert alert-danger'>Tape ". $_POST['label'.$i]. " already exists. Please change the name before adding this tape.</div>";
             }
         } else {
@@ -113,13 +113,13 @@ if(isset($_POST['submit'])) {
                     //echo("Adding tape : ".$label[$i]."<BR>");
 
 			//mysql_query("insert into tape (type,capacity,tape_number,container,backup_set,carton,label) values ('$type','$capacity','$i','$container','$backup_set','$carton','$label[$i]')");
-                    $result = $db->add_tape($label[$i], $tape_type, $container_id, $backupset, 0 ); //TODO: userid?
-                    $is_num = is_numeric($result);
+                    $result = tape_library_object::add_tape($db, $label[$i], $tape_type, $container_id, $backupset, 0 ); //TODO: userid?
 
-                    if ($is_num) {
-                        $messages .=("<div class='alert alert-success'>Tape ".$label[$i]." successfully added.</div>");
+
+                    if ($result['RESULT']) {
+                        $messages .=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
                     } else {
-                        $messages .=("<div class='alert alert-danger'>Error in adding tape: ".$label[$i].".<BR>$result</div>");
+                        $messages .=("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
                     }
                 }
 		//print "<script type=\"text/javascript\">parent.window.container.href='index.php'</script>";
@@ -140,27 +140,7 @@ if(isset($_POST['submit'])) {
      //}
 
 
-/*
-echo("Current tapes:") ;
-echo("<table id='curr_tapes' class='display'>");
 
-$current_tapes = get_tapes($db, null, null, null, null, null);
-if(count($current_tapes)== 0) {
-    echo "<tr><td>No tapes have been added.</td></tr>";
-} else {
-    echo("<thead><tr><td>Tape ID</td><td>Label</td><td>Type</td><td>Parent Location</td></tr></thead>");
-    foreach($current_tapes as $tape) {
-        echo("<tr><td>".$tape['tape_number']."</td>");
-        echo("<td>".$tape['label']."</td>");
-        echo("<td>".get_tape_type_name($db, $tape['type'])."</td>");
-        echo("<td>".$tape['container_name']."</td></tr>");
-        
-    }
-    echo("</table>");
-}
-echo("<BR>");
- * 
- */
 
 echo("<form id='addform' name='add_tape' action='add_tapes_to_container.php' method='POST'>");
 echo("<input type=hidden name='container_id' value='$container_id'>");
@@ -178,12 +158,13 @@ echo("<table class='table table-bordered display'>");
         
       print "</tr>";
 echo("<tr><td>Tape Type :</td><td>");
-    createInput("select","tape_type",$tape_type, $db->get_tape_types_for_container_type($container->get_type()),"","hide()");
+$container_type = new type($db, $container->get_type());
+    createInput("select","tape_type",$tape_type, $container_type->get_tape_types_for_container_type(),"","hide()");
 echo(" </td></tr>");
 
 //echo("<tr><td>Service:</td><td><input type='text' name='backupset' id='service'></td></tr>");
 echo("<tr><td>Backup Set:</td><td>");
-createInput("select","backupset",$backupset,$db->get_all_backups_array());
+createInput("select","backupset",$backupset,backupset::get_all_backupsets_array($db));
 echo("</td></tr>");
 
 echo("</table>");

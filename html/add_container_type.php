@@ -13,13 +13,17 @@ include 'includes/header.inc.php';
 $types = null;
 $placed_types = null;
 $max_slots = -1;
-
+//$is_location = 0;
+$errors = "";
+$container_type_name = null;
 echo("<H3>Add Container or Tape Types</H3>");
 if(isset($_POST['submit'])) {
 
 if(!isset($_POST['container_type_name']) || $_POST['container_type_name'] == "") {
     echo("<div class='alert alert-danger'>Please input a name for this container type.</div>");
 } else {
+    $container_type_name = $_POST['container_type_name'];
+    
 if(isset($_POST['types'])) {
     $types = $_POST['types'];
 }
@@ -29,7 +33,7 @@ if(isset($_POST['placedtypes'])) {
 if($types != null && $placed_types != null) {
     foreach($types as $type) {
         if(in_array($type, $placed_types)) {
-            echo("<div class='alert alert-danger'>Error, a container cannot be placed and contain the same type.");
+            $errors .= ("<div class='alert alert-danger'>Error, a container cannot be placed and contain the same type.</div>");
         }
     }
 }
@@ -39,6 +43,21 @@ if(isset($_POST['max_slots'])) {
         $max_slots = $_POST['max_slots'];
     }
 }
+
+/*
+if(isset($_POST['is_location'])) {
+    $is_location = $_POST['is_location'];
+    
+}
+*/
+
+/*
+if(!$is_location && ($placed_types == null || !is_array($placed_types))) {
+    $errors .= ("<div class='alert alert-danger'>Please select at least one container type that this type can be placed in, or mark it as a physical location.</div>");
+}
+ * 
+ */
+    
     //print_r($types);
     $can_contain_types = "";
     if($types != null) {
@@ -58,20 +77,25 @@ if(isset($_POST['max_slots'])) {
     //print_r($types);
     //echo("placed types:");
     //print_r($placed_types);
-    $loop_error = $db->find_loop($placed_types, $types);
+ if(strlen($errors) == 0) {
+    $loop_error = type::find_loop($db, $placed_types, $types);
     if($loop_error == 0) {
-        $result = $db->add_type($_POST['container_type_name'], $can_contain_types, $max_slots);
+        $type = new type($db);
+        //$result = $type->add_type($container_type_name, $can_contain_types, $max_slots, $is_location);
+        
+        $result = $type->add_type($container_type_name, $can_contain_types, $max_slots);
+        
         if($placed_types != null) {
-            foreach($placed_types as $placed_type) {
-
-                $add_result = $db->add_container_to_type($placed_type, $result);
+            foreach($placed_types as $placed_type_id) {
+                $placed_type = new type($db, $placed_type_id);
+                $add_result = $placed_type->add_container_type_to_type($type->get_id());
             }
         }
-     if(is_numeric($result)) {
-         header('Location:edit_types.php?type_id='.$result.'&add_success=1');
-         //echo("<div class='alert alert-success'>Container ".$_POST['container_type_name']." successfully added.</div>");
+     if($result['RESULT']) {
+         //header('Location:edit_types.php?type_id='.$result.'&add_success=1');
+         echo("<div class='alert alert-success'>Container ".$container_type_name." successfully added.</div>");
      } else {
-         echo("<div class='alert alert-danger'>Error:".$result."</div>");
+         echo("<div class='alert alert-danger'>Error:".$result['MESSAGE']."</div>");
      }
     } else {
         //echo("Loop error = $loop_error<BR>");
@@ -79,49 +103,37 @@ if(isset($_POST['max_slots'])) {
         $name = $loop_type->get_name();
         echo("<div class='alert alert-danger'>There is an error in where this container can be placed. <BR> It could both contain and be placed in a <B>$name</B>.<BR>Please double check and try again.</div>");
     }
-}
-}
-/*
-echo("Current container types:") ;
-echo("<table id='container_types' class='table table-striped table-bordered'>");
-echo("<thead><tr><th>Container Type</th></tr></thead>");
-echo("<tbody>");
-$current_container_types = $db->get_container_types();
-if(count($current_container_types)== 0) {
-    echo "<tr><td>No container types have been added.</td></tr>";
     
 } else {
-    foreach($current_container_types as $container_type) {
-        echo("<tr><td>".$container_type['name']."</td></tr>");
-    }
+    echo($errors);
 }
-    echo("</tbody></table>");
 
-echo("<BR>");
- * 
- */
+}
+}
+
 echo("<form name='add_container_type' action='add_container_type.php' method='POST'>");
 
 echo("<table id='container_types' class='table table-bordered'>");
 echo("<tr><td width=40%>New type name</td>");
-echo("<td><input type='text' name='container_type_name' id='container_type_name'></td></tr>");
+echo("<td><input type='text' name='container_type_name' id='container_type_name' value='$container_type_name'></td></tr>");
 
-echo("<tr><td>How many objects can be put in a container? (if there is a limit)</td><td><input name='max_slots' value='Any'></td></tr>");
-echo("</td></tr></table>");
+echo("<tr><td>How many objects can be put in a container? (if there is a limit)</td><td><input name='max_slots' value='".((is_numeric($max_slots) && $max_slots >=0) ? $max_slots : "Any")."'></td></tr>");
+//echo("<tr><td>Is this a physical location (like a room or a building)?</td><td><input type='checkbox' value=1 name='is_location'".(($is_location) ? " CHECKED " : "")."></td></tr>");
+echo("</table>");
 
 
 echo("<table class='table table-bordered'><tr><td>");
 
 echo("<tr><Td>What types can this container contain?</td></tr>");
 echo("<TR><TD>");
-$types = $db->get_all_types();
+$types = type::get_all_types($db);
 foreach($types as $type) {
     $id = $type['id'];
     echo("<input type=checkbox  id='type$id' onclick=toggle('placedtype$id') name=types[".$type['id']."] value='".$type['id']."'>".$type['name']."<BR>");
 }
 echo("</td></tr><tr><td>");
 echo("In what types can this container be placed?<BR>(If it cannot be placed in anything, it will be considered a top-level location type)</td></tr><tr><td>");
-$types = $db->get_all_types();
+$types = type::get_all_types($db);
 foreach($types as $type) {
     $id = $type['id'];
     echo("<input type=checkbox  id='placedtype$id' onclick=toggle('type$id') name=placedtypes[".$type['id']."] value='".$type['id']."'>".$type['name']."<BR>");

@@ -44,7 +44,7 @@ if($container->is_tape()) {
 
 echo("Type:".$container->get_type_name());
 echo("<BR>");
-echo("Located in:".$db->get_full_path($container->get_container_id())."<BR><BR>");
+echo("Located in:".$container->get_full_path()."<BR><BR>");
 
 if(!$container->is_tape()) {
 echo("Current objects in ".$container->get_label().":<BR>") ;

@@ -31,13 +31,14 @@ if((!isset($_GET['backupset_id'])&& !isset($_POST['backupset_id']) ||
 $backupset_data = new backupset($db, $backupset_id);
 if($backupset_data != null) {
     
-$tapes = $db->get_tapes_for_backupset($backupset_id);
-
+$tapes = $backupset_data->get_tapes_in_backupset();
+$main_location = new tape_library_object($db, $backupset_data->get_main_location());
 echo("<h3>".$backupset_data->get_name()."</h3>");
-echo("<B>Begin Date:</B> ".$backupset_data->get_begin_date()."<BR>");
-echo("<B>End Date:</B> ".$backupset_data->get_end_date()."<BR>");
-echo("<B>Program:</B> ".$backupset_data->get_program_name()."<BR>");
-echo("<B>Notes:</B> ".$backupset_data->get_notes()."<BR>");
+echo("<B>Begin Date: </B> ".$backupset_data->get_begin_date()."<BR>");
+echo("<B>End Date: </B> ".$backupset_data->get_end_date()."<BR>");
+echo("<B>Program: </B> ".$backupset_data->get_program_name()."<BR>");
+echo("<B>Main Location: </B>".$main_location->get_label()."<BR>");
+echo("<B>Notes: </B> ".$backupset_data->get_notes()."<BR>");
 echo("<BR>");
 echo("Tapes in this backupset:<BR>");
 
@@ -52,7 +53,7 @@ if(count($tapes)== 0) {
         //echo("<tr><td>".$tape['tape_number']."</td>");
         echo("<td>".$tape->get_label()."</td>");
         echo("<td>".$tape->get_type_name()."</td>");
-        echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$db->get_full_path($tape->get_container_id())."</a></td></tr>");
+        echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$tape->get_full_path()."</a></td></tr>");
         
     }
     echo("</tbody>");

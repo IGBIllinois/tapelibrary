@@ -16,7 +16,7 @@ if(isset($_POST['submit'])) {
 }
     echo("<form method=POST action=reports.php>");
     echo("<table><tr><td>Parent Location:</td><td>");
-    createInput("select","container","",get_containers($db));
+    createInput("select","container","",tape_library_object::get_containers($db));
 echo(" </td></tr>");
 echo("</table>");
 echo("<input type='submit' name='submit' value='Generate Report'>");
@@ -51,7 +51,7 @@ function write_report($headers, $titles, $data, $filename) {
 }
     
     function write_container_report($db, $container_id, $filename) {
-        
+        /*
         try {
             $container = get_container_by_id($db, $container_id);
             if(count($container) == 0) {
@@ -67,7 +67,7 @@ function write_report($headers, $titles, $data, $filename) {
             $type_name = get_container_type_name($db, $container['type']);
             $header = array("Report for ".$container['label'], "Type: ".$type_name);
 
-            $tapes = get_tapes($db, null, null, null, $container_id);
+            $tapes = tape_library_object::get_tapes($db, null, null, null, $container_id);
             $titles = array("<B>Tape Label</B>", "<B>Tape Type</B>", "<B>Backupset</B>");
 
             $excel= new ExcelWriter("excel/".$filename);
@@ -91,6 +91,8 @@ function write_report($headers, $titles, $data, $filename) {
             echo($e);
             echo($e->getTrace());
         }
+         * 
+         */
         
     }
     

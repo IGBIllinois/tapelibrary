@@ -83,15 +83,13 @@ if(isset($_POST['container_name'])) {
 
     if(strlen($messages) == 0) {
 
-    $result = $db->add_tape( $name, $container_type, $container_id, $backupset, 0 );
-    
-     $is_num = is_numeric($result);
+        $result = tape_library_object::add_tape($db, $name, $container_type, $container_id, $backupset, 0 );
 
-        if ($is_num) {
-            header('Location:view_container.php?container_id='.$result.'&add_success=1');
+        if ($result['RESULT']) {
+            header('Location:view_container.php?container_id='.$result['id'].'&add_success=1');
             //$messages .=("<div class='alert alert-success'>Container ".$name." successfully added.</div>");
         } else {
-            $messages .=("<div class='alert alert-danger'>Error in adding location: ".$name.".<BR>$result</div>");
+            $messages .=("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
         }
     } else {
         //echo($errors);
@@ -99,27 +97,6 @@ if(isset($_POST['container_name'])) {
 }
 }
 
-/*
-echo("Current containers:") ;
-echo("<table id='containers' class='table table-bordered table-hover table-striped display'>");
-
-$current_containers = $db->get_containers();
-if(count($current_containers)== 0) {
-    echo "<tr><td>No containers have been added.</td></tr>";
-} else {
-    echo("<thead><tr><th>Name</th><th>Type</th><th>Parent Container</th></tr></thead>");
-    echo("<tbody>");
-    foreach($current_containers as $container) {
-        echo("<tr><td>".$container['name']."</td>");
-        echo("<td>".$db->get_container_type_name($container['type'])."</td>");
-        echo("<td>".$container['container_name']."</td></tr>");
-        
-    }
-    echo("</tbody></table>");
-}
-echo("<BR>");
- * 
- */
 echo("<form name='add_container' action='add_location.php' method='POST'>");
 
 echo("<table class='table table-bordered display'>");
@@ -127,7 +104,7 @@ echo("<tr><td width=20%>Location Name:</td><td><input type='text' name='containe
 echo("<tr><td>Location Type :");
 echo("<BR><a href='add_container_type.php'>(Add a new location type?)</a>");
 echo("</td><td>");
-    createInput("select","container_type",(isset($container_type) ? $container_type : ""),$db->get_location_types(), "", "hide()");
+    createInput("select","container_type",(isset($container_type) ? $container_type : ""),type::get_location_types($db), "", "hide()");
 echo(" </td></tr>");
 
 echo("</table>");

@@ -84,10 +84,7 @@ class container extends tape_library_object {
         return $this->active;
     }
     */
-    public function get_children() {
-        //return $this->db->get_tapes_in_container($this->id);
-        return $this->db->get_children($this->id);
-    }
+
     
     public function is_location() {
         return ($this->container == -1);

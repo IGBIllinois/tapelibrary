@@ -68,10 +68,10 @@ echo("<table class='table table-bordered display'><tr>");
         //print "</td>";
       print "</tr>";
 echo("<tr><td>Tape Type :</td><td>");
-    createInput("select","type",$select_type,$db->get_tape_types());
+    createInput("select","type",$select_type,type::get_tape_types($db));
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    createInput("select","select_container",$select_container,$db->get_containers_array());
+    createInput("select","select_container",$select_container, tape_library_object::get_containers($db));
 echo(" </td></tr>");
 
 
@@ -108,12 +108,15 @@ if(isset($_POST['submit'])) {
              * 
              */
             //$result = $db->edit_tape_basic($id, $tape_label, $container, $active);
-            $result = $db->move_object($id, $container);
-            if(!is_string($result)) {
-                $messages .=("<div class='alert alert-success'>$tape_label successfully modified.</div>");
+            $container_object = new tape_library_object($db, $container);
+            $result = $container_object->move_object($id);
+            
+            if($result['RESULT']) {
+                $messages.=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
             } else {
-                $messages .= ("<div class='alert alert-danger'>".$result."</div>");
+                $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
             }
+             
              
              
         }
@@ -128,7 +131,7 @@ echo($result);
 echo("<BR>ending fake move1<BR>");
  * 
  */
-$tapes = $db->get_tapes($begin, $end, $select_type, $select_container, $active);
+$tapes = tape_library_object::get_tape_objects($db, $begin, $end, $select_type, $select_container, $active);
   if(strlen($messages) > 0) {
       echo($messages);
   }
@@ -137,7 +140,7 @@ echo("<form name='edit_tapes_form' method='POST'>");
 echo("<table id='edit_tapes_table' name='edit_tapes_table' class='table table-bordered table-hover table-striped display'><thead><tr>");
 echo("<th><input type=checkbox onClick=toggleAll(this,'checkbox') /><th>Label</th><th>Type</th><th>Location");
 echo("<BR>Change selected containers:");
-createInput("select", "tape_container", "", $db->get_containers_array(), "",  "changeAllCheckedLocations(this, \"checkbox\", \"tape_container\")");
+createInput("select", "tape_container", "", tape_library_object::get_containers($db), "",  "changeAllCheckedLocations(this, \"checkbox\", \"tape_container\")");
 echo("</th><th>Backup Set</th><th>Active</th></tr></thead>");
 foreach($tapes as $tape) {
     echo("<tr>");
@@ -148,13 +151,10 @@ foreach($tapes as $tape) {
     echo($tape->get_label()."<input type=hidden name='tape_label_".$tape->get_id()."' id='tape_label_".$tape->get_id()."' value='".$tape->get_label())."'>";
     echo("</td>");
     echo("<td>".$tape->get_type_name()."</td><td>");
-    createInput("select", "tape_container", $tape->get_container_id(), $db->get_containers_array(), $tape->get_id());
+    createInput("select", "tape_container", $tape->get_container_id(), tape_library_object::get_containers($db), $tape->get_id());
     //createInput("text", "tape_label", $tape['label'], "", $tape['id']);
     echo("</td>");
-    //createInput("select", "tape_type", $tape['type'], $db->get_tape_types(), $tape['id']);
-    //echo("</td><td>");
-    //createInput("text", "service", $tape['service'], "", $tape['id']);
-    //echo("</td><td>");
+
     $backupset = new backupset($db, $tape->get_backupset());
     echo("<td><a href='view_backupset_data.php?backupset_id=".$backupset->get_id()."'>".$backupset->get_name()."</a></td>");
     echo("<td><input type='checkbox' name=active_".$tape->get_id()." id='active_".$tape->get_id()."' value='active_".$tape->get_id()."'". ($tape->is_active() ? " checked " : "" ). " >");

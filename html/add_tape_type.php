@@ -22,7 +22,7 @@ echo("Current tape types:") ;
 echo("<table id='tape_types' class='table table-striped table-bordered'>");
 echo("<thead><tr><th>Container Type</th></tr></thead>");
 echo("<tbody>");
-$current_tape_types = $db->get_tape_types();
+$current_tape_types = type::get_tape_types($db);
 if(count($current_tape_types)== 0) {
     echo "<tr><td>No tape types have been added.</td></tr>";
     

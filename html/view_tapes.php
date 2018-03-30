@@ -71,10 +71,10 @@ echo("<table  class='table table-bordered display'><tr>");
         //print "</td>";
       print "</tr>";
 echo("<tr><td>Tape Type :</td><td>");
-    createInput("select","type","",$db->get_tape_types());
+    createInput("select","type","",type::get_tape_types($db));
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    createInput("select","container","",$db->get_containers_array());
+    createInput("select","container","",tape_library_object::get_containers($db));
 echo(" </td></tr>");
 
 
@@ -87,7 +87,7 @@ echo("Current tapes:") ;
 
 echo("<fieldset><table id='view_tapes' class='table table-bordered table-hover table-striped display'>");
 
-$current_tapes = $db->get_tapes($begin, $end, $type, $container, $active);
+$current_tapes = tape_library_object::get_tape_objects($db, $begin, $end, $type, $container, $active);
 
 if(count($current_tapes)== 0) {
     echo "<tr><td>No tapes have been added.</td></tr>";
@@ -105,19 +105,13 @@ if(count($current_tapes)== 0) {
         } else {
             $backupset= new backupset($db, $backupset_id);
             $backupset_name = $backupset->get_name();
-            //$backupset = $db->get_backupset($backupset_id);
-            //if($backupset == 0) {
-            //    $backupset_name = "None";
-            //} else {
-            //    $backupset_name = $backupset['name'];
-            //}
             
         }
         //echo("<tr><td>".$tape['tape_number']."</td>");
         echo("<td>".$tape->get_label()."</td>");
         echo("<td>".$tape->get_type_name()."</td>");
         //echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$tape->get_container_name()."</a></td>");
-        echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$db->get_full_path($tape->get_container_id())."</a></td>");
+        echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$tape->get_full_path()."</a></td>");
         if($backupset_id != -1) {
             echo("<td><a href=view_backupset_data.php?backupset_id=".$backupset_id.">".$backupset_name."</a></td></tr>");
         } else {

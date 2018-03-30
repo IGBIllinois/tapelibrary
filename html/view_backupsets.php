@@ -57,12 +57,12 @@ echo("Current Backup Sets:") ;
 
 echo("<fieldset><table id='view_backupsets' class='table table-bordered table-hover table-striped display'>");
 
-$current_backupsets = $db->get_all_backup_sets();
+$current_backupsets = backupset::get_all_backupsets($db);
 
 if(count($current_backupsets)== 0) {
     echo "<tr><td>No backup sets have been added.</td></tr>";
 } else {
-    echo("<thead><tr><th>Name</th><th>Begin Date</th><th>End Date</th><th>Program</th><th>Notes</th></thead>");
+    echo("<thead><tr><th>Name</th><th>Begin Date</th><th>End Date</th><th>Program</th><th>Main Location</th><th>Notes</th></thead>");
     echo("<tbody>");
     foreach($current_backupsets as $backupset) {
         //echo("<tr><td>".$tape['tape_number']."</td>");
@@ -72,11 +72,14 @@ if(count($current_backupsets)== 0) {
         $end_date = $backupset->get_end_date();
         $program_name = $backupset->get_program_name();
         $notes = $backupset->get_notes();
+        $main_location = new tape_library_object($db, $backupset->get_main_location());
+        $main_location_name = $main_location->get_label();
         echo("<td><a href=view_backupset_data.php?backupset_id=".$id.">".$name."</s></td>");
 echo("<td>".$start_date."</td>");
 echo("<td>".$end_date."</td>");
 echo("<td>".$program_name."</td>");
-        echo("<td>".$notes."</td></tr>");
+echo("<td>".$main_location_name."</td>");
+echo("<td>".$notes."</td></tr>");
         
     }
     echo("</tbody>");

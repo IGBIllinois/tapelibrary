@@ -70,10 +70,10 @@ echo("<table  class='table table-bordered display'><tr>");
         //print "</td>";
       print "</tr>";
 echo("<tr><td>Container Type :</td><td>");
-    createInput("select","type","",$db->get_container_types_array());
+    createInput("select","type","",type::get_container_types($db));
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    createInput("select","container","",$db->get_containers());
+    createInput("select","container","",tape_library_object::get_container_objects($db));
 echo(" </td></tr>");
 
 
@@ -86,7 +86,7 @@ echo("Current containers:") ;
 
 echo("<fieldset><table id='view_tapes' class='table table-bordered table-hover table-striped display'>");
 
-$current_tapes = $db->get_containers($begin, $end, $type, $container, $active);
+$current_tapes = tape_library_object::get_container_objects($db,$begin, $end, $type, $container, $active);
 
 if(count($current_tapes)== 0) {
     echo "<tr><td>No tapes have been added.</td></tr>";

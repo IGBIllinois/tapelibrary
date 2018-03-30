@@ -211,17 +211,7 @@ function add_tape_old($db, $tape_number, $label, $type, $capacity, $container, $
         return $result;
         
     }
-    
-    function does_tape_exist($db, $label) {
-        $search_query = "SELECT * from tape_library where label=:label";
-        $search_params = array("label"=>$label);
-        $search_result = get_query_result($db, $search_query, $search_params);
- //echo("count = ".count($search_result));
-        if(count($search_result) > 0) {
-            return 1;
-        }
-        return 0;
-    }
+
     
     function add_tape($db, $item_id, $label, $type, $container_id, $backupset, $user_id) {
         // TODO: user_id?
@@ -564,7 +554,7 @@ function get_all_from_type($db, $type_id, $active=1) {
             $type_name = $container->get_type_name();
             $header = array("Report for ".$container->get_label(), "Type: ".$type_name);
 
-            $tapes = $db->get_tapes(null, null, null, $container_id);
+            $tapes = tape_library_object::get_tapes($db,null, null, null, $container_id);
             $titles = array("<B>Tape Label</B>", "<B>Tape Type</B>", "<B>Backupset</B>");
 
             $excel= new ExcelWriter("excel/".$filename);
@@ -608,7 +598,7 @@ function get_all_from_type($db, $type_id, $active=1) {
             $header = array("<B>".$backupset->get_name()."</B>");
             $start_line = array("<B>Start Date</B>", $backupset->get_begin_date());
             $end_line = array("<B>End Date</B>", $backupset->get_end_date());
-            $tapes = $db->get_tapes_for_backupset($backupset_id);
+            $tapes = $backupset->get_tape_objects_in_backupset();
             $titles = array("<B>Tape Label</B>", "<B>Tape Type</B>", "<B>Container</B>");
 
             $excel= new ExcelWriter("excel/".$filename);
@@ -642,7 +632,7 @@ function get_all_from_type($db, $type_id, $active=1) {
         try {
         $excel= new ExcelWriter("excel/".$filename);
         $excel->writeLine(array("FULL REPORT"));
-        $backupsets = $db->get_all_backup_sets();
+        $backupsets = backupset::get_all_backupsets($db);
         //$excel->writeLine($backupsets);
         foreach($backupsets as $backupset_info) {
             
@@ -663,7 +653,7 @@ function get_all_from_type($db, $type_id, $active=1) {
             $titles = array("<B>Tape Label</B>", "<B>Tape Type</B>", "<B>Container</B>");
             $excel->writeLine($titles);
             
-            $tapes = $db->get_tapes_for_backupset($backupset_id);
+            $tapes = $backupset_info->get_tapes_for_backupset();
             foreach($tapes as $tape) {
                 
                 $container_id = $tape->get_container_id();
@@ -678,7 +668,7 @@ function get_all_from_type($db, $type_id, $active=1) {
         }
         
         // unassigned tapes
-        $unassigned_tapes = $db->get_tapes_without_backupset();
+        $unassigned_tapes = tape_library_object::get_tapes_without_backupset($db);
         if(count($unassigned_tapes) > 0) {
             $header = array("<B>Unassigned tapes</B>");
             $excel->writeLine($header);
@@ -709,7 +699,7 @@ function get_all_from_type($db, $type_id, $active=1) {
         try {
         $excel= new ExcelWriter("excel/".$filename);
         
-        $containers = $db->get_containers();
+        $containers = tape_library_object::get_container_objects($db);
         //$excel->writeLine($backupsets);
         foreach($containers as $container) {
             
@@ -731,7 +721,7 @@ function get_all_from_type($db, $type_id, $active=1) {
             $titles = array("<B>Tape Label</B>", "<B>Tape Type</B>");
             $excel->writeLine($titles);
             
-            $tapes = $db->get_tapes_in_container($container_id);
+            $tapes = $container->get_tapes_in_container();
             foreach($tapes as $tape) {
                 
                 //$container_id = $tape['parent'];
@@ -745,24 +735,7 @@ function get_all_from_type($db, $type_id, $active=1) {
         $excel->writeLine(array());
         }
         
-        // unassigned tapes
-        /*
-        $unassigned_tapes = $db->get_tapes_without_backupset();
-        if(count($unassigned_tapes) > 0) {
-            $header = array("<B>Unassigned tapes</B>");
-            $excel->writeLine($header);
-            $excel->writeLine(array());
-            foreach($unassigned_tapes as $tape) {
 
-                    $container_id = $tape['parent'];
-                    $container = $db->get_container_by_id($container_id);
-                    $container_name = $container['label'];
-
-                    $tape_array = array($tape['label'], $db->get_container_type_name( $tape['type']), $container_name);
-                    $excel->writeLine($tape_array);
-            }
-        }
-            */
             
         $excel->close();
             header("Location: excel/". $filename);

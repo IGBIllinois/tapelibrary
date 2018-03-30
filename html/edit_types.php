@@ -51,7 +51,7 @@ echo("Current container types:") ;
 echo("<table id='container_types' class='table table-striped table-bordered'>");
 echo("<thead><tr><th>Container Type</th><th>Can contain types</th><th>Can be placed in</th><th>Max slots</th></tr></thead>");
 echo("<tbody>");
-$current_container_types = $db->get_container_types();
+$current_container_types = type::get_container_type_objects($db);
 if(count($current_container_types)== 0) {
     echo "<tr><td>No container types have been added.</td></tr>";
     
@@ -70,7 +70,7 @@ if(count($current_container_types)== 0) {
         }
         echo($types);
         echo("</td><td>");
-        echo($db->get_container_type_names_for_type($container_type->get_id()));
+        echo($container_type->get_container_type_names_for_type());
         echo("</td><td>");
         echo(($container_type->get_max_slots() < 0) ? "Any" :  ($container_type->get_max_slots()));
         echo("</td></tr>");
@@ -85,7 +85,7 @@ echo("Current Tape Types:");
 echo("<table id='tape_types' class='table table-striped table-bordered'>");
 echo("<thead><tr><th>Tape Type</th><th>Can contain types</th><th>Can be placed in</th><th>Max slots</th></tr></thead>");
 echo("<tbody>");
-$current_tape_types = $db->get_tape_type_objects();
+$current_tape_types = type::get_tape_type_objects($db);
 if(count($current_tape_types)== 0) {
     echo "<tr><td>No tape types have been added.</td></tr>";
     
@@ -99,7 +99,7 @@ if(count($current_tape_types)== 0) {
             echo($cc->get_name(). " ");
         }
         echo("</td><td>");
-        echo($db->get_container_type_names_for_type($tape_type->get_id()));
+        echo($tape_type->get_container_type_names_for_type());
         echo("</td><td>");
         echo(($tape_type->get_max_slots() < 0) ? "Any" :  ($tape_type->get_max_slots()));
         echo("</td></tr>");

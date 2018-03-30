@@ -15,7 +15,6 @@ if(isset($_POST['backupset_name'])) {
     $name = $_POST['backupset_name'];
     $container_type=null;
     $container_id=null;
-    $service=null;
     $main_location = null;
 
     //if(isset($_POST['container_type'])) {
@@ -54,12 +53,17 @@ if(isset($_POST['backupset_name'])) {
     }
     if(strlen($error) == 0) {
         //echo("name = $backupset_name, start = $start_date, end = $end_date, program = $program, notes = $notes <BR>");
-        $result = $db->add_backupset($backupset_name, $start_date, $end_date, $program, $main_location, $notes);
+        $backupset = new backupset($db);
+        try{ 
+        $result = $backupset->add_backupset($backupset_name, $start_date, $end_date, $program, $main_location, $notes);
+        } catch(Exception $e) {
+            echo($e->getTraceAsString());
+        }
         //echo("result = $result<BR>");
-        if($result != 0) {
-            echo("<div class='alert alert-success'>Backup Set ".$_POST['backupset_name']." successfully created.</div>");
+        if($result['RESULT']) {
+            echo("<div class='alert alert-success'>".$result['MESSAGE']." </div>");
         } else {
-            echo("Error in creating backup set.<BR>");
+            echo("<div class='alert alert-danger'>".$result['MESSAGE']." </div>");
         }
      } else {
          echo($error."<BR>");
@@ -76,11 +80,12 @@ echo("<tr><td>End Date (YYYY-MM-DD):</td><td><input type='text' name='end_date' 
 //echo("<tr><td>Program (Crashplan, Bacula, etc.):</td><td><input type='text' name='program' id='program' ".(isset($program) ? ("value='$program'") : "")."></td></tr>");
 //createInput("select", "program",(isset($program) ? ("$program") : ""), $db->get_programs());
 echo("<tr><td>Program: <a href='add_program.php'>(Add a new program?)</a></td><td>");
-createInput("select", "program",(isset($program) ? ("$program") : ""), $db->get_programs());
+
+createInput("select", "program",(isset($program) ? ("$program") : ""), program::get_programs($db));
 echo("</td></tr>");
 
 echo("<tr><td>Main Location <a href='add_location.php'>(Add a new location?)</a></td><td>");
-createInput("select", "main_location",(isset($main_location) ? ("$main_location") : ""), $db->get_locations());
+createInput("select", "main_location",(isset($main_location) ? ("$main_location") : ""), tape_library_object::get_locations($db));
 echo("</td></tr>");
 
 echo("<tr><td>Notes:</td><td><textarea rows='2' name='notes' id='notes'>".(isset($notes) ? $notes : "")."</textarea></td></tr>");

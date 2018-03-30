@@ -50,8 +50,12 @@ if($types != null && $placed_types != null) {
     }
 }
 if(!$errors) {
+    $type = new type($db, $type_id);
+    $this_type = new type($db,$type_id);
     //echo("Adding container type ".$_POST['container_type_name']."<BR>");
-    $current_placed_types = $db->get_container_types_for_type($type_id);
+    
+    //parents
+    $current_placed_types = $type->get_container_types_for_type();
     //echo("Current placed types:");
     //print_r($current_placed_types);
 
@@ -61,30 +65,47 @@ if(!$errors) {
     //print_r($types);
     $name = $_POST['container_type_name'];
     //echo("name = $name");
-    $loop_error = $db->find_loop($placed_types, $types);
+    
+    $loop_error = type::find_loop($db, $placed_types, $types);
     if( $loop_error == 0) {
+        
         foreach($current_placed_types as $curr_type) {
             //echo("<BR>curr_type=$curr_type<BR>");
             if(!in_array($curr_type, $placed_types)) {
                 // remove type
                 //echo("removing $curr_type from $type_id<BR>");
-                $db->remove_container_from_type($curr_type, $type_id);
+                //$this_type->remove_container_type_from_type($curr_type);
+                $new_type = new type($db, $curr_type);
+                $new_type->remove_container_type_from_type($this_type->get_id());
+            }
+        }
+        foreach($placed_types as $new_type) {
+            $parent = new type($db, $new_type);
+            $parent_types = $parent->get_can_contain_types();
+            if(!in_array($this_type->get_id(), $parent_types)) {
+                //echo("<BR>Adding ".$this_type->get_id() . " to ".$parent->get_id());
+                $parent->add_container_type_to_type($this_type->get_id());
             }
         }
         $can_contain_types_string = implode(",", $types);
         //$result = $db->add_type($_POST['container_type_name'], $can_contain_types);
-        $result = $db->edit_type($type_id, $name, $can_contain_types_string, $max_slots);
+        //$result = $db->edit_type($type_id, $name, $can_contain_types_string, $max_slots);
+        $result = $this_type->edit($name, $can_contain_types_string, $max_slots);
+        
         
         if($placed_types != null) {
-            foreach($placed_types as $placed_type) {
+            foreach($placed_types as $placed_type_id) {
+                $placed_type = new type($db, $placed_type_id);
                 //echo("Adding type  $type_id so it can be placed in type $placed_type.<BR>");
                 if(!in_array($placed_type, $current_placed_types)) {
-                    $add_result = $db->add_container_to_type($placed_type, $type_id);
+                    $add_result = $placed_type->add_container_type_to_type($type_id);
                 }
             }
         }
-     if($result != 0) {
+     if($result['RESULT']) {
          echo("<div class='alert alert-success'>Container Type ".$_POST['container_type_name']." successfully edited.</div>");
+     } else {
+         echo("<div class='alert alert-danger'>". $result['MESSAGE']."</div>");
      }
     } else {
         //echo("Loop error = $loop_error<BR>");
@@ -96,7 +117,7 @@ if(!$errors) {
 }
 
 $this_type = new type($db, $type_id);
-$containers = $db->get_containers_for_type($type_id);
+$containers = $this_type->get_containers_for_type();
 $name = $this_type->get_name();
 $max_slots = $this_type->get_max_slots();
 $can_contain_types = $this_type->get_can_contain_types();
@@ -111,7 +132,7 @@ if($max_slots == -1) {
 
 //print_r($can_contain_types);
 //$can_contain_types_array = explode(",", $can_contain_types);
-$container_types = $db->get_container_types_for_type($type_id);
+$container_types = $this_type->get_container_types_for_type();
 
 echo("<form name='edit_type' action='edit_type.php' method='POST'>");
 echo("<input type='hidden' name='type_id' value='$type_id'>");
@@ -126,7 +147,7 @@ echo("</table>");
 echo("<table class='table table-bordered'><tr><td>");
 echo("<tr><Td>What types can this container contain?</td></tr>");
 echo("<TR><TD>");
-$types = $db->get_all_types();
+$types = type::get_all_types($db);
 foreach($types as $type) {
     $id = $type['id'];
     if($id != $type_id) {
@@ -135,7 +156,7 @@ foreach($types as $type) {
 }
 echo("</td></tr><tr><td>");
 echo("In what types can this container be placed?</td></tr><tr><td>");
-$types = $db->get_all_types();
+$types = type::get_all_types($db);
 foreach($types as $type) {
     $id = $type['id'];
     if($id != $type_id) {

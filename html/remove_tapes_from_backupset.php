@@ -17,6 +17,7 @@ if(!isset($_POST['backupset_id'])) {
 } else{
     $messages = "";
     $backupset_id = $_POST['backupset_id'];
+    $backupset = new backupset($db, $backupset_id);
     if(isset($_POST['submit_remove'])) {
     //print_r($_POST);
         
@@ -39,15 +40,16 @@ if(!isset($_POST['backupset_id'])) {
              * 
              */
             //$db->edit_tape($id, $tape_label, $container, $type, $service, $active);
-            $result = $db->remove_tape_from_backupset($tape_id, $backupset_id);
-            //$tape = $db->get_tape_by_id($tape_id);
-            //$backupset = $db->get_backupset($backupset_id);
-            $tape = new tape($db, $tape_id);
-            $backupset = new backupset($db, $backupset_id);
-            if($result != 0) {
-                $messages .= ("<div class='alert alert-success'>Tape ".$tape->get_label() ." successfully removed from ".$backupset->get_name() ."</div>");
+            $result = $backupset->remove_tape_from_backupset($tape_id);
+
+            //$tape = new tape($db, $tape_id);
+            //$backupset = new backupset($db, $backupset_id);
+            if($result['RESULT']) {
+                //$messages .= ("<div class='alert alert-success'>Tape ".$tape->get_label() ." successfully removed from ".$backupset->get_name() ."</div>");
+                $messages .= ("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
             } else {
-                $messages .= ("<div class='alert alert-danger'>There was an error removing ".$tape->get_label() ."  from ".$backupset->get_name() ."</div>");
+                //$messages .= ("<div class='alert alert-danger'>There was an error removing ".$tape->get_label() ."  from ".$backupset->get_name() ."</div>");
+                $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
             }
              
         }
@@ -61,15 +63,18 @@ $backupset_id = $_POST['backupset_id'];
 //$backupset_data = $db->get_backupset($backupset_id);
 $backupset_data = new backupset($db, $backupset_id);
 
-$tapes = $db->get_tapes_for_backupset($backupset_id);
+$tapes = $backupset_data->get_tapes_in_backupset();
 
 //echo("Backupset: ".$backupset_data['name']."<BR>");
 //echo("Begin Date: ".$backupset_data['begin']."<BR>");
 //echo("End Date: ".$backupset_data['end']."<BR>");
 //echo("Program: ".$backupset_data['program']."<BR>");
 //echo("Notes: ".$backupset_data['notes']."<BR>");
-echo("<h3>Adding tapes to ".$backupset_data->get_name()."</h3>");
-
+echo("<h3>Removing tapes from ".$backupset_data->get_name()."</h3>");
+if($messages != "") {
+    echo("<BR>");
+    echo($messages);
+}
 echo("Tapes currently in <B>".$backupset_data->get_name()."</B>:<BR>");
 echo("<form name='remove_tapes_form' method='POST'>");
 echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
@@ -86,8 +91,8 @@ if(count($tapes)== 0) {
     echo("</td>");
         //echo("<tr><td>".$tape['tape_number']."</td>");
         echo("<td>".$tape->get_label()."</td>");
-        echo("<td>".$db->get_container_type_name($tape->get_type())."</td>");
-        echo("<td>".$tape->get_container_name()."</td></tr>");
+        echo("<td>".$tape->get_type_name()."</td>");
+        echo("<td>".$tape->get_full_path()."</td></tr>");
         
     }
     echo("</tbody>");
@@ -99,9 +104,6 @@ echo("<input type=submit name=submit_remove value='Remove Selected Tapes from Ba
     echo("<input type=button onclick=\"window.location='view_backupsets.php'\" name=cancel value='Cancel'>");
     echo("</form>");
 
-if($messages != "") {
-    echo("<BR>");
-    echo($messages);
-}
+
 }
 include_once 'includes/footer.inc.php';

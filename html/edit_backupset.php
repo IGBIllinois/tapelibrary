@@ -37,7 +37,7 @@ if(isset($_POST['submit_delete'])) {
         $backupset_id = $_POST['backupset_id'];
     }
     $backupset = new backupset($db, $backupset_id);
-    $db->deactivate_backupset($backupset_id);
+    $backupset->deactivate_backupset($backupset_id);
     echo("<div class='alert alert-success'>Backupset ". $backupset['name'] . " successfully deactivated.</div>");
     return;
     
@@ -81,12 +81,13 @@ $backupset_id = $_POST['backupset_id'];
     }
     if(strlen($error) == 0) {
         //echo("name = $name, begin = $begin, end = $end, program = $program, notes = $notes <BR>");
-        $result = $db->edit_backupset($backupset_id, $name, $begin, $end, $program, $main_location, $notes);
+        $backupset = new backupset($db, $backupset_id);
+        $result = $backupset->edit_backupset($name, $begin, $end, $program, $main_location, $notes);
         //echo("result = $result<BR>");
-        if($result != 0) {
-            echo("<div class='alert alert-success'>Backup Set ".$_POST['name']." successfully edited.</div>");
+        if($result['RESULT']) {
+            echo("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
         } else {
-            echo("<div class='alert alert-danger'>Error in editing backup set.</div>");
+            echo("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
         }
      } else {
          echo($error."<BR>");
@@ -101,12 +102,11 @@ echo("<table class='table table-bordered'>");
 echo("<tr><td width=30%>Backup Set Name:</td><td><input type='text' name='name' id='name' ".(isset($name) ? ("value='$name'") : "")."></td></tr>");
 echo("<tr><td>Start Date (YYYY-MM-DD):</td><td><input type='text' name='begin' pattern='[0-9]{4}-[0-9]{2}-[0-9]{2}' id='begin' ".(isset($begin) ? ("value='$begin'") : "")."></td></tr>");
 echo("<tr><td>End Date (YYYY-MM-DD):</td><td><input type='text' name='end' id='end' ".(isset($end) ? ("value='$end'") : "")."></td></tr>");
-//echo("<tr><td>Program (Crashplan, Backula, etc.):</td><td><input type='text' name='program' id='program' ".(isset($program) ? ("value='$program'") : "")."></td></tr>");
 echo("<tr><td>Program: </td><td>");
-createInput("select", "program",(isset($program) ? ("$program") : ""), $db->get_programs());
+createInput("select", "program",(isset($program) ? ("$program") : ""), program::get_programs($db));
 echo("</td></tr>");
 echo("<tr><td>Main Location <a href='add_location.php'>(Add a new location?)</a></td><td>");
-createInput("select", "main_location",(isset($main_location) ? ("$main_location") : ""), $db->get_locations());
+createInput("select", "main_location",(isset($main_location) ? ("$main_location") : ""), tape_library_object::get_locations($db));
 echo("</td></tr>");
 echo("<tr><td>Notes:</td><td><textarea rows='2' name='notes' id='notes'>".(isset($notes) ? $notes : "")."</textarea></td></tr>");
 

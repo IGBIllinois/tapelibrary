@@ -31,10 +31,11 @@ class tape_library_object {
     }
     
     public function load_by_id($db, $id) {
-        $result = $db->get_tape_library_object_data($id);
 
         $this->db = $db;
-        if($result !=0) {
+        $result = $this->get_tape_library_object_data($db, $id);
+        
+        if($result['RESULT']) {
             
             $this->id = $result['id'];
             $this->label = $result['label'];
@@ -63,14 +64,32 @@ class tape_library_object {
         return $this->type;
     }
     
+    /** Get the name of the container of this object
+     * 
+     * @return 
+     */
     public function get_container_name() {
         
-        return $this->db->get_container_name($this->container);
+        $container = new container($this->db, $this->container);
+        if($container->get_id() != -1) {
+            return $container->get_label();
+        } else {
+            return "None";
+        }
     }
     
     public function get_type_name() {
 
-        return $this->db->get_container_type_name($this->type);
+        //return $this->db->get_container_type_name($this->type);
+    $query = "SELECT name from container_type where container_type_id=:container_type_id";
+    $params = array("container_type_id"=>$this->type);
+    
+    $result = $this->db->get_query_result($query, $params);
+    if($result != null && $result[0]['name'] != null) {
+        return $result[0]['name'];
+    } else {
+        return "None";
+    }
     }
     
     public function get_backupset() {
@@ -94,10 +113,6 @@ class tape_library_object {
         return $this->active;
     }
     
-    public function get_children() {
-        //return $this->db->get_tapes_in_container($this->id);
-        return $this->db->get_children($this->id);
-    }
     
 
     
@@ -132,6 +147,393 @@ class tape_library_object {
         $this_type = new type($this->db, $this->type);
         return $this_type->can_contain_tapes();
     }
-
     
+    public static function does_tape_exist($db, $label) {
+        $search_query = "SELECT * from tape_library where label=:label";
+        $search_params = array("label"=>$label);
+        $search_result = $db->get_query_result($search_query, $search_params);
+        //echo("count = ".count($search_result));
+        if(count($search_result) > 0) {
+            return 1;
+        }
+        return 0;
+    }
+    
+    public static function add_tape($db, $label, $type, $container_id, $backupset, $user_id) {
+        // TODO: user_id?
+        
+        if(tape_library_object::does_tape_exist($db,$label)) {
+            //echo("<div class='alert alert-danger'>A tape or container with the name '$label' already exists. Please choose a different name.</div>");
+            //return 0;
+            $message = "A tape or container with the name '$label' already exists. Please choose a different name.";
+            return array("RESULT"=>FALSE,
+                            "MESSAGE"=>$message);
+        }
+        //echo("container_id = $container_id");
+        if($container_id == "" || $container_id == -1) {
+            // container is a top
+        }
+        if($container_id != "" && $container_id != -1) {
+            $container = new container($db, $container_id);
+            
+            
+            $max_slots = $container->get_max_slots();
+            $curr_count = $container->get_object_count();
+            //echo("max_slots = $max_slots; curr_count = $curr_count<BR>");
+            if($max_slots != -1 && ($curr_count >= $max_slots)) {
+                //echo("<div class='alert alert-danger'>The parent location is full, and cannot contain any other objects.</div>");
+                //return 0;
+                $message = "The parent location '".$container->get_label()."' is full, and cannot contain any other objects.";
+                return array("RESULT"=>FALSE,
+                            "MESSAGE"=>$message);
+            }
+        }
+        if($backupset == null) {
+            $backupset = -1;
+        }
+
+        
+
+        
+        $query = "INSERT INTO tape_library ( label, type, container, backupset, user_id, last_update, active) VALUES(:label, :type, :container_id, :backupset, :user_id, NOW(),1)";
+        $params = array('label'=>$label, 'type'=>$type, 'container_id'=>$container_id, 'backupset'=>$backupset, 'user_id'=>0);
+        //echo("label = $label, type = $type, container_id = $container_id, backupset=$backupset, user_id=$user_id");
+        //echo("query = $query<BR>");
+        try {
+
+            $result = $db->get_insert_result($query, $params);
+            return array("RESULT"=>TRUE,
+                        "MESSAGE"=>"Tape $label added successfully.",
+                        "id"=>$result);
+            //echo($result);
+        
+        } catch(Exception $e) {
+            echo $e;
+        }
+        //return $result;
+        
+    }    
+    
+    function get_tape_library_object_data($db, $id) {
+
+        $query = "SELECT * from tape_library where id = :id";
+        $params = array("id"=>$id);
+        //echo("query = $query, ");
+        //echo("id = $id <BR>");
+        $result = $db->get_query_result($query, $params);
+        if(count($result)==1) {
+            //$result = $result[0];
+            $meta =  array("RESULT"=>TRUE,
+                           "MESSAGE"=>"SUCCESS");
+            return array_merge($meta, $result[0]);
+        } else {
+            //$result = 0;
+            return array("RESULT"=>FALSE,
+                        "MESSAGE"=>"Objecct with id $id not found.");
+        }
+        return $result;
+    }
+
+    public static function get_tapes_without_backupset($db) {
+        $query = "select tape_library.id as id, tape_library.label as label, tape_library.container as parent, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active, (SELECT label from tape_library as containers where containers.id = tape_library.container) as container_name from tape_library   left join container_type on (tape_library.type = container_type.container_type_id ) where (tape_library.backupset is null or tape_library.backupset = '-1') and (container_type.can_contain_types is null or container_type.can_contain_types='')";
+        $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $result = $db->query($query);
+        
+        $tape_array = array();
+        foreach($result as $tape) {
+            $new_tape = new tape($db, $tape['id']);
+            $tape_array[] = $new_tape;
+        }
+        
+        return $tape_array;
+        
+    }
+    
+    public static function get_tapes($db, $begin=null, $end=null, $type=null, $parent=null, $active=1, $tapes=1) {
+        //$query = "select tape_library.id as id, tape_library.label as label, tape_library.container as container, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active from tape_library where type in (SELECT container_type_id from container_type where container_type.container=0)";
+        if($tapes) {
+            $query = "select tape_library.id as id, tape_library.label as label, tape_library.label as name, tape_library.container as container, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active from tape_library where type in (SELECT container_type_id from container_type where container_type.can_contain_types is null or container_type.can_contain_types='')";
+        } else {
+            $query = "select tape_library.id as id, tape_library.label as label, tape_library.label as name, tape_library.container as container, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active from tape_library where type in (SELECT container_type_id from container_type where container_type.can_contain_types is not null && container_type.can_contain_types != '')";
+
+        }
+        //echo("begin = $begin<BR>");
+        //echo("end = $end<BR>");
+        $subquery = "";
+        $params = array();
+        if($begin != null && $end == null) {
+            $subquery .= " tape_library.label like :begin ";
+            $params['begin'] = "%".$begin."%";
+        }
+        if($begin != null && $end != null) {
+            $subquery .= " tape_library.label between :begin and :end ";
+            $params['begin'] = $begin;
+            $params['end'] = $end;
+        }
+        if($type != null) {
+            if($subquery != "") {
+                $subquery .= " AND ";
+            }
+            $subquery .= " tape_library.type = :type ";
+            $params['type'] = $type;
+        }
+        if($parent != null) {
+            if($subquery != "") {
+                $subquery .= " AND ";
+            }
+            $subquery .= " tape_library.container = :parent ";
+            //echo("parent = $parent<BR>");
+            $params['parent'] = $parent;
+        }
+        
+        //$query .= "left join containers as container on (tape.container = container.id)  join  container_type on  (container_type.container=$container and container_type_id=tape_library.type)";
+        if($subquery != "") {
+            $query .= " AND ($subquery) ";
+        }
+        $query .= " order by tape_library.label ASC ";
+        //echo("type = $type<BR>");
+        //echo("query = $query<BR>");
+        $result = $db->get_query_result($query, $params);
+        //$result = $this->get_query_result($query, $params);
+        //print_r($result);
+        return $result;
+    }
+    
+    public static function get_tape_objects($db, $begin=null, $end=null, $type=null, $parent=null, $active=1) {
+        $tape_array = array();
+        $tapes = tape_library_object::get_tapes($db, $begin, $end, $type, $parent, $active);
+        foreach($tapes as $tape) {
+            $new_tape = new tape($db, $tape['id']);
+            //echo("new tape id = ".$new_tape->get_id());
+            $tape_array[] = $new_tape;
+        }
+        return $tape_array;
+    }
+    
+    public static function get_containers($db, $name=null, $type=null, $parent=null, $active=1) {
+        return tape_library_object::get_tapes($db, $name, null, $type, $parent, $active, 0);
+
+    }
+    
+    public static function get_container_objects($db, $name=null, $type=null, $parent=null, $active=1) {
+        //echo("name = $name");
+        //$query = "select tape_library.id as id, tape_library.item_id as tape_id, tape_library.label as name, tape_library.type as type, tape_library.container as parent, (SELECT label from tape_library where parent = id) as container_name, (SELECT container from container_type where container_type_id=tape_library.type) as is_container from tape_library left join tape_library on (tape_library.container = tape_library.id)  join  container_type on  (container_type.container=1 and container_type_id=type)";
+        //$query = "SELECT id from containers where container != -1";
+        //$statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        //$result = $this->query($query);
+        $result = tape_library_object::get_containers($db, $name, $type, $parent, $active);
+        $containers = array();
+        foreach($result as $container_id) {
+            $id = $container_id['id'];
+            
+            $container = new container($db, $id);
+            $containers[] = $container;
+        }
+        return $containers;
+    }
+    
+    public static function get_locations($db) {
+        //$query = "select tape_library.id as id, tape_library.item_id as tape_id, tape_library.label as name, tape_library.type as type, tape_library.container as parent, (SELECT label from tape_library where parent = id) as container_name, (SELECT container from container_type where container_type_id=tape_library.type) as is_container from tape_library left join tape_library on (tape_library.container = tape_library.id)  join  container_type on  (container_type.container=1 and container_type_id=type)";
+        $query = "select id, label as name from tape_library where container is null or container=-1";
+        $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $result = $db->query($query);
+        return $result;
+    }
+    
+    public static function get_location_objects($db) {
+        //$query = "select tape_library.id as id, tape_library.item_id as tape_id, tape_library.label as name, tape_library.type as type, tape_library.container as parent, (SELECT label from tape_library where parent = id) as container_name, (SELECT container from container_type where container_type_id=tape_library.type) as is_container from tape_library left join tape_library on (tape_library.container = tape_library.id)  join  container_type on  (container_type.container=1 and container_type_id=type)";
+        $locations = tape_library_object::get_locations($db);
+        $result = array();
+        foreach($locations as $location) {
+            $new_loc = new container($db, $location['id']);
+            $result[] = $new_loc;
+        }
+        return $result;
+    }
+    
+    function edit($tape_label, $container, $active) {
+        $id = $this->id;
+        if($container == "") {
+            //echo("container is blank, setting to null<BR>");
+            $container = null;
+        }
+        if($container == $id) {
+            //echo("<div class='alert alert-danger'>Cannot move tape or container to itself.</div>");
+            //return 0;
+            return array("RESULT"=>FALSE,
+                        "MESSAGE"=>"Cannot move tape or container to itself.");
+        }
+        $current_tape = new tape_library_object($this->db, $id);
+        if($tape_label == null) {
+            $tape_label = $current_tape->get_label();
+        }
+        $current_type = $current_tape->get_type();
+        $new_location = new tape_library_object($this->db,$container);
+        $new_location_type = $new_location->get_type();
+        //echo("current_type= $current_type, new_loc_type = $new_location_type<BR>");
+
+        if($current_type == $new_location_type) {
+            $location_type_name = $this->get_container_type_name($new_location_type);
+            //echo("<div class='alert alert-danger'>Cannot move a $location_type_name to another $location_type_name. Please select a proper location where this object can be stored</div>");
+            //return 0;
+            return array("RESULT"=>FALSE,
+                        "MESSAGE"=>"Cannot move a $location_type_name to another $location_type_name. Please select a proper location where this object can be stored");
+        }
+
+        $curr_container = $current_tape->get_container_id();
+        if($curr_container != $container) {
+
+            $new_container = new tape_library_object($this->db, $container);
+            //echo("container = $container<BR>");
+            //echo("max slots = ".$new_container->get_max_slots());
+            if(($new_container->get_max_slots() != -1) && ($new_container->get_object_count() >= $new_container->get_max_slots())) {
+                //echo("<div class='alert alert-danger'>The container '".$new_container->get_label()."' is full. No changes have been made to this object.</div>");
+                
+                return array("RESULT"=>FALSE,
+                            "MESSAGE"=>"The container '".$new_container->get_label()."' is full. No changes have been made to this object.");
+            }
+        
+        }
+        
+        try {
+        $query = "UPDATE tape_library set label=:label, container=:container, user_id=:user_id, active=:active, last_update=NOW() where id=:id";
+        $params = array('label'=>$tape_label,  'container'=>$container,  'user_id'=>0, 'id'=>$id, 'active'=>$active);
+        
+        $result = $this->db->get_query_result($query, $params);
+        
+        //print_r($statement);
+        //echo($statement->rowCount() . " rows updated.<BR>");
+
+        return array("RESULT"=>TRUE,
+                    "MESSAGE"=>"".$tape_label. " successfully edited.");
+
+
+        } catch(Exception $e) {
+            echo $e;
+        }
+    }
+    
+    function get_tapes_in_container_array() {
+        //$query = "SELECT * from tape_library where backupset=:backupset_id";
+        $query = "select tape_library.id as id, tape_library.label as label, tape_library.container as parent, tape_library.type as type, tape_library.service as service, tape_library.backupset as backupset, tape_library.active as active where container=:container_id";
+
+        $params = array("container_id"=>$this->id);
+        $result = $this->db->get_query_result($query, $params);
+        return $result;
+    }
+
+    function get_tapes_in_container() {
+        $tape_array = array();
+        $tapes = $this->get_tapes_in_container_array();
+        foreach($tapes as $tape) {
+            $new_tape = new tape($this->db, $tape['id']);
+            $tape_array[] = $new_tape;
+        }
+        return $tape_array;
+    }
+
+    function get_children() {
+        $container_id = $this->id;
+        $query = "SELECT id from tape_library where container=:container_id order by label";
+        $params = array("container_id"=>$container_id);
+        $result = $this->db->get_query_result($query, $params);
+
+        return $result;
+    }
+
+    function get_children_objects() {
+        $result = array();
+        $children = $this->get_children();
+        foreach($children as $child) {
+            $new_child = new tape_library_object($this->db, $child['id']);
+            $result[] = $new_child;
+        }
+
+        return $result;
+    }
+
+    public function get_full_path() {
+        $path = "";
+        $container_id = $this->container;
+        $container = new container($this->db, $container_id);
+        $path = $container->get_label();
+
+        $new_container_id = $container->get_container_id();
+
+        $i=0;
+        while(($new_container_id != -1 && $new_container_id != null && $new_container_id != "")) {
+            $container = new container($this->db, $new_container_id);
+            $path .= ", located in ".$container->get_label();
+            $new_container_id = $container->get_container_id();
+            $i++;
+        }
+        return $path;
+    }
+
+    public static function get_full_linked_path($db, $container_id) {
+        $path = "";
+        $container = new container($db, $container_id);
+        $path = $container->get_label();
+
+        $new_container_id = $container->get_container_id();
+
+        $i=0;
+        while(($new_container_id != -1 && $new_container_id != null && $new_container_id != "")) {
+            $container = new container($db, $new_container_id);
+            $path .= ", located in ".$container->get_label();
+            $new_container_id = $container->get_container_id();
+            $i++;
+        }
+        return $path;
+    }
+    
+    /* Moves object with id $object_id to this container, if applicable
+     * 
+     */
+    function move_object($object_id) {
+        //$object = new tape_library_object($this, $object_id);
+        //$container = new container($this, $container_id);
+        $object = new tape_library_object($this->db, $object_id);
+        if($object->get_id() == -1) {
+            $result = array("RESULT"=>FALSE,
+                            "MESSAGE"=>"Please select a proper object to move.");
+            return $result;
+        }
+
+        if($this->get_id() == -1) {
+            $result = array("RESULT"=>FALSE,
+                            "MESSAGE"=>"Please select a proper container.");
+            return $result;
+        }
+        $container_type = new type($this->db, $this->get_type());
+        $object_type  = new type($this->db, $object->get_type());
+
+
+        if(!in_array($object_type->get_id(), $container_type->get_can_contain_types())) {
+            $result = array("RESULT"=>FALSE,
+                            "MESSAGE"=>"An object of type ".$object_type->get_name(). " cannot be placed into a ".$container_type->get_name().". ".$object->get_label(). " has not been moved.");
+            return $result;
+        }
+
+        if(($container_type->get_max_slots()) != -1 && $this->get_object_count() >= $this->get_max_slots()) {
+            $result = array("RESULT"=>FALSE,
+                            "MESSAGE"=>"The container ".$this->get_label() . " is full. ".$object->get_label() . " has not been moved.");
+            return $result;
+        }
+
+        $query = "UPDATE tape_library set container = :container_id where id=:object_id";
+        $params = array("container_id"=>$this->id, "object_id"=>$object_id);
+        $result = $this->db->get_query_result($query, $params);
+        $result = array("RESULT"=>TRUE,
+                        "MESSAGE"=>"".$object->get_label(). " successfully moved to ". $this->get_label());
+        return $result;   
+    }
+
+    /* returns the number of objects currently in this container
+     * 
+     */
+    public function get_object_count() {
+        return count($this->get_children());
+    }
+
 }

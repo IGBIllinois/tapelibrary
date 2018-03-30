@@ -25,7 +25,7 @@ class report {
 	public static function create_excel_2007_report($data,$filename) {
 		$excel_file = self::create_generic_excel($data);
 		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		header('Content-Disposition: attachment;filename=' . $filename);
+		header("Content-Disposition: attachment;filename=" . $filename);
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header('Pragma: public');
 		$writer = PHPExcel_IOFactory::createWriter($excel_file,'Excel2007');
@@ -107,6 +107,57 @@ class report {
 		
 	
 	}
+        
+        public static function get_heirarchy($db, $object_list, $level=0) {
+            //$data = $db->get_tape_library_object($id);
+
+            $data= array();
+            $this_row = array();
+
+                for($i=0; $i<$level; $i++) {
+                    $this_row[] = "";
+                }
+                $headers = array_merge($this_row, array("Name","Type","Backupset","Location"));
+                $data[] = $headers;
+            //print_r($object_list);
+            foreach($object_list as $object) {
+                //print_r($object);
+                $id = $object->get_id();
+                $tape_library_object = new tape_library_object($db, $id);
+                //$headers = array();
+
+                //test
+                //echo("adding:"+$tape_library_object->get_label());
+                //echo("<BR>");
+                //$this_row = array();
+                ////for($i=0; $i<$level; $i++) {
+                //    $this_row[] = "";
+                //}
+
+                $data_row = array_merge($this_row, array($tape_library_object->get_label(), $tape_library_object->get_type_name(), $tape_library_object->get_backupset_name(), $tape_library_object->get_container_name()));
+
+                $data[] = $data_row;
+                $object = new tape_library_object($db, $id);
+                $children = $object->get_children_objects($id);
+                if(count($children) > 0) {
+                    $data[] = array();
+                    //$this_row = array();
+
+                        //for($i=0; $i<=$level; $i++) {
+                        //    $this_row[] = "";
+                        //}
+                       // $headers = array_merge($this_row, array("Name","Type","Backupset","Location"));
+                        //$data[] = $headers;
+
+                    $data = array_merge($data, report::get_heirarchy($db, $children, (1+$level)));
+                    $data[] = array();
+
+                }
+
+            }
+            //print_r($data);
+            return $data;
+            }
 
 }
 ?>

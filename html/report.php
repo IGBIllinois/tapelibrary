@@ -61,7 +61,7 @@ if (isset($_POST['create_full_report'])) {
     try {
     $type = $_POST['report_type'];
     $filename = "fulltapereport";
-    $backupsets = $db->get_all_backup_sets();
+    $backupsets = backupset::get_all_backupsets($db);
     $data = array();
         //$excel->writeLine($backupsets);
         foreach($backupsets as $backupset_info) {
@@ -83,7 +83,7 @@ if (isset($_POST['create_full_report'])) {
             $titles = array("Tape Label", "Tape Type", "Container");
             $data[] = ($titles);
             
-            $tapes = $db->get_tapes_for_backupset($backupset_id);
+            $tapes = $backupset->get_tapes_in_backupset();
             foreach($tapes as $tape) {
                 
                 $container_id = $tape->get_container_id();
@@ -98,7 +98,7 @@ if (isset($_POST['create_full_report'])) {
         }
         
         // unassigned tapes
-        $unassigned_tapes = $db->get_tapes_without_backupset();
+        $unassigned_tapes = tape_library_object::get_tapes_without_backupset($db);
         if(count($unassigned_tapes) > 0) {
             $data[] = array();
             $data[] = array("Unassigned tapes");
@@ -148,7 +148,7 @@ if(isset($_POST['create_container_report'])) {
             $type_name = $container->get_type_name();
             $data[] = array("Report for ".$container->get_label(), "Type: ".$type_name);
             $data[] = array();
-            $tapes = $db->get_tapes(null, null, null, $container_id);
+            $tapes = tape_library_object::get_tapes($db, null, null, null, $container_id);
             $data[] = array("Tape Label", "Tape Type", "Backupset");
 
             //$excel= new ExcelWriter("excel/".$filename);
@@ -182,14 +182,14 @@ if(isset($_POST['create_container_detail_report'])) {
 
     $data = array();
     
-    $containers = $db->get_containers($name, $container_type, $parent);
+    $containers = tape_library_object::get_container_objects($db, $name, $container_type, $parent);
     //print_r($containers);
     foreach($containers as $container) {
         $container_id = $container->get_id();
         $type_name = $container->get_type_name();
             $data[] = array("Report for ".$container->get_label(), "Type: ".$type_name);
 
-            $tapes = $db->get_tapes(null, null, null, $container_id);
+            $tapes = tape_library_object::get_tapes($db, null, null, null, $container_id);
             $data[] = array("Tape Label", "Tape Type", "Backupset");
 
             //$excel= new ExcelWriter("excel/".$filename);
@@ -235,7 +235,7 @@ if(isset($_POST['create_backupset_report'])) {
             $program_line = array("Program", $backupset->get_program_name());
             $notes_line = array("Notes", $backupset->get_notes());
             
-            $tapes = $db->get_tapes_for_backupset($backupset_id);
+            $tapes = $backupset->get_tapes_in_backupset();
             $titles = array("Tape Label", "Tape Type", "Container", "Full Path");
 
             
@@ -256,7 +256,7 @@ if(isset($_POST['create_backupset_report'])) {
                 $container_name = $tape->get_container_name();
                 //$container_name = $container['label'];
                 
-                $tape_array = array($tape->get_label(), $tape->get_type_name(), $container_name, $db->get_full_path($container_id));
+                $tape_array = array($tape->get_label(), $tape->get_type_name(), $container_name, $tape->get_full_path());
                 $data[] = ($tape_array);
             }
 
@@ -277,13 +277,13 @@ if(isset($_POST['create_heirarchy_report'])) {
         $container_type = $_POST['type'];
         $parent = $_POST['parent'];
     
-        $containers = $db->get_containers($name, $container_type, $parent);
-        $data = $db->get_heirarchy($containers);
+        $containers = tape_library_object::get_container_objects($db, $name, $container_type, $parent);
+        $data = report::get_heirarchy($db, $containers);
     } else
     if(isset($_POST['container_id'])) {
-        $data = $db->get_heirarchy(array(new container($db, $_POST['container_id'])));
+        $data = report::get_heirarchy($db, array(new container($db, $_POST['container_id'])));
     } else {
-        $data = $db->get_heirarchy($db->get_location_objects());
+        $data = report::get_heirarchy($db, tape_library_object::get_location_objects($db));
     }
     $filename = "heirarchyreport";
     $type = $_POST['report_type'];

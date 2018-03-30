@@ -97,10 +97,10 @@ echo("<table  class='table table-bordered display'><tr>");
         //print "</td>";
       print "</tr>";
 echo("<tr><td>Container Type :</td><td>");
-    createInput("select","type",$type,$db->get_container_types_array());
+    createInput("select","type",$type,type::get_container_types($db));
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    createInput("select","container",$parent,$db->get_containers_array());
+    createInput("select","container",$parent, tape_library_object::get_containers($db));
 echo(" </td></tr>");
 
 
@@ -112,7 +112,7 @@ echo("<BR>");
 echo("Current containers:") ;
 echo("<table id='containers' class='table table-bordered table-hover table-striped display'>");
 
-$current_containers = $db->get_containers($name, $type, $parent);
+$current_containers = tape_library_object::get_container_objects($db, $name, $type, $parent);
 //$current_containers = array();
 if(count($current_containers)== 0) {
     echo "<tr><td>No containers have been added.</td></tr>";
@@ -122,36 +122,13 @@ if(count($current_containers)== 0) {
     foreach($current_containers as $container) {
         echo("<tr><td><a href=view_container.php?container_id=".$container->get_id().">".$container->get_label()."</a></td>");
         echo("<td>".$container->get_type_name()."</td>");
-        echo("<td><a href='view_container.php?container_id=".$container->get_container_id()."'>".$db->get_full_path($container->get_container_id())."</a></td></tr>");
+        echo("<td><a href='view_container.php?container_id=".$container->get_container_id()."'>".$container->get_full_path()."</a></td></tr>");
     }
 }
 
 echo("</tbody></table>");
 echo("<BR>");
-/*
-echo("<form name='add_container' action='add_container.php' method='POST'>");
 
-echo("<table>");
-echo("<tr><td>Container Name:</td><td><input type='text' name='container_name' id='container_name'></td></tr>");
-echo("<tr><td>Container Type :</td><td>");
-    createInput("select","container_type","",$db->get_container_types());
-echo(" </td></tr>");
-echo("<tr><td>Parent Container (if any):</td><td>");
-    createInput("select","container","",$db->get_containers());
-echo(" </td></tr>");
-echo("<tr><td>Service:</td><td><input type='text' name='service' id='service'></td></tr>");
-
-
-echo("</table>");
-echo("<input type='submit' name='submit' value='Add Container'>");
-echo("</form>");
-
-
-echo("<form method='POST' action='view_all_containers.php' name='get_report'>");
-echo("<input type='submit' name='report_submit' value='Get Full Report'>");
-echo("</form>");
-
- */
 ?>
 
 

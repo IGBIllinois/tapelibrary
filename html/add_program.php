@@ -27,8 +27,6 @@ if(isset($_POST['program_name'])) {
         
     }
 
-
-
     if(isset($_POST['program'])) {
 
         $program_id = $_POST['program'];
@@ -36,16 +34,18 @@ if(isset($_POST['program_name'])) {
 
     if(strlen($errors) == 0) {
 
-    $result = $db->add_program( $name);
+    //$result = $db->add_program( $name);
+        $program = new program($db);
+        $result = $program->add_program($name);
 
     
-     if($result != 0) {
+     if($result['RESULT']) {
         echo("<div class='alert alert-success'>Program ".$_POST['program_name']." successfully added.</div>");
      } else {
-         echo("<div class='alert alert-danger'>ERROR: Program not added.</div>");
+         echo("<div class='alert alert-danger'>ERROR: ".$result['MESSAGE']."</div>");
      }
     } else {
-        echo($errors);
+        echo("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
     }
 }
 }
@@ -68,7 +68,10 @@ echo("<BR>");
 echo("Current programs:");
 echo("<table  class='table table-bordered table-hover table-striped display'><tr>");
 echo("<th>Program Name</th>");
-$programs = $db->get_program_objects();
+$program = new program($db);
+
+$programs = program::get_program_objects($db);
+
 if(count($programs)== 0) {
     echo "<tr><td>No programs have been added.</td></tr>";
 } else {
