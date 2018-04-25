@@ -1,7 +1,7 @@
 <?php
 
 require_once '../libs/db.class.inc.php';
-require_once 'includes/ExcelWriter.php';
+
 
 function cleanArray($array) {
     global $db;
