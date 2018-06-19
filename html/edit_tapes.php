@@ -13,6 +13,9 @@ include 'includes/header.inc.php';
 ?>
 
 <?php 
+
+// TODO: Clean up code. Merge with edit_containers.php to reduce code duplication.
+
 $begin = null;
     $end = null;
     $select_type = null;
@@ -49,11 +52,8 @@ if(isset($_POST['limit_submit'])) {
     }
 }
 echo("<form method=POST action=edit_tapes.php>");
-//
-//echo("<form id='addform' name='add_tape' action='add_tape.php' method='POST'>");
 
 echo("<table class='table table-bordered display'><tr>");
-//echo("<tr><td>Location Name:</td><td><input type='text' name='container_name' id='container_name'></td></tr>");
 
       print "<tr>";
         print "<td>Tape Number(s)</td>";
@@ -62,10 +62,6 @@ echo("<table class='table table-bordered display'><tr>");
         print "<br />To: ";
         createInput("text","end",$end);
         print "</td>";
-        //        print "<td rowspan=6>";
-        //print "<div id='add_multi_labels'>";
-	//	print "</div>";
-        //print "</td>";
       print "</tr>";
 echo("<tr><td>Tape Type :</td><td>");
     createInput("select","type",$select_type,type::get_tape_types($db));
@@ -85,52 +81,44 @@ if(isset($_POST['submit'])) {
     if(isset($_POST['checkbox'])) {
 
         foreach($_POST['checkbox'] as $checked) {
-
-            //echo("ID $checked is checked.<BR>");
             
             $id = $checked;
-            //$tape_id = $_POST['tape_id_'.$id];
             $tape_label = $_POST['tape_label_'.$id];
             $container = $_POST['tape_container_'.$id];
+            
             if($container == "") {
                 $container = null;
             }
-            //$type = $_POST['tape_type_'.$id];
-            //$service = $_POST['service_'.$id];
+
             $active = (isset($_POST['active_'.$id]) ? 1 : 0);
-            /*
-            echo("id = $id<BR>");
-            echo("container = $container<BR>");
-            echo("type = $type<BR>");
-            echo("service = $service<BR>");
-            echo("name = $tape_name<BR>");
-            echo("active = $active<BR>");
-             * 
-             */
-            //$result = $db->edit_tape_basic($id, $tape_label, $container, $active);
+
             $container_object = new tape_library_object($db, $container);
             $result = $container_object->move_object($id);
+            
+            
             
             if($result['RESULT']) {
                 $messages.=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
             } else {
                 $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
             }
-             
-             
-             
+            $this_tape = new tape_library_object($db, $id);
+            $is_active = $this_tape->is_active();
+            if($this_tape->is_active() != $active) {
+                $active_result = $this_tape->set_active($active);
+                if($active_result['RESULT']) {
+                $messages.=("<div class='alert alert-success'>".$active_result['MESSAGE']."</div>");
+            } else {
+                $messages .= ("<div class='alert alert-danger'>".$active_result['MESSAGE']."</div>");
+            }
+            
+            }     
         }
     } else {
         $messages .= ("<div class='alert alert-warning'>Nothing checked</div>");
     }
 }
-/*
-echo("Testing fake move:<BR>");
-$result = $db->move_object(187, -5);
-echo($result);
-echo("<BR>ending fake move1<BR>");
- * 
- */
+
 $tapes = tape_library_object::get_tape_objects($db, $begin, $end, $select_type, $select_container, $active);
   if(strlen($messages) > 0) {
       echo($messages);
@@ -147,12 +135,10 @@ foreach($tapes as $tape) {
     echo("<td>");
     echo("<input type='checkbox' name=checkbox[] id='".$tape->get_id()."' value='".$tape->get_id()."'>");
     echo("</td><td>");
-    //createInput("text", "tape_label", $tape['label'], "", $tape['id']);
     echo($tape->get_label()."<input type=hidden name='tape_label_".$tape->get_id()."' id='tape_label_".$tape->get_id()."' value='".$tape->get_label())."'>";
     echo("</td>");
     echo("<td>".$tape->get_type_name()."</td><td>");
     createInput("select", "tape_container", $tape->get_container_id(), tape_library_object::get_containers($db), $tape->get_id());
-    //createInput("text", "tape_label", $tape['label'], "", $tape['id']);
     echo("</td>");
 
     $backupset = new backupset($db, $tape->get_backupset());

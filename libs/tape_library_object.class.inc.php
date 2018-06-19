@@ -64,6 +64,15 @@ class tape_library_object {
         return $this->type;
     }
     
+    public function get_id() {
+        return $this->id;
+    }
+    
+    public function is_active() {
+        return $this->active;
+    }
+
+    
     /** Get the name of the container of this object
      * 
      * @return 
@@ -104,17 +113,6 @@ class tape_library_object {
             return $backupset->get_name();
         }
     }
-    
-    public function get_id() {
-        return $this->id;
-    }
-    
-    public function is_active() {
-        return $this->active;
-    }
-    
-    
-
     
     public function get_max_slots() {
         $type = new type($this->db, $this->get_type());
@@ -192,9 +190,6 @@ class tape_library_object {
             $backupset = -1;
         }
 
-        
-
-        
         $query = "INSERT INTO tape_library ( label, type, container, backupset, user_id, last_update, active) VALUES(:label, :type, :container_id, :backupset, :user_id, NOW(),1)";
         $params = array('label'=>$label, 'type'=>$type, 'container_id'=>$container_id, 'backupset'=>$backupset, 'user_id'=>0);
         //echo("label = $label, type = $type, container_id = $container_id, backupset=$backupset, user_id=$user_id");
@@ -250,15 +245,13 @@ class tape_library_object {
     }
     
     public static function get_tapes($db, $begin=null, $end=null, $type=null, $parent=null, $active=1, $tapes=1) {
-        //$query = "select tape_library.id as id, tape_library.label as label, tape_library.container as container, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active from tape_library where type in (SELECT container_type_id from container_type where container_type.container=0)";
         if($tapes) {
             $query = "select tape_library.id as id, tape_library.label as label, tape_library.label as name, tape_library.container as container, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active from tape_library where type in (SELECT container_type_id from container_type where container_type.can_contain_types is null or container_type.can_contain_types='')";
         } else {
             $query = "select tape_library.id as id, tape_library.label as label, tape_library.label as name, tape_library.container as container, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active from tape_library where type in (SELECT container_type_id from container_type where container_type.can_contain_types is not null && container_type.can_contain_types != '')";
 
         }
-        //echo("begin = $begin<BR>");
-        //echo("end = $end<BR>");
+
         $subquery = "";
         $params = array();
         if($begin != null && $end == null) {
@@ -282,20 +275,16 @@ class tape_library_object {
                 $subquery .= " AND ";
             }
             $subquery .= " tape_library.container = :parent ";
-            //echo("parent = $parent<BR>");
             $params['parent'] = $parent;
         }
         
-        //$query .= "left join containers as container on (tape.container = container.id)  join  container_type on  (container_type.container=$container and container_type_id=tape_library.type)";
         if($subquery != "") {
             $query .= " AND ($subquery) ";
         }
         $query .= " order by tape_library.label ASC ";
-        //echo("type = $type<BR>");
-        //echo("query = $query<BR>");
+
         $result = $db->get_query_result($query, $params);
-        //$result = $this->get_query_result($query, $params);
-        //print_r($result);
+
         return $result;
     }
     
@@ -384,11 +373,8 @@ class tape_library_object {
         if($curr_container != $container) {
 
             $new_container = new tape_library_object($this->db, $container);
-            //echo("container = $container<BR>");
-            //echo("max slots = ".$new_container->get_max_slots());
-            if(($new_container->get_max_slots() != -1) && ($new_container->get_object_count() >= $new_container->get_max_slots())) {
-                //echo("<div class='alert alert-danger'>The container '".$new_container->get_label()."' is full. No changes have been made to this object.</div>");
-                
+
+            if(($new_container->get_max_slots() != -1) && ($new_container->get_object_count() >= $new_container->get_max_slots())) {                
                 return array("RESULT"=>FALSE,
                             "MESSAGE"=>"The container '".$new_container->get_label()."' is full. No changes have been made to this object.");
             }
@@ -400,13 +386,14 @@ class tape_library_object {
         $params = array('label'=>$tape_label,  'container'=>$container,  'user_id'=>0, 'id'=>$id, 'active'=>$active);
         
         $result = $this->db->get_query_result($query, $params);
-        
-        //print_r($statement);
-        //echo($statement->rowCount() . " rows updated.<BR>");
 
+        $this->label = $tape_label;
+        $this->container = $container;
+        $this->active = $active;
+        
         return array("RESULT"=>TRUE,
                     "MESSAGE"=>"".$tape_label. " successfully edited.");
-
+        
 
         } catch(Exception $e) {
             echo $e;
@@ -414,7 +401,7 @@ class tape_library_object {
     }
     
     function get_tapes_in_container_array() {
-        //$query = "SELECT * from tape_library where backupset=:backupset_id";
+
         $query = "select tape_library.id as id, tape_library.label as label, tape_library.container as parent, tape_library.type as type, tape_library.service as service, tape_library.backupset as backupset, tape_library.active as active where container=:container_id";
 
         $params = array("container_id"=>$this->id);
@@ -534,6 +521,17 @@ class tape_library_object {
      */
     public function get_object_count() {
         return count($this->get_children());
+    }
+
+    public function set_active($active) {
+        $id = $this->get_id();
+        $query = "UPDATE tape_library set active=:active where id=:id";
+        $params = array("active"=>$active, "id"=>$id);
+        $this->db->get_update_result($query, $params);
+        $result = array("RESULT"=>TRUE,
+                        "MESSAGE"=>"".$this->get_label(). " successfully ".($active ? " activated " : " deactivated "));
+        $this->active = $active;
+        return $result;  
     }
 
 }

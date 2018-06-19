@@ -86,88 +86,6 @@ class db {
             $result = $statement->fetchAll();
             return $result;
     }
-
-
-    
- 
-    
-
-    
-    
-
-
-    
-    /* For adding top-level locations like IGB, Rantoul, etc.
-     * 
-     */
-    function add_location($label, $type) {
-        
-        if(!isset($label) || ($label == "")) {
-            echo("<div class='alert alert-danger'>Please input a valid name.</div>");
-            return 0;
-        }
-        $search_query = "SELECT * from tape_library where label=:label and tape_library.type in (SELECT container_type_id from container_type where container_type.container=2)";
-        $search_params = array("label"=>$label);
-        //echo("label = $label");
-        $search_result = $this->get_query_result($search_query, $search_params);
-       
-        if(count($search_result) > 0) {
-            echo("<div class='alert alert-danger'>An item with the name '$label' already exists. Please choose a different name.</div>");
-            return 0;
-        }
-        
-        $result = 0;
-        try {
-        $query = "INSERT INTO tape_library (label, type, container, last_update, active) VALUES(:label, :type, -1, NOW(),1)";
-        $params = array('label'=>$label, 'type'=>$type);
-        //echo("query = $query<BR>");
-        //echo("item_id = $item_id, type = $type, container_id = $container_id, service=$service, user_id=$user_id");
-        $result = $this->get_insert_result($query, $params);
-        ////$statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        //$statement->execute(array('item_id'=>$item_id, 'label'=>$label, 'type'=>$type, 'container_id'=>$container_id, 'service'=>$service, 'user_id'=>0));
-        return $result;
-        
-        //$result = $statement->fetchAll();
-        //print_r($result);
-        } catch(Exception $e) {
-            echo $e;
-            return 0;
-        }
-    }
-    
-
-    
-
-    
-
-    /*
-    function add_item($item_id, $label, $type, $container_id, $service ,$user_id) {
-        
-        $query = "INSERT INTO tape_library (item_id, label, type, container, service, user_id, last_update, active) VALUES(:item_id, :label, :type, :container_id, :service, :user_id, NOW(),1)";
-        $statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $statement->execute(array('item_id'=>$item_id, 'label'=>$label, 'type'=>$type, 'container_id'=>$container_id, 'service'=>$service, 'user_id'=>0));
-        //echo("item_id = $item_id, type = $type, container_id = $container_id, service=$service, user_id=$user_id");
-        try {
-        $result = $statement->fetchAll();
-        //print_r($result);
-        } catch(Exception $e) {
-            echo $e;
-        }
-        return $result;
-        
-    }
-    */
-
-     
-     
-    /*
-    function get_container_types($db) {
-        $query = "SELECT container_type_id as id, name, container from container_type where container=1";
-        $statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $result = $this->query($query);
-        return $result;
-    }
-     * */
     
 
 function get_query_result($query_string, $query_array) {
@@ -181,7 +99,7 @@ function get_query_result($query_string, $query_array) {
 
 function get_update_result($query_string, $query_params) {
     $statement = $this->get_link()->prepare($query_string, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    $result = $statement->execute($query_array);
+    $result = $statement->execute($query_params);
     return $result;
 }
 

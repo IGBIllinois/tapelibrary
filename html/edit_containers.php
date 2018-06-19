@@ -45,18 +45,13 @@ if(isset($_POST['limit_submit'])) {
 }
 
 echo("<form method=POST action=edit_containers.php>");
-//
-//echo("<form id='addform' name='add_tape' action='add_tape.php' method='POST'>");
 
 echo("<table class='table table-bordered'><tr>");
-//echo("<tr><td>Location Name:</td><td><input type='text' name='container_name' id='container_name'></td></tr>");
-
       print "<tr>";
         print "<td>Container name</td>";
         print "<td>";
         createInput("text","begin","");
-        //print "<br />To: ";
-        //createInput("text","end","");
+
         print "</td>";
                 print "<td rowspan=6>";
         print "<div id='add_multi_labels'>";
@@ -88,11 +83,9 @@ if(isset($_POST['submit'])) {
             $type="";
             $service="";
             $active="";
-            
-            //echo("ID $checked is checked.<BR>");
+           
             
             $id = $checked;
-            //$tape_id = $_POST['tape_id_'.$id];
             $tape_label = $_POST['container_label_'.$id];
             
             if(isset($_POST['container_location_'.$id])) {
@@ -102,19 +95,9 @@ if(isset($_POST['submit'])) {
                 continue;
                 
             }
-            //$type = $_POST['tape_type_'.$id];
-            //$service = $_POST['service_'.$id];
+
             $active = (isset($_POST['active_'.$id]) ? 1 : 0);
-            /*
-            echo("id = $id<BR>");
-            echo("container = $container<BR>");
-            echo("type = $type<BR>");
-            echo("service = $service<BR>");
-            echo("name = $tape_label<BR>");
-            echo("active = $active<BR>");
-             */
-             
-            //$result = $db->edit_tape_basic($id, $tape_label, $container, $active);
+
             $container_object = new tape_library_object($db, $container);
             $result = $container_object->move_object($id);
             
@@ -123,7 +106,17 @@ if(isset($_POST['submit'])) {
             } else {
                 $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
             }
-             
+            $this_tape = new tape_library_object($db, $id);
+            $is_active = $this_tape->is_active();
+            if($this_tape->is_active() != $active) {
+                $active_result = $this_tape->set_active($active);
+                if($active_result['RESULT']) {
+                $messages.=("<div class='alert alert-success'>".$active_result['MESSAGE']."</div>");
+            } else {
+                $messages .= ("<div class='alert alert-danger'>".$active_result['MESSAGE']."</div>");
+            }
+            
+            } 
              
         }
     } else {
@@ -138,13 +131,12 @@ $containers = tape_library_object::get_container_objects($db, $begin, $select_ty
 echo("<form name='edit_containers' method='POST'>");
 echo("<table id='edit_container' class='table table-bordered table-hover table-striped display'><thead><tr>");
 echo("<th><input type=checkbox onClick='toggleAll(this,\"checkbox\")' /></th><th>Label</th><th>Type</th><th>Location");
-// Does this make sense anymore?
+
 echo("<BR>Move selected containers to:");
 createInput("select", "tape_container", "", tape_library_object::get_containers($db), "",  "changeAllCheckedLocations(this, \"checkbox\", \"container_location\")");
 echo("</th><th>Active</th></tr></thead>");
 foreach($containers as $container) {
-    //$container_id = $container_info['id'];
-    //$container = new container($db, $container_id);
+
     $container_id = $container->get_id();
     echo("<tr>");
     echo("<td>");
