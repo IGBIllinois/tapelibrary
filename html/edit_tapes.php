@@ -91,26 +91,30 @@ if(isset($_POST['submit'])) {
             }
 
             $active = (isset($_POST['active_'.$id]) ? 1 : 0);
-
-            $container_object = new tape_library_object($db, $container);
-            $result = $container_object->move_object($id);
-            
-            
-            
-            if($result['RESULT']) {
-                $messages.=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
-            } else {
-                $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
-            }
             $this_tape = new tape_library_object($db, $id);
+            $container_object = new tape_library_object($db, $container);
+
+            if($this_tape->get_container_id() == $container) {
+                // don't bother moving
+                
+            } else {
+                $result = $container_object->move_object($id);
+                if($result['RESULT']) {
+                    $messages.=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+                } else {
+                    $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+                }
+            }
+            
             $is_active = $this_tape->is_active();
             if($this_tape->is_active() != $active) {
                 $active_result = $this_tape->set_active($active);
+                
                 if($active_result['RESULT']) {
-                $messages.=("<div class='alert alert-success'>".$active_result['MESSAGE']."</div>");
-            } else {
-                $messages .= ("<div class='alert alert-danger'>".$active_result['MESSAGE']."</div>");
-            }
+                    $messages.=("<div class='alert alert-success'>".$active_result['MESSAGE']."</div>");
+                } else {
+                    $messages .= ("<div class='alert alert-danger'>".$active_result['MESSAGE']."</div>");
+                }
             
             }     
         }

@@ -95,17 +95,26 @@ if(isset($_POST['submit'])) {
                 continue;
                 
             }
+            
+          
 
             $active = (isset($_POST['active_'.$id]) ? 1 : 0);
 
+            $this_container = new tape_library_object($db, $id);
             $container_object = new tape_library_object($db, $container);
-            $result = $container_object->move_object($id);
-            
-            if($result['RESULT']) {
-                $messages.=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+
+            if($this_container->get_container_id() == $container) {
+                // don't bother moving
+                
             } else {
-                $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+                $result = $container_object->move_object($id);
+                if($result['RESULT']) {
+                    $messages.=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+                } else {
+                    $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+                }
             }
+            
             $this_tape = new tape_library_object($db, $id);
             $is_active = $this_tape->is_active();
             if($this_tape->is_active() != $active) {
