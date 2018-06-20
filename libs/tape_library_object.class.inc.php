@@ -11,12 +11,13 @@ class tape_library_object {
     protected $db; // database
     protected $id =-1;
     //private $item_id;
-    protected $label;
+    protected $label; // unique name
     protected $container=-1;
     protected $type;
     protected $time_created;
     protected $backupset;
     protected $active;
+    protected $tape_label; // label
     
     protected $time_last_modified;
     protected $user_last_modified;
@@ -43,6 +44,7 @@ class tape_library_object {
             $this->container = $result['container'];
             $this->active = $result['active'];
             $this->backupset = $result['backupset'];
+            $this->tape_label = $result['tape_label'];
             
             
             
@@ -54,6 +56,10 @@ class tape_library_object {
     
     public function get_label() {
         return $this->label;
+    }
+    
+    public function get_tape_label() {
+        return $this->tape_label;
     }
     
     public function get_container_id() {
@@ -146,9 +152,16 @@ class tape_library_object {
         return $this_type->can_contain_tapes();
     }
     
-    public static function does_tape_exist($db, $label) {
+    public static function does_tape_exist($db, $label, $type=null) {
         $search_query = "SELECT * from tape_library where label=:label";
         $search_params = array("label"=>$label);
+        
+        // temporarily allow same name with different types
+        if($type != null) {
+            $search_query .= (" and type=:type");
+            $search_params = array("label"=>$label, 'type'=>$type);
+        }
+        
         $search_result = $db->get_query_result($search_query, $search_params);
         //echo("count = ".count($search_result));
         if(count($search_result) > 0) {
@@ -157,13 +170,15 @@ class tape_library_object {
         return 0;
     }
     
-    public static function add_tape($db, $label, $type, $container_id, $backupset, $user_id) {
+    public static function add_tape($db, $label, $type, $container_id, $backupset, $user_id, $tape_label=null) {
         // TODO: user_id?
         
-        if(tape_library_object::does_tape_exist($db,$label)) {
+        if(tape_library_object::does_tape_exist($db,$label,$type)) {
             //echo("<div class='alert alert-danger'>A tape or container with the name '$label' already exists. Please choose a different name.</div>");
             //return 0;
-            $message = "A tape or container with the name '$label' already exists. Please choose a different name.";
+            $new_type = new type($db, $type);
+            $type_name = $new_type->get_name();    
+            $message = "A tape or container with the name '$label' of type $type_name already exists. Please choose a different name.";
             return array("RESULT"=>FALSE,
                             "MESSAGE"=>$message);
         }
@@ -190,8 +205,8 @@ class tape_library_object {
             $backupset = -1;
         }
 
-        $query = "INSERT INTO tape_library ( label, type, container, backupset, user_id, last_update, active) VALUES(:label, :type, :container_id, :backupset, :user_id, NOW(),1)";
-        $params = array('label'=>$label, 'type'=>$type, 'container_id'=>$container_id, 'backupset'=>$backupset, 'user_id'=>0);
+        $query = "INSERT INTO tape_library ( label, type, container, backupset, user_id, tape_label, last_update, active) VALUES(:label, :type, :container_id, :backupset, :user_id, :tape_label, NOW(),1)";
+        $params = array('label'=>$label, 'type'=>$type, 'container_id'=>$container_id, 'backupset'=>$backupset, 'user_id'=>0, 'tape_label'=>$tape_label);
         //echo("label = $label, type = $type, container_id = $container_id, backupset=$backupset, user_id=$user_id");
         //echo("query = $query<BR>");
         try {
@@ -200,7 +215,7 @@ class tape_library_object {
             return array("RESULT"=>TRUE,
                         "MESSAGE"=>"Tape $label added successfully.",
                         "id"=>$result);
-            //echo($result);
+            echo("add result = $result<BR>");
         
         } catch(Exception $e) {
             echo $e;
@@ -340,7 +355,7 @@ class tape_library_object {
         return $result;
     }
     
-    function edit($tape_label, $container, $active) {
+    function edit($label, $container, $active, $tape_label) {
         $id = $this->id;
         if($container == "") {
             //echo("container is blank, setting to null<BR>");
@@ -353,8 +368,8 @@ class tape_library_object {
                         "MESSAGE"=>"Cannot move tape or container to itself.");
         }
         $current_tape = new tape_library_object($this->db, $id);
-        if($tape_label == null) {
-            $tape_label = $current_tape->get_label();
+        if($label == null) {
+            $abel = $current_tape->get_label();
         }
         $current_type = $current_tape->get_type();
         $new_location = new tape_library_object($this->db,$container);
@@ -382,17 +397,18 @@ class tape_library_object {
         }
         
         try {
-        $query = "UPDATE tape_library set label=:label, container=:container, user_id=:user_id, active=:active, last_update=NOW() where id=:id";
-        $params = array('label'=>$tape_label,  'container'=>$container,  'user_id'=>0, 'id'=>$id, 'active'=>$active);
+        $query = "UPDATE tape_library set label=:label, container=:container, user_id=:user_id, active=:active, tape_label=:tape_label, last_update=NOW() where id=:id";
+        $params = array('label'=>$label,  'container'=>$container,  'user_id'=>0, 'id'=>$id, 'active'=>$active, 'tape_label'=>$tape_label);
         
         $result = $this->db->get_query_result($query, $params);
 
-        $this->label = $tape_label;
+        $this->label = $label;
+        $this->tape_label = $tape_label;
         $this->container = $container;
         $this->active = $active;
         
         return array("RESULT"=>TRUE,
-                    "MESSAGE"=>"".$tape_label. " successfully edited.");
+                    "MESSAGE"=>"".$label. " successfully edited.");
         
 
         } catch(Exception $e) {

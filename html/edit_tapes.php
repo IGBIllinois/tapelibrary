@@ -85,7 +85,7 @@ if(isset($_POST['submit'])) {
             $id = $checked;
             $tape_label = $_POST['tape_label_'.$id];
             $container = $_POST['tape_container_'.$id];
-            
+            $new_tape_label = $_POST['new_tape_label_'.$id];
             if($container == "") {
                 $container = null;
             }
@@ -94,10 +94,18 @@ if(isset($_POST['submit'])) {
             $this_tape = new tape_library_object($db, $id);
             $container_object = new tape_library_object($db, $container);
 
-            if($this_tape->get_container_id() == $container) {
+            //if($this_tape->get_container_id() == $container) {
                 // don't bother moving
+            //    
+            //} else {
                 
-            } else {
+                $result = $this_tape->edit($tape_label, $container, $active, $new_tape_label);
+                if($result['RESULT']) {
+                    $messages.=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+                } else {
+                    $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+                }
+             /*   
                 $result = $container_object->move_object($id);
                 if($result['RESULT']) {
                     $messages.=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
@@ -105,6 +113,8 @@ if(isset($_POST['submit'])) {
                     $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
                 }
             }
+            
+            $this_tape->set_tape_label($new_tape_label);
             
             $is_active = $this_tape->is_active();
             if($this_tape->is_active() != $active) {
@@ -116,7 +126,10 @@ if(isset($_POST['submit'])) {
                     $messages .= ("<div class='alert alert-danger'>".$active_result['MESSAGE']."</div>");
                 }
             
-            }     
+            }    
+              * 
+              */ 
+        //}
         }
     } else {
         $messages .= ("<div class='alert alert-warning'>Nothing checked</div>");
@@ -130,7 +143,7 @@ $tapes = tape_library_object::get_tape_objects($db, $begin, $end, $select_type, 
   print "<fieldset>";
 echo("<form name='edit_tapes_form' method='POST'>");
 echo("<table id='edit_tapes_table' name='edit_tapes_table' class='table table-bordered table-hover table-striped display'><thead><tr>");
-echo("<th><input type=checkbox onClick=toggleAll(this,'checkbox') /><th>Label</th><th>Type</th><th>Location");
+echo("<th><input type=checkbox onClick=toggleAll(this,'checkbox') /><th>Tape ID Number</th><th>Type</th><th>Label</th><th>Location");
 echo("<BR>Change selected containers:");
 createInput("select", "tape_container", "", tape_library_object::get_containers($db), "",  "changeAllCheckedLocations(this, \"checkbox\", \"tape_container\")");
 echo("</th><th>Backup Set</th><th>Active</th></tr></thead>");
@@ -141,10 +154,17 @@ foreach($tapes as $tape) {
     echo("</td><td>");
     echo($tape->get_label()."<input type=hidden name='tape_label_".$tape->get_id()."' id='tape_label_".$tape->get_id()."' value='".$tape->get_label())."'>";
     echo("</td>");
-    echo("<td>".$tape->get_type_name()."</td><td>");
+    
+    echo("<td>".$tape->get_type_name()."</td>");
+    
+    echo("<td>");
+    echo("<input type=text name='new_tape_label_".$tape->get_id()."' id='new_tape_label_".$tape->get_id()."' value='".$tape->get_tape_label())."'>";
+    echo("</td>");
+    
+    echo("<td>");
     createInput("select", "tape_container", $tape->get_container_id(), tape_library_object::get_containers($db), $tape->get_id());
     echo("</td>");
-
+    
     $backupset = new backupset($db, $tape->get_backupset());
     echo("<td><a href='view_backupset_data.php?backupset_id=".$backupset->get_id()."'>".$backupset->get_name()."</a></td>");
     echo("<td><input type='checkbox' name=active_".$tape->get_id()." id='active_".$tape->get_id()."' value='active_".$tape->get_id()."'". ($tape->is_active() ? " checked " : "" ). " >");

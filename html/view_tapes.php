@@ -92,7 +92,7 @@ $current_tapes = tape_library_object::get_tape_objects($db, $begin, $end, $type,
 if(count($current_tapes)== 0) {
     echo "<tr><td>No tapes have been added.</td></tr>";
 } else {
-    echo("<thead><tr><th>Label</th><th>Type</th><th>Parent Location</th><th>Backup Set</th></thead>");
+    echo("<thead><tr><th>Tape ID Number</th><th>Type</th><th>Tape Label</th><th>Parent Location</th><th>Backup Set</th></thead>");
     echo("<tbody>");
     foreach($current_tapes as $tape) {
         //echo("id = ".$tape->get_id());
@@ -107,9 +107,9 @@ if(count($current_tapes)== 0) {
             $backupset_name = $backupset->get_name();
             
         }
-        //echo("<tr><td>".$tape['tape_number']."</td>");
         echo("<td>".$tape->get_label()."</td>");
         echo("<td>".$tape->get_type_name()."</td>");
+        echo("<td>".$tape->get_tape_label()."</td>");
         //echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$tape->get_container_name()."</a></td>");
         echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$tape->get_full_path()."</a></td>");
         if($backupset_id != -1) {

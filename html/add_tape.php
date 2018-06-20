@@ -77,6 +77,7 @@ if(isset($_POST['submit'])) {
     } else {
 
     $label = array();
+    $ids = array();
     
     //for ($i=$tape_from;$i<=$tape_to;$i++) {
     //echo("from = $tape_from")
@@ -84,13 +85,15 @@ if(isset($_POST['submit'])) {
     //echo("numtapes = $numtapes<BR>");
     for($i=0; $i<$numtapes; $i++) {
         // check for duplicates before starting to commit
-        //echo ("i = $i, label = "+$_POST['label'.$i]);
-        if(isset($_POST['label'.$i])  && $_POST['label'.$i]!="") {
-            if(tape_library_object::does_tape_exist($db, $_POST['label'.$i])) {
-                $name_errors .= "<div class='alert alert-danger'>Tape ". $_POST['label'.$i]. " already exists. Please change the name before adding this tape.</div>";
+        //echo ("i = $i, label = ".$_POST['tape_id'.$i] . ", type = $tape_type");
+        if(isset($_POST['tape_id'.$i])  && $_POST['tape_id'.$i]!="") {
+            $type = new type($db, $tape_type);
+            $type_name = $type->get_name();
+            if(tape_library_object::does_tape_exist($db, $_POST['tape_id'.$i], $tape_type)) {
+                $name_errors .= "<div class='alert alert-danger'>Tape ". $_POST['tape_id'.$i]. " of type $type_name already exists. Please change the ID before adding this tape.</div>";
             }
         } else {
-            $name_errors .= "<div class='alert alert-danger'>Please input a name for Tape $i</div>";
+            $name_errors .= "<div class='alert alert-danger'>Please input a name for Tape ".$_POST['tape_id'.$i]."</div>";
         }
         
     }
@@ -100,16 +103,19 @@ if(isset($_POST['submit'])) {
     } else {
     //for ($i=$tape_from;$i<=$tape_to;$i++) {
         for($i=0; $i<$numtapes; $i++) {
-            $label[$i] = $_POST['label'.$i];
+            $ids[$i] = $_POST['tape_id'.$i];
+            $label[$i] = $_POST['tape_label'.$i];
+            
             //echo("label[$i] = ".$label[$i]."<BR>");
 	}
+
     	if (is_numeric($tape_to) && $tape_from <= $tape_to) {
 		//for ($i = $tape_from; $i <= $tape_to; $i++) {
                 for($i=0; $i<$numtapes; $i++) {
                     //echo("Adding tape : ".$label[$i]."<BR>");
 
 			//mysql_query("insert into tape (type,capacity,tape_number,container,backup_set,carton,label) values ('$type','$capacity','$i','$container','$backup_set','$carton','$label[$i]')");
-                    $result = tape_library_object::add_tape($db, $label[$i], $tape_type, $container_id, $backupset, 0 ); //TODO: userid?
+                    $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, 0, $label[$i] ); //TODO: userid?
 
                     if ($result['RESULT']) {
                         $messages .=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
@@ -190,6 +196,7 @@ echo("</td><td>");
 echo("<table class='table'><tr><td>");
 
 print "<div id='add_multi_labels'>";
+
 		print "</div>";
         print "</td>";
 echo("</td></tr></table>");
