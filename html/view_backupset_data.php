@@ -14,6 +14,22 @@ if((!isset($_GET['backupset_id'])&& !isset($_POST['backupset_id']) ||
     echo("Error: Please select a backup set.");
     
 } else{
+    
+    if(isset($_POST['submit_deactivate'])) {
+    if(isset($_POST['backupset_id'])) {
+        $backupset_id = $_POST['backupset_id'];
+    }
+    $backupset = new backupset($db, $backupset_id);
+    $result = $backupset->deactivate_backupset($backupset_id);
+    if($result['RESULT'] == TRUE) {
+        echo("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+    } else {
+        echo("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+    }
+    return;
+    
+}
+
     if(isset($_POST['backupset_id'])) {
 
         $backupset_id = $_POST['backupset_id'];
@@ -47,12 +63,13 @@ echo("<fieldset><table id='view_tapes' class='table table-bordered table-hover t
 if(count($tapes)== 0) {
     echo "<tr><td>No tapes have been added.</td></tr>";
 } else {
-    echo("<thead><tr><th>Label</th><th>Type</th><th>Parent Location</th></thead>");
+    echo("<thead><tr><th>Tape ID Number</th><th>Type</th><th>Label</th><th>Parent Location</th></thead>");
     echo("<tbody>");
     foreach($tapes as $tape) {
         //echo("<tr><td>".$tape['tape_number']."</td>");
         echo("<td>".$tape->get_label()."</td>");
         echo("<td>".$tape->get_type_name()."</td>");
+        echo("<td>".$tape->get_tape_label()."</td>");
         echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$tape->get_full_path()."</a></td></tr>");
         
     }
@@ -76,13 +93,13 @@ echo("<form method='POST' action='edit_backupset.php' name='edit_backupset'>");
 echo("<input type='hidden' name='id' value='$backupset_id'>");
 echo("<input type='submit' name='submit' value='Edit this Backup set'>");
 echo("</form>");
+
 /*
-echo("<form method='POST' action='view_backupset_data.php' name='get_report'>");
-echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
-echo("<input type='submit' name='report_submit' value='Get Report'>");
+echo("<form name='delete_backupset' action='edit_backupset.php' onsubmit=\"return confirm('Do you really want to remove this backupset?')>\"");
+echo("<input type='hidden' name='id' value='".$backupset_id."'>");
+echo("<input type='submit' name='submit_deactivate' value='Deactivate Backup Set'>");
 echo("</form>");
-}=
- */
+*/
 }
 ?>
 <form class='form-inline' action='report.php' method='post'>
