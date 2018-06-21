@@ -17,56 +17,51 @@ $('#addform').ready(function(){
 })*/
 
 function set_new_tapes() {
-/*
-    if(!jQuery.isNumeric($('.tape_from').val())) {
-        $('.tape_to').attr('disabled', true);
-    } else {
-        $('.tape_to').attr('disabled', false);
-    }
-    */
+
     if($('.tape_from').val() != 0 && ($('.tape_to').val() == 0 || !jQuery.isNumeric($('.tape_to').val()))) {
+        // If "From" field is not empty, and "To" field is empty or contains alphabetical characters...
         var i = 0;
         var starttape = $('.tape_from').val();
         var text = "";
         var inputboxes = $("#add_multi_labels").html('');
         text += "<table class='table'>";
         text += ("<tr><th>Tape ID</th><th>Tape Label</th></tr>");
-        var currentTapeString = starttape.toString();
+        var currentTapeString = starttape;
         text +=("<tr><td>"+currentTapeString+":</td><td>"+ "<input type='text' name='tape_label" + i + "' value='' placeholder='Label for " + currentTapeString + "' /><br />");
         text +=("<input type='hidden' name='tape_id"+i+"' value='"+currentTapeString+"'></td></tr>");
         inputboxes.append(text);
     } else if($('.tape_to').val() != 0 && $('.tape_from').val() != 0) {
-    var starttape = $('.tape_from').val();
-    var currentTape = 0;
-    var length = 0;
-    var inputboxes = $("#add_multi_labels").html('');
-    var NumofTapes = $('.tape_to').val() - $('.tape_from').val() + 1;
-    var text = "";
-    text += "<table class='table'>";
-    text += ("<tr><th>Tape ID</th><th>Tape Label</th></tr>");
-    $('#number_of_tapes').text(NumofTapes);
+        var starttape = $('.tape_from').val();
+        var currentTape = 0;
+        var length = 0;
+        var inputboxes = $("#add_multi_labels").html('');
+        var NumofTapes = $('.tape_to').val() - $('.tape_from').val() + 1;
+        var text = "";
+        text += "<table class='table'>";
+        text += ("<tr><th>Tape ID</th><th>Tape Label</th></tr>");
+        $('#number_of_tapes').text(NumofTapes);
 
-    for (var i=0;i<NumofTapes;i++) {
-      if(starttape.startsWith("0")) {
-          length = starttape.length;
-          //alert("length = "+length);
-      }
-      //alert("length = "+length);
-      currentTape = parseInt(starttape, 10)+i;
-      var currentTapeString = currentTape.toString();
-      //alert("currentTape length = "+currentTapeString.length);
-      if(length > 0) {
-          // pad with zeroes
-          while(currentTapeString.length < length) {
-              currentTapeString = "0"+currentTapeString;
+        for (var i=0;i<NumofTapes;i++) {
+          if(starttape.startsWith("0")) {
+              length = starttape.length;
+              //alert("length = "+length);
           }
-      }
-      text +=("<tr><td>"+currentTapeString+":</td><td>"+ "<input type='text' name='tape_label" + i + "' value='' placeholder='Label for " + currentTapeString + "' /><br />");
-      text +=("<input type='hidden' name='tape_id"+i+"' value='"+currentTapeString+"'></td></tr>");
-    }
+          //alert("length = "+length);
+          currentTape = parseInt(starttape, 10)+i;
+          var currentTapeString = currentTape.toString();
+          //alert("currentTape length = "+currentTapeString.length);
+          if(length > 0) {
+              // pad with zeroes
+              while(currentTapeString.length < length) {
+                  currentTapeString = "0"+currentTapeString;
+              }
+          }
+          text +=("<tr><td>"+currentTapeString+":</td><td>"+ "<input type='text' name='tape_label" + i + "' value='' placeholder='Label for " + currentTapeString + "' /><br />");
+          text +=("<input type='hidden' name='tape_id"+i+"' value='"+currentTapeString+"'></td></tr>");
+        }
 
-    text += ("</table>");
-    inputboxes.append(text);
+        text += ("</table>");
+        inputboxes.append(text);
     } else {
         // clear
         var inputboxes = $("#add_multi_labels").html('');
@@ -131,7 +126,7 @@ $(document).ready(function(){
         "pageLength": 50,
         "lengthChange": false
     } );
-
+    
 
     
     var dates = $( "#from, #to" ).datepicker({
