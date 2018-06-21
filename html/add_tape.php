@@ -43,6 +43,8 @@ echo("<H3>Add Tapes</H3>");
     $backupset = null;
     $messages = "";   
     $name_errors = "";
+    $tape_from = null;
+    $tape_to = null;
 if(isset($_POST['submit'])) {
     
     if(isset($_POST['tape_type']) && $_POST['tape_type'] != null) {
@@ -61,65 +63,71 @@ if(isset($_POST['submit'])) {
     }
     if(isset($_POST['tape_from'])) {
         $tape_from = $_POST['tape_from'];
-    }
+    } 
     if(isset($_POST['tape_to'])) {
         $tape_to = $_POST['tape_to'];
     }
     //$tape_from = 1;
     //$tape_from = $_POST['tape_from'];
     //$tape_to = $_POST['tape_to'];
-    
-    if(!is_numeric($tape_to)) {
-        $errors .= "<div class='alert alert-danger'>Please input a proper number of tapes.</div>";
+    if(($tape_to != null && !is_numeric($tape_to)) && ($tape_from != null && !is_numeric($tape_from))) {
+        $errors .= "<div class='alert alert-danger'>'From' and 'To' fields cannot both contain alphabetical characters.<BR>Please make both numeric, or only input one in the 'From' field.</div>";
     }
-    if(strlen($errors) > 0) {
+    //if(!is_numeric($tape_to)) {
+    //   $errors .= "<div class='alert alert-danger'>Please input a proper number of tapes.</div>";
+    //}
+   
+    
+    
+    if($tape_from == null) {
+        $errors .= "<div class='alert alert-danger'>Please input a value for the 'From' field.</div>";
+    }
+    if(is_numeric($tape_to) && is_numeric($tape_from)) {
+        if($tape_to <= $tape_from) {
+            $errors .= "<div class='alert alert-danger'>For numeric inputs, the 'To' field must be greater than the 'From' field.</div>";
+        }
+        $numtapes = $tape_to - $tape_from + 1;
+    } else {
+        $numtapes = 1;
+    }
+
+ if(strlen($errors) > 0) {
         //echo $errors;
     } else {
 
     $label = array();
     $ids = array();
-    
-    //for ($i=$tape_from;$i<=$tape_to;$i++) {
-    //echo("from = $tape_from")
-    $numtapes = $tape_to - $tape_from + 1;
-    //echo("numtapes = $numtapes<BR>");
-    for($i=0; $i<$numtapes; $i++) {
-        // check for duplicates before starting to commit
-        //echo ("i = $i, label = ".$_POST['tape_id'.$i] . ", type = $tape_type");
-        if(isset($_POST['tape_id'.$i])  && $_POST['tape_id'.$i]!="") {
-            $type = new type($db, $tape_type);
-            $type_name = $type->get_name();
-            if(tape_library_object::does_tape_exist($db, $_POST['tape_id'.$i], $tape_type)) {
-                $name_errors .= "<div class='alert alert-danger'>Tape ". $_POST['tape_id'.$i]. " of type $type_name already exists. Please change the ID before adding this tape.</div>";
-            }
-        } else {
-            $name_errors .= "<div class='alert alert-danger'>Please input a name for Tape ".$_POST['tape_id'.$i]."</div>";
-        }
-        
-    }
-    if(strlen($name_errors) > 0) {
-        //echo($name_errors);
-        
-    } else {
-    //for ($i=$tape_from;$i<=$tape_to;$i++) {
+
         for($i=0; $i<$numtapes; $i++) {
             $ids[$i] = $_POST['tape_id'.$i];
             $label[$i] = $_POST['tape_label'.$i];
             
             //echo("label[$i] = ".$label[$i]."<BR>");
+            //echo("ids[$i] = ".$ids[$i]."<BR>");
 	}
+        //echo("tape_to = $tape_to, tape_from = $tape_from<BR>");
+        if((is_null($tape_to) || $tape_to === "") && !is_null($tape_from)) {
+            // just add one
+            $i = 0;
+            //echo("Adding just one tape : ".$label[$i]."<BR>");
+            $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, 0, $label[$i] ); //TODO: userid?
+            if ($result['RESULT']) {
+                $messages .=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+            } else {
 
-    	if (is_numeric($tape_to) && $tape_from <= $tape_to) {
-		//for ($i = $tape_from; $i <= $tape_to; $i++) {
+                $messages .=("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+            }
+        } else if (is_numeric($tape_to) && $tape_from <= $tape_to) {
+
                 for($i=0; $i<$numtapes; $i++) {
-                    //echo("Adding tape : ".$label[$i]."<BR>");
+                    //echo("Adding tape : ".$ids[$i]."<BR>");
 
-			//mysql_query("insert into tape (type,capacity,tape_number,container,backup_set,carton,label) values ('$type','$capacity','$i','$container','$backup_set','$carton','$label[$i]')");
                     $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, 0, $label[$i] ); //TODO: userid?
 
                     if ($result['RESULT']) {
                         $messages .=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
                     } else {
+                        
                         $messages .=("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
                     }
                 }
@@ -132,17 +140,12 @@ if(isset($_POST['submit'])) {
 	}
     }
     }
-    }
+
     
     if(isset($_GET['tape_type'])) {
         $tape_type = $_GET['tape_type'];
     }
-    //$result = add_item($db, $name, $tape_type, $container_id, $service, 0 );
-     //if($result) {
-        
-     //} else {
-         //echo("ERROR: ");
-     //}
+
 
 
 
@@ -154,6 +157,12 @@ echo("<table class='table table-bordered display'>");
 
       print "<tr >";
         print "<td width=40%>Tapes to add:</td>";
+        /*
+        print(" <div class='tooltip'>Notes:
+            <span class='tooltiptext'>Inputting numeric values in both the 'From' and 'To' fields will generate a list of values. If 'From' containes alphabetic characters, only one value will be input.</span>
+          </div> ");
+         * */
+         
         print "<td>From:";
         createInput("text","tape_from",isset($tape_from) ? $tape_from : "");
         print "<br />To: ";
