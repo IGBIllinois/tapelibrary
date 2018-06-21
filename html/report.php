@@ -222,13 +222,7 @@ if(isset($_POST['create_backupset_report'])) {
                 //echo("No such backupset.<BR>");
                 return;
             }
-            
-            
-            
-            //$backupset = get_backupset($db, $container['backupset']);
-            //print_r($backupset);
-            //$backupset_name = $backupset['name'];
-            //$backupset = $db->get_backupset($backupset_id);
+
             $header = array($backupset->get_name());
             $start_line = array("Start Date", $backupset->get_begin_date());
             $end_line = array("End Date", $backupset->get_end_date());
@@ -236,7 +230,7 @@ if(isset($_POST['create_backupset_report'])) {
             $notes_line = array("Notes", $backupset->get_notes());
             
             $tapes = $backupset->get_tapes_in_backupset();
-            $titles = array("Tape Label", "Tape Type", "Container", "Full Path");
+            $titles = array("Tape Label", "Tape Type", "Label", "Container", "Full Path");
 
             
             $data[] = ($header);
@@ -256,7 +250,7 @@ if(isset($_POST['create_backupset_report'])) {
                 $container_name = $tape->get_container_name();
                 //$container_name = $container['label'];
                 
-                $tape_array = array($tape->get_label(), $tape->get_type_name(), $container_name, $tape->get_full_path());
+                $tape_array = array($tape->get_label(), $tape->get_type_name(), $tape->get_tape_label(), $container_name, $tape->get_full_path());
                 $data[] = ($tape_array);
             }
 

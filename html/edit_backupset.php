@@ -28,20 +28,10 @@ if(isset($_POST['id'])) {
     $program = $backupset->get_program();
     $notes = $backupset->get_notes();
     $main_location = $backupset->get_main_location();
+    $active = $backupset->is_active();
 
 }
 
-
-if(isset($_POST['submit_delete'])) {
-    if(isset($_POST['backupset_id'])) {
-        $backupset_id = $_POST['backupset_id'];
-    }
-    $backupset = new backupset($db, $backupset_id);
-    $backupset->deactivate_backupset($backupset_id);
-    echo("<div class='alert alert-success'>Backupset ". $backupset['name'] . " successfully deactivated.</div>");
-    return;
-    
-}
 
 if(isset($_POST['submit_edit'])) {
     
@@ -110,19 +100,12 @@ createInput("select", "main_location",(isset($main_location) ? ("$main_location"
 echo("</td></tr>");
 echo("<tr><td>Notes:</td><td><textarea rows='2' name='notes' id='notes'>".(isset($notes) ? $notes : "")."</textarea></td></tr>");
 
-
 echo("</table>");
 echo("<input type='submit' name='submit_edit' value='Edit Backup Set'>");
 echo("</form>");
-echo("<BR>");
 
-
-/*
-echo("<form name='delete_backupset' action='edit_backupset.php onsubmit=\"return confirm('Do you really want to remove this backupset?')>\"");
-echo("<input type='hidden' name='id' value='".$backupset_id."'>");
-echo("<input type='submit' name='submit_delete' value='Delete Backup Set'>");
 echo("</form>");
-*/
+
 
 
 

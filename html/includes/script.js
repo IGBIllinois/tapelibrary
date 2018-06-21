@@ -17,8 +17,25 @@ $('#addform').ready(function(){
 })*/
 
 function set_new_tapes() {
-
-if($('.tape_to').val() != 0 && $('.tape_from').val() != 0) {
+/*
+    if(!jQuery.isNumeric($('.tape_from').val())) {
+        $('.tape_to').attr('disabled', true);
+    } else {
+        $('.tape_to').attr('disabled', false);
+    }
+    */
+    if($('.tape_from').val() != 0 && ($('.tape_to').val() == 0 || !jQuery.isNumeric($('.tape_to').val()))) {
+        var i = 0;
+        var starttape = $('.tape_from').val();
+        var text = "";
+        var inputboxes = $("#add_multi_labels").html('');
+        text += "<table class='table'>";
+        text += ("<tr><th>Tape ID</th><th>Tape Label</th></tr>");
+        var currentTapeString = starttape.toString();
+        text +=("<tr><td>"+currentTapeString+":</td><td>"+ "<input type='text' name='tape_label" + i + "' value='' placeholder='Label for " + currentTapeString + "' /><br />");
+        text +=("<input type='hidden' name='tape_id"+i+"' value='"+currentTapeString+"'></td></tr>");
+        inputboxes.append(text);
+    } else if($('.tape_to').val() != 0 && $('.tape_from').val() != 0) {
     var starttape = $('.tape_from').val();
     var currentTape = 0;
     var length = 0;
