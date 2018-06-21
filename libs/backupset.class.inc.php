@@ -178,10 +178,18 @@ function edit_backupset($name, $begin, $end, $program, $location, $notes) {
 }
 
     function deactivate_backupset($backupset_id) {
+        if($this->get_tapes_in_backupset() == 0 && $this->get_containers_in_backupset() == 0){
         $query = "UPDATE backupset set active=0 where $id=:id";
         $params = array("id"=>$backupset_id);
         $result = $this->db->get_query_result($query, $params);
-        return $result;
+        $return_result = array("RESULT"=>TRUE,
+                                "MESSAGE"=>"Backupset ".$this->get_name() . " successfully deactviated.");
+        } else {
+            $return_result = array("RESULT"=>FALSE,
+                                "MESSAGE"=>"Backupset ".$this->get_name() . " is not empty. Plese remove all tapes and containers from it before deactivating.");
+        }
+        
+        return $reeturn_result;
     }
     
     function get_tapes_in_backupset() {
@@ -189,7 +197,7 @@ function edit_backupset($name, $begin, $end, $program, $location, $notes) {
         $backupset_id = $this->id;
         $tape_array = array();
         $backupset_id = $this->id;
-        $query = "SELECT * from tape_library where backupset=:backupset_id order by label";
+        $query = "SELECT * from tape_library where backupset=:backupset_id order by tape_label, label";
         //$query = "select tapes.id as id, tapes.item_id as tape_number, tapes.label as label, tapes.container as parent, tapes.type as type, tapes.backupset as backupset, tapes.active as active, (SELECT label from tape_library where parent = id) as container_name";
 
         $params = array("backupset_id"=>$backupset_id);
@@ -226,7 +234,7 @@ function edit_backupset($name, $begin, $end, $program, $location, $notes) {
     
     public static function get_all_backupsets_array($db) {
         
-    $query = "SELECT * from backupset";
+    $query = "SELECT * from backupset order by name";
     $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $result = $db->query($query);
     //print_r($results);
