@@ -44,7 +44,7 @@ if(isset($_POST['max_slots'])) {
 if($types != null && $placed_types != null) {
     foreach($types as $type) {
         if(in_array($type, $placed_types)) {
-            echo("<div class='alert alert-danger'>Error, a container cannot be placed and contain the same type.</div>");
+            echo(html::error_message("Error, a container cannot be placed and contain the same type."));
             $errors = 1;
         }
     }
@@ -103,15 +103,15 @@ if(!$errors) {
             }
         }
      if($result['RESULT']) {
-         echo("<div class='alert alert-success'>Container Type ".$_POST['container_type_name']." successfully edited.</div>");
+         echo(html::success_message("Container Type ".$_POST['container_type_name']." successfully edited."));
      } else {
-         echo("<div class='alert alert-danger'>". $result['MESSAGE']."</div>");
+         echo(html::error_message($result['MESSAGE']));
      }
     } else {
         //echo("Loop error = $loop_error<BR>");
         $loop_type = new type($db,$loop_error);
         $name = $loop_type->get_name();
-        echo("<div class='alert alert-danger'>There is an error in where this container can be placed. <BR> It could both contain and be placed in a <B>$name</B>.<BR>Please double check and try again.</div>");
+        echo(html::error_message("There is an error in where this container can be placed. <BR> It could both contain and be placed in a <B>$name</B>.<BR>Please double check and try again."));
     }
 }
 }

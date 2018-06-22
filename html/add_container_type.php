@@ -20,7 +20,7 @@ echo("<H3>Add Container or Tape Types</H3>");
 if(isset($_POST['submit'])) {
 
 if(!isset($_POST['container_type_name']) || $_POST['container_type_name'] == "") {
-    echo("<div class='alert alert-danger'>Please input a name for this container type.</div>");
+    echo(html::error_message("Please input a name for this container type."));
 } else {
     $container_type_name = $_POST['container_type_name'];
     
@@ -33,7 +33,7 @@ if(isset($_POST['placedtypes'])) {
 if($types != null && $placed_types != null) {
     foreach($types as $type) {
         if(in_array($type, $placed_types)) {
-            $errors .= ("<div class='alert alert-danger'>Error, a container cannot be placed and contain the same type.</div>");
+            $errors .= html::error_message("Error, a container cannot be placed and contain the same type.");
         }
     }
 }
@@ -44,21 +44,8 @@ if(isset($_POST['max_slots'])) {
     }
 }
 
-/*
-if(isset($_POST['is_location'])) {
-    $is_location = $_POST['is_location'];
     
-}
-*/
 
-/*
-if(!$is_location && ($placed_types == null || !is_array($placed_types))) {
-    $errors .= ("<div class='alert alert-danger'>Please select at least one container type that this type can be placed in, or mark it as a physical location.</div>");
-}
- * 
- */
-    
-    //print_r($types);
     $can_contain_types = "";
     if($types != null) {
     foreach($types as $type) {
@@ -93,15 +80,15 @@ if(!$is_location && ($placed_types == null || !is_array($placed_types))) {
         }
      if($result['RESULT']) {
          //header('Location:edit_types.php?type_id='.$result.'&add_success=1');
-         echo("<div class='alert alert-success'>Container ".$container_type_name." successfully added.</div>");
+         echo(html::success_message("Container ".$container_type_name." successfully added."));
      } else {
-         echo("<div class='alert alert-danger'>Error:".$result['MESSAGE']."</div>");
+         echo(html::error_message("Error:".$result['MESSAGE']));
      }
     } else {
         //echo("Loop error = $loop_error<BR>");
         $loop_type = new type($db,$loop_error);
         $name = $loop_type->get_name();
-        echo("<div class='alert alert-danger'>There is an error in where this container can be placed. <BR> It could both contain and be placed in a <B>$name</B>.<BR>Please double check and try again.</div>");
+        echo(html::error_message("There is an error in where this container can be placed. <BR> It could both contain and be placed in a <B>$name</B>.<BR>Please double check and try again."));
     }
     
 } else {

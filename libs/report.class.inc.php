@@ -117,7 +117,7 @@ class report {
                 for($i=0; $i<$level; $i++) {
                     $this_row[] = "";
                 }
-                $headers = array_merge($this_row, array("Name","Type","Backupset","Location"));
+                $headers = array_merge($this_row, array("Name","Type","Backupset","Tape Label", "Location"));
                 $data[] = $headers;
             //print_r($object_list);
             foreach($object_list as $object) {
@@ -134,7 +134,7 @@ class report {
                 //    $this_row[] = "";
                 //}
 
-                $data_row = array_merge($this_row, array($tape_library_object->get_label(), $tape_library_object->get_type_name(), $tape_library_object->get_backupset_name(), $tape_library_object->get_container_name()));
+                $data_row = array_merge($this_row, array($tape_library_object->get_label(), $tape_library_object->get_type_name(), $tape_library_object->get_backupset_name(), $tape_library_object->get_tape_label(), $tape_library_object->get_container_name()));
 
                 $data[] = $data_row;
                 $object = new tape_library_object($db, $id);

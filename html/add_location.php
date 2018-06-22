@@ -60,7 +60,7 @@ if(isset($_POST['container_name'])) {
         $name = $_POST['container_name'];
 
     } else {
-        $messages .= "<div class='alert alert-danger'>Please select a valid name for this container.</div>";
+        $messages .= html::error_message("Please select a valid name for this container.");
         
     }
     
@@ -72,7 +72,7 @@ if(isset($_POST['container_name'])) {
         $container_type = $_POST['container_type'];
 
     } else {
-        $messages .= "<div class='alert alert-danger'>Please select a type for this container.</div>";
+        $messages .= html::error_message("Please select a type for this container.");
         
     }
 
@@ -89,7 +89,7 @@ if(isset($_POST['container_name'])) {
             header('Location:view_container.php?container_id='.$result['id'].'&add_success=1');
             //$messages .=("<div class='alert alert-success'>Container ".$name." successfully added.</div>");
         } else {
-            $messages .=("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+            $messages .=html::error_message($result['MESSAGE']);
         }
     } else {
         //echo($errors);

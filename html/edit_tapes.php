@@ -101,38 +101,14 @@ if(isset($_POST['submit'])) {
                 
                 $result = $this_tape->edit($tape_label, $container, $active, $new_tape_label);
                 if($result['RESULT']) {
-                    $messages.=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+                    $messages.=(html::success_message($result['MESSAGE']));
                 } else {
-                    $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+                    $messages .= (html::error_message($result['MESSAGE']));
                 }
-             /*   
-                $result = $container_object->move_object($id);
-                if($result['RESULT']) {
-                    $messages.=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
-                } else {
-                    $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
-                }
-            }
-            
-            $this_tape->set_tape_label($new_tape_label);
-            
-            $is_active = $this_tape->is_active();
-            if($this_tape->is_active() != $active) {
-                $active_result = $this_tape->set_active($active);
-                
-                if($active_result['RESULT']) {
-                    $messages.=("<div class='alert alert-success'>".$active_result['MESSAGE']."</div>");
-                } else {
-                    $messages .= ("<div class='alert alert-danger'>".$active_result['MESSAGE']."</div>");
-                }
-            
-            }    
-              * 
-              */ 
-        //}
+
         }
     } else {
-        $messages .= ("<div class='alert alert-warning'>Nothing checked</div>");
+        $messages .= (html::warning_message("Nothing checked"));
     }
 }
 

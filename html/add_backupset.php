@@ -17,24 +17,21 @@ if(isset($_POST['backupset_name'])) {
     $container_id=null;
     $main_location = null;
 
-    //if(isset($_POST['container_type'])) {
-    //    $container_type = $_POST['container_type'];
-    //}
     $error= "";
     if(isset($_POST['backupset_name']) && $_POST['backupset_name']!="") {
         $backupset_name = $_POST['backupset_name'];
     } else {
-        $error .= "<div class='alert alert-danger'>Please enter a name for the backup set.</div>";
+        $error .= html::error_message("Please enter a name for the backup set.");
     }
     if(isset($_POST['start_date']) && $_POST['start_date'] != "") {
         $start_date = $_POST['start_date'];
     } else {
-        $error .= "<div class='alert alert-danger'>Please enter a start date for the backup set. (YYYY-MM-DD)</div>";
+        $error .= html::error_message("Please enter a start date for the backup set. (YYYY-MM-DD)");
     }
     if(isset($_POST['end_date']) && $_POST['end_date']!="") {
         $end_date = $_POST['end_date'];
     } else {
-        $error .= "<div class='alert alert-danger'>Please enter an end date for the backup set. (YYYY-MM-DD)</div>";
+        $error .= html::error_message("Please enter an end date for the backup set. (YYYY-MM-DD)");
     }
 
     if(isset($_POST['program'])) {
@@ -49,10 +46,9 @@ if(isset($_POST['backupset_name'])) {
         $notes = $_POST['notes'];
     }
     if(isset($start_date) && isset($end_date) && $start_date > $end_date) {
-        $error .= "<div class='alert alert-danger'>Please make sure the start date is before the end date. (YYYY-MM-DD)</div>";
+        $error .= html::error_message("Please make sure the start date is before the end date. (YYYY-MM-DD)");
     }
     if(strlen($error) == 0) {
-        //echo("name = $backupset_name, start = $start_date, end = $end_date, program = $program, notes = $notes <BR>");
         $backupset = new backupset($db);
         try{ 
         $result = $backupset->add_backupset($backupset_name, $start_date, $end_date, $program, $main_location, $notes);
@@ -61,9 +57,9 @@ if(isset($_POST['backupset_name'])) {
         }
         //echo("result = $result<BR>");
         if($result['RESULT']) {
-            echo("<div class='alert alert-success'>".$result['MESSAGE']." </div>");
+            echo(html::success_message($result['MESSAGE']));
         } else {
-            echo("<div class='alert alert-danger'>".$result['MESSAGE']." </div>");
+            echo(html::error_message($result['MESSAGE']));
         }
      } else {
          echo($error."<BR>");

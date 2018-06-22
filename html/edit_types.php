@@ -13,7 +13,7 @@ include 'includes/header.inc.php';
 echo("<H3>Edit Container and Tape Types</H3>");
 if(isset($_GET['add_success']) && $_GET['add_success'] == 1) {
     $type = new type($db, $_GET['type_id']);
-    echo("<div class='alert alert-success'>Type ".$type->get_name()." successfully added.<BR>");
+    echo(html::success_message("Type ".$type->get_name()." successfully added.<BR>"));
     if($type->is_tape()) {
         echo("<a href='add_tape.php?tape_type=".$type->get_id()."'>Add new tapes of type ".$type->get_name()."?</a><BR>");
     } else {
@@ -27,7 +27,7 @@ if(isset($_POST['container_type_name'])) {
     $placed_types = $_POST['placedTypes'];
     foreach($types as $type) {
         if(in_array($type, $placed_types)) {
-            echo("<div class='alert alert-danger'>Error, a container cannot be placed and contain the same type.");
+            echo(html::error_message("Error, a container cannot be placed and contain the same type."));
         }
     }
     //print_r($types);
@@ -39,9 +39,8 @@ if(isset($_POST['container_type_name'])) {
         //echo("Can contain type " . $type ." <BR>");
         $can_contain_types .= $type;
     }
-    echo("type list = $can_contain_types");
-    //echo("Adding container type ".$_POST['container_type_name']."<BR>");
-    //$result = $db->add_container_type($_POST['container_type_name'], $can_contain_types);
+    //echo("type list = $can_contain_types");
+
      if($result != 0) {
          echo("Container ".$_POST['container_type_name']." successfully edited.<BR>");
      }
@@ -110,28 +109,5 @@ if(count($current_tape_types)== 0) {
 
 echo("<BR>");
 
-/*
-echo("<form name='add_container_type' action='add_container_type.php' method='POST'>");
 
-echo("<table id='container_types' class='table table-bordered'>");
-echo("<tr><td>New Location type name</td>");
-echo("<tr><td><input type='text' name='container_type_name' id='container_type_name'></td></tr>");
-echo("<tr><Td>What types can this container contain?</td></tr>");
-echo("<TR><TD>");
-$types = $db->get_all_types();
-foreach($types as $type) {
-    $id = $type['id'];
-    echo("<input type=checkbox id='type$id' onclick=toggle('placedtype$id') name=type[".$type['id']."] value='".$type['id']."'>".$type['name']."<BR>");
-}
-echo("</td></tr><tr><td>");
-echo("In what types can this container be placed?</td></tr><tr><td>");
-$types = $db->get_all_types();
-foreach($types as $type) {
-    $id = $type['id'];
-    echo("<input type=checkbox id='placedtype".$type['id']."' onclick=toggle('type$id') name=placedtypes[".$type['id']."] value='placed".$type['id']."'>".$type['name']."<BR>");
-}
-echo("</td></tr></table>");
-echo("<input type='submit' name='submit' value='Add Type'>");
-echo("</form>");
-*/
 include 'includes/footer.inc.php';

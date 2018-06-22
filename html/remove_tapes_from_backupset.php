@@ -49,12 +49,12 @@ if(!isset($_POST['backupset_id'])) {
                 $messages .= ("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
             } else {
                 //$messages .= ("<div class='alert alert-danger'>There was an error removing ".$tape->get_label() ."  from ".$backupset->get_name() ."</div>");
-                $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+                $messages .= (html::error_message($result['MESSAGE']));
             }
              
         }
     } else {
-        echo("<div class='alert alert-warning'>Nothing checked</div>");
+        echo(html::error_message("Nothing checked"));
     }
 }
 

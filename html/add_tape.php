@@ -50,12 +50,12 @@ if(isset($_POST['submit'])) {
     if(isset($_POST['tape_type']) && $_POST['tape_type'] != null) {
         $tape_type = $_POST['tape_type'];
     } else {
-        $errors .= "<div class='alert alert-danger'>Please input a tape type</div>";
+        $errors .= html::error_message("Please input a tape type");
     }
     if(isset($_POST['container'.$tape_type]) && $_POST['container'.$tape_type] != null) {
         $container_id = $_POST['container'.$tape_type];
     } else {
-        $errors .= "<div class='alert alert-danger'>Please input a container</div>";
+        $errors .= html::error_message("Please input a container");
     }
 
     if(isset($_POST['backupset'])) {
@@ -71,20 +71,18 @@ if(isset($_POST['submit'])) {
     //$tape_from = $_POST['tape_from'];
     //$tape_to = $_POST['tape_to'];
     if(($tape_to != null && !is_numeric($tape_to)) && ($tape_from != null && !is_numeric($tape_from))) {
-        $errors .= "<div class='alert alert-danger'>'From' and 'To' fields cannot both contain alphabetical characters.<BR>Please make both numeric, or only input one in the 'From' field.</div>";
+        $errors .= html::error_message("'From' and 'To' fields cannot both contain alphabetical characters.<BR>Please make both numeric, or only input one in the 'From' field.");
     }
-    //if(!is_numeric($tape_to)) {
-    //   $errors .= "<div class='alert alert-danger'>Please input a proper number of tapes.</div>";
-    //}
+
    
     
     
     if($tape_from == null) {
-        $errors .= "<div class='alert alert-danger'>Please input a value for the 'From' field.</div>";
+        $errors .= html::error_message("Please input a value for the 'From' field.");
     }
     if(is_numeric($tape_to) && is_numeric($tape_from)) {
         if($tape_to <= $tape_from) {
-            $errors .= "<div class='alert alert-danger'>For numeric inputs, the 'To' field must be greater than the 'From' field.</div>";
+            $errors .= html::error_message("For numeric inputs, the 'To' field must be greater than the 'From' field.");
         }
         $numtapes = $tape_to - $tape_from + 1;
     } else {
@@ -112,10 +110,10 @@ if(isset($_POST['submit'])) {
             //echo("Adding just one tape : ".$label[$i]."<BR>");
             $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, 0, $label[$i] ); //TODO: userid?
             if ($result['RESULT']) {
-                $messages .=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+                $messages .=(html::success_message($result['MESSAGE']));
             } else {
 
-                $messages .=("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+                $messages .=(html::error_message($result['MESSAGE']));
             }
         } else if (is_numeric($tape_to) && $tape_from <= $tape_to) {
 
@@ -125,17 +123,17 @@ if(isset($_POST['submit'])) {
                     $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, 0, $label[$i] ); //TODO: userid?
 
                     if ($result['RESULT']) {
-                        $messages .=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+                        $messages .=(html::success_message($result['MESSAGE']));
                     } else {
                         
-                        $messages .=("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+                        $messages .=(html::error_message($result['MESSAGE']));
                     }
                 }
 		//print "<script type=\"text/javascript\">parent.window.container.href='index.php'</script>";
                 //print("<BR>Tapes added<BR>");
                 //unset($_POST);
 	} else {
-		$messages .= "<p><b><div class='alert alert-danger'>Something went wrong, please try again</div></b></p>";
+		$messages .= html::error_message("<p><b>Something went wrong, please try again</b></p>");
             
 	}
     }

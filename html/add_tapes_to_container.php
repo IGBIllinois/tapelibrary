@@ -56,7 +56,7 @@ if(isset($_POST['submit'])) {
     if(isset($_POST['tape_type']) && $_POST['tape_type'] != null) {
         $tape_type = $_POST['tape_type'];
     } else {
-        $errors .= "<div class='alert alert-danger'>Please input a tape type</div>";
+        $errors .= html::error_message("Please input a tape type");
     }
     
 
@@ -74,7 +74,8 @@ if(isset($_POST['submit'])) {
     //$tape_to = $_POST['tape_to'];
     
     if(!is_numeric($tape_to)) {
-        $errors .= "<div class='alert alert-danger'>Please input a proper number of tapes.</div>";
+        $errors .= html::error_message("Please input a proper number of tapes.");
+            
     }
     if(strlen($errors) > 0) {
         //echo $errors;
@@ -91,10 +92,10 @@ if(isset($_POST['submit'])) {
         //echo ("i = $i, label = "+$_POST['label'.$i]);
         if(isset($_POST['label'.$i])  && $_POST['label'.$i]!="") {
             if(tape_library_object::does_tape_exist($db, $_POST['label'.$i])) {
-                $name_errors .= "<div class='alert alert-danger'>Tape ". $_POST['label'.$i]. " already exists. Please change the name before adding this tape.</div>";
+                $name_errors .= html::error_message("Tape ". $_POST['label'.$i]. " already exists. Please change the name before adding this tape.");
             }
         } else {
-            $name_errors .= "<div class='alert alert-danger'>Please input a name for Tape $i</div>";
+            $name_errors .= html::error_message("Please input a name for Tape $i.");
         }
         
     }
@@ -117,36 +118,24 @@ if(isset($_POST['submit'])) {
 
 
                     if ($result['RESULT']) {
-                        $messages .=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+                        $messages .=(html::success_message($result['MESSAGE']));
                     } else {
-                        $messages .=("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+                        $messages .=(html::error_message($result['MESSAGE']));
                     }
                 }
-		//print "<script type=\"text/javascript\">parent.window.container.href='index.php'</script>";
-                //print("<BR>Tapes added<BR>");
-                //unset($_POST);
+
 	} else {
-		$messages .= "<p><b><div class='alert alert-danger'>Something went wrong, please try again</div></b></p>";
+		$messages .= html::error_message("<p><b>Something went wrong, please try again.</b></p>");
             
 	}
     }
     }
     }
-    //$result = add_item($db, $name, $tape_type, $container_id, $service, 0 );
-     //if($result) {
-        
-     //} else {
-         //echo("ERROR: ");
-     //}
-
-
-
 
 echo("<form id='addform' name='add_tape' action='add_tapes_to_container.php' method='POST'>");
 echo("<input type=hidden name='container_id' value='$container_id'>");
 echo("<table><tr><td valign='top'>");
 echo("<table class='table table-bordered display'>");
-//echo("<tr><td>Location Name:</td><td><input type='text' name='container_name' id='container_name'></td></tr>");
 
       print "<tr >";
         print "<td width=20%>Tapes to add:</td>";
@@ -237,6 +226,6 @@ echo("</table></fieldset>");
 
 echo("<BR>");
 } else {
-    $errors = "Please input a proper container";
+    $errors = html::error_message("Please input a proper container.");
 }
 include 'includes/footer.inc.php';

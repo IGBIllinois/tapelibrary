@@ -20,7 +20,7 @@ $begin = null;
 if(isset($_POST['backupset_id'])) {
     $backupset_id = $_POST['backupset_id'];
 } else {   
-    echo("There was an error with the specified backup set. Please try again.");
+    echo(html::error_message("There was an error with the specified backup set. Please try again."));
     return 0;
 }    
     
@@ -31,7 +31,7 @@ if(isset($_POST['backupset_id'])) {
 $backupset = new backupset($db, $backupset_id);
 
 if($backupset == null) {
-    echo("<div class='alert alert-danger'>Please select a valid backup set.</div");
+    echo(html::error_message("Please select a valid backup set."));
 } else {
 $messages = "";
 //echo("Add tapes to backup set: ".$backupset['name']);
@@ -53,37 +53,16 @@ if(isset($_POST['add_tapes_submit'])) {
 
             
             if($result['RESULT']) {
-                $messages .= ("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+                $messages .= (html::success_message($result['MESSAGE']));
             } else {
-                $messages .=("<div class='alert alert-danger'>".$result['MESSAGE']."</div>" );
+                $messages .=(html::error_message($result['MESSAGE']) );
             }
-            
-            
-            
-            //$tape_id = $_POST['tape_id_'.$id];
-            ////$tape_label = $_POST['tape_label_'.$id];
-            //$container = $_POST['tape_container_'.$id];
-            //if($container == "") {
-            //    $container = null;
-            //}
-            //$type = $_POST['tape_type_'.$id];
-            //$service = $_POST['service_'.$id];
-            //$active = (isset($_POST['active_'.$id]) ? 1 : 0);
-            /*
-            echo("id = $id<BR>");
-            echo("container = $container<BR>");
-            echo("type = $type<BR>");
-            echo("service = $service<BR>");
-            echo("name = $tape_name<BR>");
-            echo("active = $active<BR>");
-             * 
-             */
-            //edit_tape($db, $id, $tape_id, $tape_label, $container, $type, $service, $active);
+
              
              
         }
     } else {
-        $messages .= ("<div class='alert alert-warning'>Nothing checked</div>");
+        $messages .= (html::warning_message("Nothing checked"));
     }
 }
 echo("<h3>Adding tapes to ".$backupset->get_name()."</h3>");

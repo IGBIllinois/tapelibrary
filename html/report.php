@@ -80,7 +80,7 @@ if (isset($_POST['create_full_report'])) {
             $data[] = ($start_line);
             $data[] = ($end_line);
             $data[] = (array());
-            $titles = array("Tape Label", "Tape Type", "Container");
+            $titles = array("Tape ID Number", "Tape Type", "Tape Label", "Container");
             $data[] = ($titles);
             
             $tapes = $backupset->get_tapes_in_backupset();
@@ -90,7 +90,7 @@ if (isset($_POST['create_full_report'])) {
                 //$container = $db->get_container_by_id($container_id);
                 $container_name = $tape->get_container_name();
                 
-                $data[] = array($tape->get_label(), $tape->get_type_name(), $container_name);
+                $data[] = array($tape->get_label(), $tape->get_type_name(), $tape->get_tape_label(), $container_name);
                 
             }
         //$excel->writeLine(array());
@@ -183,14 +183,14 @@ if(isset($_POST['create_container_detail_report'])) {
     $data = array();
     
     $containers = tape_library_object::get_container_objects($db, $name, $container_type, $parent);
-    //print_r($containers);
+
     foreach($containers as $container) {
         $container_id = $container->get_id();
         $type_name = $container->get_type_name();
             $data[] = array("Report for ".$container->get_label(), "Type: ".$type_name);
 
             $tapes = tape_library_object::get_tapes($db, null, null, null, $container_id);
-            $data[] = array("Tape Label", "Tape Type", "Backupset");
+            $data[] = array("Tape ID Number", "Tape Type", "Tape Label", "Backupset");
 
             //$excel= new ExcelWriter("excel/".$filename);
             
@@ -201,7 +201,7 @@ if(isset($_POST['create_container_detail_report'])) {
                 $backupset = new backupset($db, $tape->get_backupset());
                 
                 $backupset_name = $backupset->get_name();
-                $data[] = array($tape->get_label(), $tape->get_type_name(), $backupset_name);
+                $data[] = array($tape->get_label(), $tape->get_type_name(), $tape->get_tape_label(), $backupset_name);
                 //$excel->writeLine($tape_array);
             }
             $data[] = array();
@@ -230,7 +230,7 @@ if(isset($_POST['create_backupset_report'])) {
             $notes_line = array("Notes", $backupset->get_notes());
             
             $tapes = $backupset->get_tapes_in_backupset();
-            $titles = array("Tape Label", "Tape Type", "Label", "Container", "Full Path");
+            $titles = array("Tape ID Number", "Tape Type", "Label", "Container", "Full Path");
 
             
             $data[] = ($header);

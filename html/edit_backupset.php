@@ -14,12 +14,12 @@ if(isset($_POST['id'])) {
 
     $backupset_id = $_POST['id'];
     if(!isset($backupset_id)) {
-        echo("<div class='alert alert-danger'>The backupset you selected does not exist. Please try again.</div>");
+        echo(html::error_message("The backupset you selected does not exist. Please try again."));;
         return;
     }
     $backupset = new backupset($db, $backupset_id);
     if($backupset == null) {
-        echo("<div class='alert alert-danger'>The backupset you selected does not exist. Please try again.</div>");
+        echo(html::error_message("The backupset you selected does not exist. Please try again."));
 
     } else {
     $name = $backupset->get_name();
@@ -44,17 +44,17 @@ $backupset_id = $_POST['backupset_id'];
     if(isset($_POST['name']) && $_POST['name']!="") {
         $name = $_POST['name'];
     } else {
-        $error .= "<div class='alert alert-danger'>Please enter a name for the backup set.</div>";
+        $error .= html::error_message("Please enter a name for the backup set.");
     }
     if(isset($_POST['begin']) && $_POST['begin'] != "") {
         $begin = $_POST['begin'];
     } else {
-        $error .= "<div class='alert alert-danger'>Please enter a start date for the backup set. (YYYY-MM-DD)</div>";
+        $error .= html::error_message("Please enter a start date for the backup set. (YYYY-MM-DD)");
     }
     if(isset($_POST['end']) && $_POST['end']!="") {
         $end = $_POST['end'];
     } else {
-        $error .= "<div class='alert alert-danger'>Please enter an end date for the backup set. (YYYY-MM-DD)</div>";
+        $error .= html::error_message("Please enter an end date for the backup set. (YYYY-MM-DD)");
     }
 
     if(isset($_POST['program'])) {
@@ -67,7 +67,8 @@ $backupset_id = $_POST['backupset_id'];
         $notes = $_POST['notes'];
     }
     if($begin > $end) {
-        $error .= "<div class='alert alert-danger'>Please make sure the start date is before the end date. (YYYY-MM-DD)</div>";
+        $error .= html::error_message("Please make sure the start date is before the end date. (YYYY-MM-DD)");
+            
     }
     if(strlen($error) == 0) {
         //echo("name = $name, begin = $begin, end = $end, program = $program, notes = $notes <BR>");
@@ -75,9 +76,9 @@ $backupset_id = $_POST['backupset_id'];
         $result = $backupset->edit_backupset($name, $begin, $end, $program, $main_location, $notes);
         //echo("result = $result<BR>");
         if($result['RESULT']) {
-            echo("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+            echo(html::success_message($result['MESSAGE']));
         } else {
-            echo("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+            echo(html::error_message($result['MESSAGE']));
         }
      } else {
          echo($error."<BR>");
@@ -112,7 +113,7 @@ echo("</form>");
 //echo("<a href=add_tapes_to_backupset.php?backupset_id=".$backupset_id.">Add tapes to backup set</a>");
 
 } else {
-    echo("<div class='alert alert-danger'>The backupset you selected does not exist. Please try again.</div>");
+    echo(html::error_message("The backupset you selected does not exist. Please try again."));
 }
 include 'includes/footer.inc.php';
 

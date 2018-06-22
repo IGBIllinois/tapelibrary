@@ -11,7 +11,7 @@ if((!isset($_GET['backupset_id'])&& !isset($_POST['backupset_id']) ||
         (isset($_POST['backupset_id']) && $_POST['backupset_id']=="") ||
         (isset($_GET['backupset_id']) && $_GET['backupset_id'] == ""))) {
                 
-    echo("Error: Please select a backup set.");
+    echo(html::error_message("Error: Please select a backup set."));
     
 } else{
     
@@ -22,9 +22,9 @@ if((!isset($_GET['backupset_id'])&& !isset($_POST['backupset_id']) ||
     $backupset = new backupset($db, $backupset_id);
     $result = $backupset->deactivate_backupset($backupset_id);
     if($result['RESULT'] == TRUE) {
-        echo("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+        echo(html::success_message($result['MESSAGE']));
     } else {
-        echo("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+        echo(html::error_message($result['MESSAGE']));
     }
     return;
     
@@ -33,16 +33,11 @@ if((!isset($_GET['backupset_id'])&& !isset($_POST['backupset_id']) ||
     if(isset($_POST['backupset_id'])) {
 
         $backupset_id = $_POST['backupset_id'];
-        if(isset($_POST['report_submit'])) {
 
-            echo("Writing Report...");
-            $filename = "backupsetreport.xls";
-            write_backupset_report($db, $backupset_id, $filename);
-        }
     } else {
         $backupset_id = $_GET['backupset_id'];
     }
-//$backupset_id = $_GET['backupset_id'];
+
 
 $backupset_data = new backupset($db, $backupset_id);
 if($backupset_data != null) {

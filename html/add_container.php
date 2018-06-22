@@ -60,7 +60,7 @@ if(isset($_POST['container_name'])) {
         $name = $_POST['container_name'];
 
     } else {
-        $messages .= "<div class='alert alert-danger'>Please select a valid name for this container.</div>";
+        $messages .= html::error_message("Please select a valid name for this container.");
         
     }
     
@@ -77,7 +77,7 @@ if(isset($_POST['container_name'])) {
         if($container_id == "" || $container_id == -1) {
             $this_type = new type($db, $container_type);
             if(!$this_type->is_location()) {
-                $messages .= "<div class='alert alert-danger'>Please select a valid parent location for this container.</div>";
+                $messages .= html::error_message("Please select a valid parent location for this container.");
             } else {
                 //$this_type = new type($db, $type);
                 $container_id=-1;
@@ -85,7 +85,7 @@ if(isset($_POST['container_name'])) {
         }
     
         } else {
-            $messages .= "<div class='alert alert-danger'>Please select a type for this container.</div>";
+            $messages .= html::error_message("Please select a type for this container.");
         }
 
     
@@ -97,9 +97,9 @@ if(isset($_POST['container_name'])) {
 
         if ($result['RESULT']) {
             //header('Location:view_container.php?container_id='.$result['id'].'&add_success=1');
-            $messages .=("<div class='alert alert-success'>Container ".$name." successfully added.</div>");
+            $messages .= html::success_message($result['MESSAGE']);
         } else {
-            $messages .=("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+            $messages .= html::error_message($result['MESSAGE']);
         }
     } else {
         //echo($errors);

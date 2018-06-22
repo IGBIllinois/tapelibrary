@@ -14,45 +14,7 @@ $begin = null;
     $type = null;
     $container = null;
     $active = 1;
-    /*
-        if(isset($_POST['report_submit'])) {
 
-            echo("Writing Report...");
-            $filename = "fullbackupsetreport.xls";
-            write_full_report($db, $filename);
-        }
-     * 
-     
-    
-    if(isset($_POST['report_submit'])) {
-
-            echo("Writing Report...");
-            $filename = "fullbackupsetreport";
-            $data = array();
-            $containers = $db->get_containers();
-        $excel->writeLine($backupsets);
-        foreach($containers as $container) {
-            
-            $container_id = $container->get_id();
-
-            $container_name = $container->get_label();
-            $container_type = $db->get_container_type_name($container->get_type());
-            $container_location = $container->get_container_name();
-            
-            $data[] = array("<B>".$container_name."</B>");
-            $data[] = array("Type:".$container_type);
-            $data[] = array("Located in:".$container_location);
-            
-            
-        }
-        //report::test();
-    }
-     */
-     
-        
-
-
-//
 echo("Current Backup Sets:") ;
 
 echo("<fieldset><table id='view_backupsets' class='table table-bordered table-hover table-striped display'>");
@@ -86,13 +48,7 @@ echo("<td>".$notes."</td></tr>");
 }
 
 echo("</table></fieldset>");
-/*
-echo("<form method='POST' action='view_backupsets.php' name='get_report'>");
-echo("<input type='submit' name='report_submit' value='Get Full Report'>");
-echo("</form>");
 
- * 
- */
 ?>
 <form class='form-inline' action='report.php' method='post'>
 <!-- <input class='btn btn-primary' type='submit'-->

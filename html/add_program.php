@@ -23,7 +23,7 @@ if(isset($_POST['program_name'])) {
         $name = $_POST['program_name'];
 
     } else {
-        $errors .= "<div class='alert alert-danger'>Please select a valid name for this program.</div>";
+        $errors .= html::error_message("Please select a valid name for this program.");
         
     }
 
@@ -40,12 +40,12 @@ if(isset($_POST['program_name'])) {
 
     
      if($result['RESULT']) {
-        echo("<div class='alert alert-success'>Program ".$_POST['program_name']." successfully added.</div>");
+        echo(html::success_message("Program ".$_POST['program_name']." successfully added."));
      } else {
-         echo("<div class='alert alert-danger'>ERROR: ".$result['MESSAGE']."</div>");
+         echo(html::error_message("ERROR: ".$result['MESSAGE']));
      }
     } else {
-        echo("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+        echo(html::error_message($result['MESSAGE']));
     }
 }
 }

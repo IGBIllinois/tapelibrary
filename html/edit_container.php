@@ -37,7 +37,7 @@ if(isset($_POST['container_type']) && $_POST['container_type'] != null) {
 }
 
 if(!isset($_POST['container_id'])&& !isset($_GET['container_id'])) {
-    echo("Please select a proper tape or container.");
+    echo(html::error_message("Please select a proper tape or container."));
 } else {
 
 if(isset($_POST['container_id'])) {
@@ -70,7 +70,7 @@ if(isset($_POST['container_name'])) {
         $name = $_POST['container_name'];
 
     } else {
-        $messages .= "<div class='alert alert-danger'>Please select a valid name for this container.</div>";
+        $messages .= html::error_message("Please select a valid name for this container.");
         
     }
 
@@ -78,7 +78,7 @@ if(isset($_POST['container_name'])) {
         $container_type = $_POST['container_type'];
 
     } else {
-        $messages .= "<div class='alert alert-danger'>Please select a type for this container.</div>";
+        $messages .= html::error_message("Please select a type for this container.");
         
     }
 
@@ -94,9 +94,9 @@ if(isset($_POST['container_name'])) {
         $result = $container->edit($name, $parent_id, $active );
 
         if ($result['RESULT']) {
-            $messages .=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+            $messages .=(html::success_message($result['MESSAGE']));
         } else {
-            $messages .=("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+            $messages .=(html::error_message($result['MESSAGE']));
         }
     } else {
         //echo($errors);
@@ -133,7 +133,7 @@ foreach($all_types as $type) {
 }
 echo("</table>");
 echo(" </td></tr>");
-//echo("<tr><td>Service:</td><td><input type='text' name='service' id='service'></td></tr>");
+
 if(!$container->is_location()) {
 echo("<tr><td>Backup Set:</td><td>");
 createInput("select","backupset",$backupset,backupset::get_all_backupsets_array($db));

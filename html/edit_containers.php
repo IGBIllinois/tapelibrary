@@ -91,7 +91,7 @@ if(isset($_POST['submit'])) {
             if(isset($_POST['container_location_'.$id])) {
                 $container = $_POST['container_location_'.$id];
             } else {
-                $messages .= "<div class='alert alert-danger'>Error:Cannot move $tape_label to the specified location. Please check that it is a valid container for this type of object.</div>";
+                $messages .= html::error_message("Error:Cannot move $tape_label to the specified location. Please check that it is a valid container for this type of object.");
                 continue;
                 
             }
@@ -109,9 +109,9 @@ if(isset($_POST['submit'])) {
             } else {
                 $result = $container_object->move_object($id);
                 if($result['RESULT']) {
-                    $messages.=("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+                    $messages.=(html::success_message($result['MESSAGE']));
                 } else {
-                    $messages .= ("<div class='alert alert-danger'>".$result['MESSAGE']."</div>");
+                    $messages .= (html::error_message($result['MESSAGE']));
                 }
             }
             
@@ -120,16 +120,16 @@ if(isset($_POST['submit'])) {
             if($this_tape->is_active() != $active) {
                 $active_result = $this_tape->set_active($active);
                 if($active_result['RESULT']) {
-                $messages.=("<div class='alert alert-success'>".$active_result['MESSAGE']."</div>");
+                $messages.=(html::success_message($active_result['MESSAGE']));
             } else {
-                $messages .= ("<div class='alert alert-danger'>".$active_result['MESSAGE']."</div>");
+                $messages .= (html::error_message($active_result['MESSAGE']));
             }
             
             } 
              
         }
     } else {
-        $messages .= ("<div class='alert alert-warning'>Nothing checked</div>");
+        $messages .= (html::warning_message("Nothing checked"));
     }
 }
 $containers = tape_library_object::get_container_objects($db, $begin, $select_type, $select_container, $active, 1);

@@ -13,23 +13,16 @@ if(!isset($_GET['container_id']) && !isset($_POST['container_id'])) {
     echo("Please choose a valid container.");
 } else {
     if(isset($_POST['container_id'])) {
-/*
-        $container_id = $_POST['container_id'];
-        if(isset($_POST['report_submit'])) {
-            echo("Writing Report...");
-            $filename = "tapelibraryreport.xls";
-            write_container_report($db, $container_id, $filename);
-        }
- * */
+
  
     } else {
         $container_id = $_GET['container_id'];
     }
-//$container = $db->get_container_by_id($container_id);
+
 $container = new container($db, $container_id);
 
 if(isset($_GET['add_success']) && ($_GET['add_success'] == 1)) {
-    echo("<div class='alert alert-success'>Container ".$container->get_label()." successfully added.</div>");
+    echo(html::success_message("Container ".$container->get_label()." successfully added."));
 
 }
 echo("<h3>");
@@ -55,7 +48,7 @@ $current_tapes = $container->get_children();
 if(count($current_tapes)== 0) {
     echo "<tr><td>No tapes have been added.</td></tr>";
 } else {
-    echo("<thead><tr><th>Label</th><th>Type</th><th>Backup Set</th></thead>");
+    echo("<thead><tr><th>Tape ID Number</th><th>Type</th><th>Tape Label</th><th>Backup Set</th></thead>");
     echo("<tbody>");
     foreach($current_tapes as $tape_data) {
         $tape_id = $tape_data['id'];
@@ -69,16 +62,8 @@ if(count($current_tapes)== 0) {
         } else {
             $backupset = new backupset($db, $backupset_id);
             $backupset_name = $backupset->get_name();
-            
-            //$backupset = $db->get_backupset($backupset_id);
-            //if($backupset == 0) {
-            //    $backupset_name = "None";
-            //} else {
-            //    $backupset_name = $backupset['name'];
-            //}
-            
+      
         }
-        //echo("<tr><td>".$tape['tape_number']."</td>");
         echo("<td><a href='view_container.php?container_id=".$tape->get_id()."'>".$tape->get_label()."</a></td>");
         echo("<td>".$tape->get_type_name()."</td>");
         echo("<td><a href='view_backupset_data.php?backupset_id=$backupset_id'>".$backupset_name."</a></td></tr>");
@@ -90,7 +75,6 @@ if(count($current_tapes)== 0) {
 
 echo("</table></fieldset>");
 }
-//list_all($db);
 echo("</fieldset>");
 
 if($container->can_contain_tapes()) {
@@ -106,12 +90,6 @@ echo("<input type='hidden' name='container_id' value='$container_id'>");
 echo("<input type='submit' name='edit_container' value='Edit this $object_type'>");
 echo("</form>");
 
-/*
-echo("<form method='POST' action='view_container.php' id='get_report' name='get_report'>");
-echo("<input type='hidden' name='container_id' value='$container_id'>");
-echo("<input type='submit' name='report_submit' value='Get Report'>");
-echo("</form>");
-*/
 }
 ?>
 
