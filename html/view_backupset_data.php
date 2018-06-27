@@ -14,26 +14,53 @@ if((!isset($_GET['backupset_id'])&& !isset($_POST['backupset_id']) ||
     echo(html::error_message("Error: Please select a backup set."));
     
 } else{
-    
+
     if(isset($_POST['submit_deactivate'])) {
+
     if(isset($_POST['backupset_id'])) {
         $backupset_id = $_POST['backupset_id'];
-    }
+    
     $backupset = new backupset($db, $backupset_id);
-    $result = $backupset->deactivate_backupset($backupset_id);
+    $result = $backupset->deactivate_backupset();
     if($result['RESULT'] == TRUE) {
         echo(html::success_message($result['MESSAGE']));
     } else {
         echo(html::error_message($result['MESSAGE']));
     }
-    return;
+    } else {
+        echo(html::error_message("Please input a valid backupset id."));
+    }
     
 }
+
+    if(isset($_POST['submit_activate'])) {
+
+    if(isset($_POST['backupset_id'])) {
+        $backupset_id = $_POST['backupset_id'];
+    
+    $backupset = new backupset($db, $backupset_id);
+    $result = $backupset->activate_backupset();
+    if($result['RESULT'] == TRUE) {
+        echo(html::success_message($result['MESSAGE']));
+    } else {
+        echo(html::error_message($result['MESSAGE']));
+    }
+    } else {
+        echo(html::error_message("Please input a valid backupset id."));
+    }
+    
+}
+
 
     if(isset($_POST['backupset_id'])) {
 
         $backupset_id = $_POST['backupset_id'];
+        if(isset($_POST['report_submit'])) {
 
+            echo("Writing Report...");
+            $filename = "backupsetreport.xls";
+            write_backupset_report($db, $backupset_id, $filename);
+        }
     } else {
         $backupset_id = $_GET['backupset_id'];
     }
@@ -89,12 +116,21 @@ echo("<input type='hidden' name='id' value='$backupset_id'>");
 echo("<input type='submit' name='submit' value='Edit this Backup set'>");
 echo("</form>");
 
-/*
-echo("<form name='delete_backupset' action='edit_backupset.php' onsubmit=\"return confirm('Do you really want to remove this backupset?')>\"");
-echo("<input type='hidden' name='id' value='".$backupset_id."'>");
+
+if($backupset_data->is_active()) {
+echo("<form method='POST' name='deactivate_backupset' action='view_backupset_data.php' onsubmit=\"return confirm('Do you really want to deactivate this backupset?')\">");
+echo("<input type='hidden' name='backupset_id' value='".$backupset_id."'>");
 echo("<input type='submit' name='submit_deactivate' value='Deactivate Backup Set'>");
 echo("</form>");
-*/
+} else {
+ echo("<form method='POST' name='activate_backupset' action='view_backupset_data.php' onsubmit=\"return confirm('Do you really want to activate this backupset?')\">");
+echo("<input type='hidden' name='backupset_id' value='".$backupset_id."'>");
+echo("<input type='submit' name='submit_activate' value='Activate Backup Set'>");
+echo("</form>");   
+}
+
+
+
 }
 ?>
 <form class='form-inline' action='report.php' method='post'>

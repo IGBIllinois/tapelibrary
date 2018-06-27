@@ -177,9 +177,10 @@ function edit_backupset($name, $begin, $end, $program, $location, $notes) {
                 "MESSAGE"=>"Backup set $name edited successfully,");
 }
 
-    function deactivate_backupset($backupset_id) {
-        if($this->get_tapes_in_backupset() == 0 && $this->get_containers_in_backupset() == 0){
-        $query = "UPDATE backupset set active=0 where $id=:id";
+    function deactivate_backupset() {
+
+        if(count($this->get_tapes_in_backupset()) == 0 && count($this->get_containers_in_backupset()) == 0){
+        $query = "UPDATE backupset set active=0 where id=:id";
         $params = array("id"=>$backupset_id);
         $result = $this->db->get_query_result($query, $params);
         $return_result = array("RESULT"=>TRUE,
@@ -189,7 +190,19 @@ function edit_backupset($name, $begin, $end, $program, $location, $notes) {
                                 "MESSAGE"=>"Backupset ".$this->get_name() . " is not empty. Plese remove all tapes and containers from it before deactivating.");
         }
         
-        return $reeturn_result;
+        return $return_result;
+    }
+    
+    function activate_backupset() {
+
+        $backupset_id = $this->get_id();
+        $query = "UPDATE backupset set active=1 where id=:id";
+        $params = array("id"=>$backupset_id);
+        $result = $this->db->get_query_result($query, $params);
+        $return_result = array("RESULT"=>TRUE,
+                                "MESSAGE"=>"Backupset ".$this->get_name() . " successfully activated.");
+
+        return $return_result;
     }
     
     function get_tapes_in_backupset() {
@@ -210,12 +223,13 @@ function edit_backupset($name, $begin, $end, $program, $location, $notes) {
             }
         }
         return $tape_array;
+       
     }
     
-    function get_containers_in_backupset($backupset_id) {
+    function get_containers_in_backupset() {
         //echo("1");
         $tape_array = array();
-        $backupset_id = $this->backupset_id;
+        $backupset_id = $this->get_id();
         
         $query = "SELECT * from tape_library where backupset=:backupset_id order by label";
         //$query = "select tapes.id as id, tapes.item_id as tape_number, tapes.label as label, tapes.container as parent, tapes.type as type, tapes.backupset as backupset, tapes.active as active, (SELECT label from tape_library where parent = id) as container_name";
@@ -242,10 +256,17 @@ function edit_backupset($name, $begin, $end, $program, $location, $notes) {
       
     }
 
-    public static function get_all_backupsets($db) {
+    public static function get_all_backupsets($db, $active=null) {
 
-        $query = "SELECT id from backupset order by name";
+        $query = "SELECT id from backupset ".(($active != null) ? " where active=:active " : ""). " order by name";
+        if($active != null) {
+            $params = array("active"=>$active);
+            $result = $db->get_query_result($query, $params);
+        } else {
+        
         $result = $db->query($query);
+        }
+        
         $backupsets = array();
 
         foreach($result as $backupset_id) {
