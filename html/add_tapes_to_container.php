@@ -114,7 +114,7 @@ if(isset($_POST['submit'])) {
                     //echo("Adding tape : ".$label[$i]."<BR>");
 
 			//mysql_query("insert into tape (type,capacity,tape_number,container,backup_set,carton,label) values ('$type','$capacity','$i','$container','$backup_set','$carton','$label[$i]')");
-                    $result = tape_library_object::add_tape($db, $label[$i], $tape_type, $container_id, $backupset, 0 ); //TODO: userid?
+                    $result = tape_library_object::add_tape($db, $label[$i], $tape_type, $container_id, $backupset, $login_user->get_username() ); //TODO: userid?
 
 
                     if ($result['RESULT']) {
@@ -195,8 +195,7 @@ if(count($current_tapes)== 0) {
         $tape_id = $tape_data['id'];
         $tape = new tape($db, $tape_id);
         $backupset_id = $tape->get_backupset();
-        //$backupset_id = $tape['backupset'];
-        //echo("backupset = $backupset_id<BR>");
+
         $backupset_name = "";
         if($backupset_id == null || $backupset_id == -1) {
             $backupset_name = "None";
@@ -204,15 +203,8 @@ if(count($current_tapes)== 0) {
             $backupset = new backupset($db, $backupset_id);
             $backupset_name = $backupset->get_name();
             
-            //$backupset = $db->get_backupset($backupset_id);
-            //if($backupset == 0) {
-            //    $backupset_name = "None";
-            //} else {
-            //    $backupset_name = $backupset['name'];
-            //}
-            
         }
-        //echo("<tr><td>".$tape['tape_number']."</td>");
+
         echo("<td>".$tape->get_label()."</td>");
         echo("<td>".$tape->get_type_name()."</td>");
         echo("<td><a href='view_backupset_data.php?backupset_id=$backupset_id'>".$backupset_name."</a></td></tr>");

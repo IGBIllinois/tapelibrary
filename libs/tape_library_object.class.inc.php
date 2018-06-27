@@ -170,8 +170,7 @@ class tape_library_object {
         return 0;
     }
     
-    public static function add_tape($db, $label, $type, $container_id, $backupset, $user_id, $tape_label=null) {
-        // TODO: user_id?
+    public static function add_tape($db, $label, $type, $container_id, $backupset, $username, $tape_label=null) {
         
         if(tape_library_object::does_tape_exist($db,$label,$type)) {
             //echo("<div class='alert alert-danger'>A tape or container with the name '$label' already exists. Please choose a different name.</div>");
@@ -182,7 +181,7 @@ class tape_library_object {
             return array("RESULT"=>FALSE,
                             "MESSAGE"=>$message);
         }
-        //echo("container_id = $container_id");
+
         if($container_id == "" || $container_id == -1) {
             // container is a top
         }
@@ -192,10 +191,8 @@ class tape_library_object {
             
             $max_slots = $container->get_max_slots();
             $curr_count = $container->get_object_count();
-            //echo("max_slots = $max_slots; curr_count = $curr_count<BR>");
             if($max_slots != -1 && ($curr_count >= $max_slots)) {
-                //echo("<div class='alert alert-danger'>The parent location is full, and cannot contain any other objects.</div>");
-                //return 0;
+
                 $message = "The parent location '".$container->get_label()."' is full, and cannot contain any other objects.";
                 return array("RESULT"=>FALSE,
                             "MESSAGE"=>$message);
@@ -205,10 +202,9 @@ class tape_library_object {
             $backupset = -1;
         }
 
-        $query = "INSERT INTO tape_library ( label, type, container, backupset, user_id, tape_label, last_update, active) VALUES(:label, :type, :container_id, :backupset, :user_id, :tape_label, NOW(),1)";
-        $params = array('label'=>$label, 'type'=>$type, 'container_id'=>$container_id, 'backupset'=>$backupset, 'user_id'=>0, 'tape_label'=>$tape_label);
-        //echo("label = $label, type = $type, container_id = $container_id, backupset=$backupset, user_id=$user_id");
-        //echo("query = $query<BR>");
+        $query = "INSERT INTO tape_library ( label, type, container, backupset, last_update_username, tape_label, last_update, active) VALUES(:label, :type, :container_id, :backupset, :username, :tape_label, NOW(),1)";
+        $params = array('label'=>$label, 'type'=>$type, 'container_id'=>$container_id, 'backupset'=>$backupset, 'username'=>$username, 'tape_label'=>$tape_label);
+
         try {
 
             $result = $db->get_insert_result($query, $params);
@@ -220,7 +216,7 @@ class tape_library_object {
         } catch(Exception $e) {
             echo $e;
         }
-        //return $result;
+
         
     }    
     
@@ -355,15 +351,14 @@ class tape_library_object {
         return $result;
     }
     
-    function edit($label, $container, $active, $tape_label) {
+    function edit($label, $container, $active, $tape_label, $username=null) {
         $id = $this->id;
         if($container == "") {
             //echo("container is blank, setting to null<BR>");
             $container = null;
         }
         if($container == $id) {
-            //echo("<div class='alert alert-danger'>Cannot move tape or container to itself.</div>");
-            //return 0;
+
             return array("RESULT"=>FALSE,
                         "MESSAGE"=>"Cannot move tape or container to itself.");
         }
@@ -374,12 +369,10 @@ class tape_library_object {
         $current_type = $current_tape->get_type();
         $new_location = new tape_library_object($this->db,$container);
         $new_location_type = $new_location->get_type();
-        //echo("current_type= $current_type, new_loc_type = $new_location_type<BR>");
 
         if($current_type == $new_location_type) {
             $location_type_name = $this->get_container_type_name($new_location_type);
-            //echo("<div class='alert alert-danger'>Cannot move a $location_type_name to another $location_type_name. Please select a proper location where this object can be stored</div>");
-            //return 0;
+
             return array("RESULT"=>FALSE,
                         "MESSAGE"=>"Cannot move a $location_type_name to another $location_type_name. Please select a proper location where this object can be stored");
         }
@@ -397,9 +390,10 @@ class tape_library_object {
         }
         
         try {
-        $query = "UPDATE tape_library set label=:label, container=:container, user_id=:user_id, active=:active, tape_label=:tape_label, last_update=NOW() where id=:id";
-        $params = array('label'=>$label,  'container'=>$container,  'user_id'=>0, 'id'=>$id, 'active'=>$active, 'tape_label'=>$tape_label);
-        
+
+        $query = "UPDATE tape_library set label=:label, container=:container, last_update_username=:username, active=:active, tape_label=:tape_label, last_update=NOW() where id=:id";
+        $params = array('label'=>$label,  'container'=>$container,  'username'=>$username, 'id'=>$id, 'active'=>$active, 'tape_label'=>$tape_label);
+
         $result = $this->db->get_query_result($query, $params);
 
         $this->label = $label;

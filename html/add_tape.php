@@ -108,7 +108,7 @@ if(isset($_POST['submit'])) {
             // just add one
             $i = 0;
             //echo("Adding just one tape : ".$label[$i]."<BR>");
-            $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, 0, $label[$i] ); //TODO: userid?
+            $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, $login_user->get_username(), $label[$i] );
             if ($result['RESULT']) {
                 $messages .=(html::success_message($result['MESSAGE']));
             } else {
@@ -120,7 +120,7 @@ if(isset($_POST['submit'])) {
                 for($i=0; $i<$numtapes; $i++) {
                     //echo("Adding tape : ".$ids[$i]."<BR>");
 
-                    $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, 0, $label[$i] ); //TODO: userid?
+                    $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, $login_user->get_username(), $label[$i] );
 
                     if ($result['RESULT']) {
                         $messages .=(html::success_message($result['MESSAGE']));

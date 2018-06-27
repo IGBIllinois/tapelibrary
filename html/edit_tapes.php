@@ -91,6 +91,7 @@ if(isset($_POST['submit'])) {
             }
 
             $active = (isset($_POST['active_'.$id]) ? 1 : 0);
+
             $this_tape = new tape_library_object($db, $id);
             $container_object = new tape_library_object($db, $container);
 
@@ -99,7 +100,7 @@ if(isset($_POST['submit'])) {
             //    
             //} else {
                 
-                $result = $this_tape->edit($tape_label, $container, $active, $new_tape_label);
+                $result = $this_tape->edit($tape_label, $container, $active, $new_tape_label, $login_user->get_username());
                 if($result['RESULT']) {
                     $messages.=(html::success_message($result['MESSAGE']));
                 } else {

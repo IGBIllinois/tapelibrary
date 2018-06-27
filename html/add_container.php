@@ -92,7 +92,7 @@ if(isset($_POST['container_name'])) {
 
     if(strlen($messages) == 0) {
 
-        $result = tape_library_object::add_tape($db, $name, $container_type, $container_id, $backupset, 0 );
+        $result = tape_library_object::add_tape($db, $name, $container_type, $container_id, $backupset, $login_user->get_username());
    
 
         if ($result['RESULT']) {
