@@ -66,6 +66,7 @@ if(count($current_tapes)== 0) {
         }
         echo("<td><a href='view_container.php?container_id=".$tape->get_id()."'>".$tape->get_label()."</a></td>");
         echo("<td>".$tape->get_type_name()."</td>");
+        echo("<td>".$tape->get_tape_label()."</td>");
         echo("<td><a href='view_backupset_data.php?backupset_id=$backupset_id'>".$backupset_name."</a></td></tr>");
         
     }
