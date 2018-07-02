@@ -181,10 +181,10 @@ function edit_backupset($name, $begin, $end, $program, $location, $notes) {
 
         if(count($this->get_tapes_in_backupset()) == 0 && count($this->get_containers_in_backupset()) == 0){
         $query = "UPDATE backupset set active=0 where id=:id";
-        $params = array("id"=>$backupset_id);
+        $params = array("id"=>$this->get_id());
         $result = $this->db->get_query_result($query, $params);
         $return_result = array("RESULT"=>TRUE,
-                                "MESSAGE"=>"Backupset ".$this->get_name() . " successfully deactviated.");
+                                "MESSAGE"=>"Backupset ".$this->get_name() . " successfully deactivated.");
         } else {
             $return_result = array("RESULT"=>FALSE,
                                 "MESSAGE"=>"Backupset ".$this->get_name() . " is not empty. Plese remove all tapes and containers from it before deactivating.");

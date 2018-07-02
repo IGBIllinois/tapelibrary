@@ -59,6 +59,7 @@ if($container->is_tape()) {
     $parent_id = $container->get_container_id();
     $name = $container->get_label();
     $active = $container->is_active();
+    $tape_label = $container->get_tape_label();
     //$errors = "";
     $backupset = $container->get_backupset();
     $messages = "";
@@ -86,12 +87,17 @@ if(isset($_POST['container_name'])) {
 
         $parent_id = $_POST['container'.$container_type];
     }
+    
+    if(isset($_POST['tape_label'])) {
+
+        $tape_label = $_POST['tape_label'];
+    }
 
     if(strlen($messages) == 0) {
 
         $container = new tape_library_object($db, $container_id);
 
-        $result = $container->edit($name, $parent_id, $active );
+        $result = $container->edit($name, $parent_id, $active, $tape_label);
 
         if ($result['RESULT']) {
             $messages .=(html::success_message($result['MESSAGE']));
@@ -112,6 +118,9 @@ echo("<form name=edit_container' action='edit_container.php' method='POST'>");
 
 echo("<table class='table table-bordered display'>");
 echo("<tr><td width=20%>$object_type Name:</td><td><input type='text' name='container_name' id='container_name'". (isset($name) ? " value='$name' " : "")."></td></tr>");
+if($container->is_tape()) {
+    echo("<tr><td width=20%>Tape Label:</td><td><input type='text' name='tape_label' id='tape_label'". (isset($tape_label) ? " value='$tape_label' " : "")."></td></tr>");
+}
 echo("<tr><td>$object_type Type :");
 echo("<BR><a href='add_container_type.php'>(Add a new container type?)</a>");
 echo("</td><td>");

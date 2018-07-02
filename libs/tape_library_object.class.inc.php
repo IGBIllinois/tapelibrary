@@ -152,6 +152,7 @@ class tape_library_object {
         return $this_type->can_contain_tapes();
     }
     
+    // Determines if a tape of with a label and optional type exissts
     public static function does_tape_exist($db, $label, $type=null) {
         $search_query = "SELECT * from tape_library where label=:label";
         $search_params = array("label"=>$label);
@@ -164,8 +165,10 @@ class tape_library_object {
         
         $search_result = $db->get_query_result($search_query, $search_params);
         //echo("count = ".count($search_result));
+        
         if(count($search_result) > 0) {
-            return 1;
+            echo("found ".$search_result[0]['id']);
+            return $search_result[0]['id'];
         }
         return 0;
     }
@@ -351,7 +354,7 @@ class tape_library_object {
         return $result;
     }
     
-    function edit($label, $container, $active, $tape_label, $username=null) {
+    function edit($label, $container, $active, $tape_label=null, $username=null) {
         $id = $this->id;
         if($container == "") {
             //echo("container is blank, setting to null<BR>");
@@ -387,6 +390,14 @@ class tape_library_object {
                             "MESSAGE"=>"The container '".$new_container->get_label()."' is full. No changes have been made to this object.");
             }
         
+        }
+        $tape_exists = tape_library_object::does_tape_exist($this->db, $label, $current_tape->get_type());
+        
+        if( $tape_exists > 0 && $tape_exists != $current_tape->get_id()) {
+            $type = new type($current_tape->get_type());
+            $type_name = $type->get_name();
+            return array("RESULT"=>FALSE,
+                            "MESSAGE"=>"A tape or container with the name '$label' of type $type_name already exists. Please choose a different name.");
         }
         
         try {
