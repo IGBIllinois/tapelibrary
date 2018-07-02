@@ -167,7 +167,6 @@ class tape_library_object {
         //echo("count = ".count($search_result));
         
         if(count($search_result) > 0) {
-            echo("found ".$search_result[0]['id']);
             return $search_result[0]['id'];
         }
         return 0;

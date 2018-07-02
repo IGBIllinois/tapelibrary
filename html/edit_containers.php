@@ -20,16 +20,12 @@ echo("Limit By:<BR>");
 if(isset($_POST['limit_submit'])) {
     
     
-    if(isset($_POST['begin'])) {
+    if(isset($_POST['container_name'])) {
         
-        $begin = $_POST['begin'];
-        
-    }
-    if(isset($_POST['end'])) {
-        
-        $end = $_POST['end'];
+        $begin = $_POST['container_name'];
         
     }
+
     
     if(isset($_POST['type'])) {
         $select_type = $_POST['type'];
@@ -50,13 +46,10 @@ echo("<table class='table table-bordered'><tr>");
       print "<tr>";
         print "<td>Container name</td>";
         print "<td>";
-        createInput("text","begin","");
+        createInput("text","container_name","");
 
         print "</td>";
-                print "<td rowspan=6>";
-        print "<div id='add_multi_labels'>";
-		print "</div>";
-        print "</td>";
+
       print "</tr>";
 echo("<tr><td>Container Type :</td><td>");
     createInput("select","type","",type::get_container_types($db));
