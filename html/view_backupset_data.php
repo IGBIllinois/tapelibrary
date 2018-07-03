@@ -77,6 +77,7 @@ echo("<B>End Date: </B> ".$backupset_data->get_end_date()."<BR>");
 echo("<B>Program: </B> ".$backupset_data->get_program_name()."<BR>");
 echo("<B>Main Location: </B>".$main_location->get_label()."<BR>");
 echo("<B>Notes: </B> ".$backupset_data->get_notes()."<BR>");
+echo("<B>Status: </B>".($backupset_data->is_active() ? "Active" : "Inactive"));
 echo("<BR>");
 echo("Tapes in this backupset:<BR>");
 
@@ -101,15 +102,18 @@ if(count($tapes)== 0) {
 
 echo("</table></fieldset>");
 }
+if($backupset_data->is_active()) {
 echo("<form method='POST' action='add_tapes_to_backupset.php' name='add_tapes'>");
 echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
 echo("<input type='submit' name='submit' value='Add Tapes to Backup set'>");
 echo("</form>");
 
+
 echo("<form method='POST' action='remove_tapes_from_backupset.php' name='remove_tapes'>");
 echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
 echo("<input type='submit' name='submit' value='Remove Tapes from Backup set'>");
 echo("</form>");
+}
 
 echo("<form method='POST' action='edit_backupset.php' name='edit_backupset'>");
 echo("<input type='hidden' name='id' value='$backupset_id'>");

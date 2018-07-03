@@ -282,6 +282,10 @@ function edit_backupset($name, $begin, $end, $program, $location, $notes) {
     }
 
     function add_tape_to_backupset($tape_id) {
+        if(!$this->is_active()) {
+            return  array("RESULT"=>FALSE,
+                            "MESSAGE"=>"Cannot add tapes to a deactivated backup set. Please re-activate it or use a different backup set.");
+        }
         try {
             $query = "UPDATE tape_library set backupset=:backupset_id where id=:tape_id";
             $params = array("backupset_id"=>$this->id, "tape_id"=>$tape_id);
@@ -290,8 +294,9 @@ function edit_backupset($name, $begin, $end, $program, $location, $notes) {
             return  array("RESULT"=>TRUE,
                             "MESSAGE"=>"Tape ".$tape->get_label(). " successfully added to backup set ". $this->name . ".");
         } catch(Exception $e) {
-            echo($e->getTraceAsString());
-            return 0;
+            //echo($e->getTraceAsString());
+            return  array("RESULT"=>FALSE,
+                            "MESSAGE"=>$e->getTraceAsString());
         }
     }
     
