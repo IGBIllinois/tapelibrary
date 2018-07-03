@@ -42,13 +42,6 @@ if(isset($_POST['submit'])) {
         $active = $_POST['active'];
     }
 
-
-    //$result = add_item($db, $name, $container_type, $container_id, $service, 0 );
-     //if($result) {
-        
-     //} else {
-         //echo("ERROR: ");
-     //}
 }
 
 echo("<form method=POST action=view_tapes.php>");
@@ -65,10 +58,7 @@ echo("<table  class='table table-bordered display'><tr>");
         print "<br />To: ";
         createInput("text","end","");
         print "</td>";
-        //        print "<td rowspan=6>";
-        //print "<div id='add_multi_labels'>";
-	//	print "</div>";
-        //print "</td>";
+
       print "</tr>";
 echo("<tr><td>Tape Type :</td><td>");
     createInput("select","type","",type::get_tape_types($db));

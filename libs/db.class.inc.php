@@ -104,13 +104,10 @@ function get_update_result($query_string, $query_params) {
 }
 
 function get_insert_result($query_string, $query_array) {
-    //echo("insert query = $query_string<BR>");
-    //print_r($query_array);
+
     $statement = $this->get_link()->prepare($query_string, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $stmt = $statement->execute($query_array);
-    //echo("stmt = $stmt<BR>");
     $result =  $this->get_link()->lastInsertId();
-    //echo ("insert id = $result<BR>");
     return $result;
 }
 

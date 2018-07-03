@@ -392,9 +392,11 @@ class tape_library_object {
         }
         $tape_exists = tape_library_object::does_tape_exist($this->db, $label, $current_tape->get_type());
         
-        if( $tape_exists > 0 && $tape_exists != $current_tape->get_id()) {
-            $type = new type($current_tape->get_type());
+        if( $tape_exists > 0 && $tape_exists != $this->get_id()) {
+
+            $type = new type($this->db, $this->get_type());
             $type_name = $type->get_name();
+
             return array("RESULT"=>FALSE,
                             "MESSAGE"=>"A tape or container with the name '$label' of type $type_name already exists. Please choose a different name.");
         }
