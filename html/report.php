@@ -80,7 +80,7 @@ if(isset($_POST['create_container_report'])) {
         $container_id = $_POST['container_id'];
         $data = array();
             //$container = $db->get_container_by_id($container_id);
-            $container = new container($db, $container_id);
+            $container = new tape_library_object($db, $container_id);
             if($container->get_id() == -1) {
                 //echo("No such container.<BR>");
                 return;
@@ -221,7 +221,7 @@ if(isset($_POST['create_heirarchy_report'])) {
         $data = report::get_heirarchy($db, $containers);
     } else
     if(isset($_POST['container_id'])) {
-        $data = report::get_heirarchy($db, array(new container($db, $_POST['container_id'])));
+        $data = report::get_heirarchy($db, array(new tape_library_object($db, $_POST['container_id'])));
     } else {
         $data = report::get_heirarchy($db, tape_library_object::get_location_objects($db));
     }

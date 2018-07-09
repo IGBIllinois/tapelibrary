@@ -35,22 +35,19 @@ class type {
 
         $result = $this->get_type($db, $id);
         if($result !=0) {
-            //print_r($result);
-            
             
             $this->id = $result['container_type_id'];
             $this->name = $result['name'];
-            //$this->can_contain_types = array();
+
             $types_string  = $result['can_contain_types'];
-            //echo("types string = "+$types_string);
+
             if($types_string != null && $types_string != "") {
                 $this->can_contain_types = explode(",", $result['can_contain_types']);
             } else {
                 $this->can_contain_types = array();
             }
             $this->max_slots = $result['max_slots'];
-            //$this->is_location = $result['is_location'];
-            //print_r($this->can_contain_types);
+
             
         } else {
             
@@ -126,12 +123,11 @@ class type {
 					'MESSAGE'=>$message);
             }
             
-            //$query = "INSERT INTO container_type (name, can_contain_types, max_slots, is_location) VALUES(:type_name, :can_contain_types, :max_slots, :is_location)";
             $query = "INSERT INTO container_type (name, can_contain_types, max_slots) VALUES(:type_name, :can_contain_types, :max_slots)";
 
             $params = array('type_name'=>$type_name, 'can_contain_types'=>$can_contain_types, 'max_slots'=>$max_slots);
             $result = $this->db->get_insert_result($query, $params);
-            //return $result;
+
             $this->id = $result;
             return array('RESULT'=>true,
 			'MESSAGE'=>"<div class='alert'>Project successfully created.</div>",

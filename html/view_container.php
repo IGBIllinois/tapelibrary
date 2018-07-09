@@ -19,7 +19,7 @@ if(!isset($_GET['container_id']) && !isset($_POST['container_id'])) {
         $container_id = $_GET['container_id'];
     }
 
-$container = new container($db, $container_id);
+$container = new tape_library_object($db, $container_id);
 
 if(isset($_GET['add_success']) && ($_GET['add_success'] == 1)) {
     echo(html::success_message("Container ".$container->get_label()." successfully added."));
@@ -52,7 +52,7 @@ if(count($current_tapes)== 0) {
     echo("<tbody>");
     foreach($current_tapes as $tape_data) {
         $tape_id = $tape_data['id'];
-        $tape = new tape($db, $tape_id);
+        $tape = new tape_library_object($db, $tape_id);
         $backupset_id = $tape->get_backupset();
         //$backupset_id = $tape['backupset'];
         //echo("backupset = $backupset_id<BR>");

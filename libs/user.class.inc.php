@@ -9,20 +9,10 @@ class user {
 	private $ldap;
 	private $uidnumber;
 	private $email;
-	private $emailforward;
-	private $homeDirectory;
-	private $givenName;
-	private $sn;
-	private $machinerights = null;
-	private $groups = null;
-	private $loginShell;
-	private $expiration = null;
+
+
 	
-	private $creator;
-	private $createTime;
-	private $modifier;
-	private $modifyTime;
-	private $passwordSet = null;
+
 
 	////////////////Public Functions///////////
 
@@ -45,57 +35,11 @@ class user {
 	public function get_email() {
 		return $this->email;
 	}
-	
-	public function get_emailforward(){
-		return $this->emailforward;
-	}
-
-
-	public function get_loginShell() {
- 		return $this->loginShell;
-	}
-	
-
-	
-	public function get_homeDirectory(){
-		return $this->homeDirectory;
-	}
 
 
 	public function get_name() {
 		return $this->name;
 	}
-
-	public function get_expiration(){
-		return $this->expiration;
-	}
-	public function is_expired(){
-		return ($this->expiration != null && $this->expiration <= time());
-	}
-	public function is_expiring(){
-		return ($this->expiration != null && $this->expiration > time());
-	}
-	public function get_uidnumber(){
-		return $this->uidnumber;
-	}
-	
-	public function get_creator(){
-		return $this->creator;
-	}
-	public function get_createTime(){
-		return $this->createTime;
-	}
-	public function get_modifier(){
-		return $this->modifier;
-	}
-	public function get_modifyTime(){
-		return $this->modifyTime;
-	}
-	public function get_passwordSet(){
-		return $this->passwordSet;
-	}
-
-
 
 	public function authenticate($password) {
 		$rdn = $this->get_user_rdn();
@@ -115,29 +59,7 @@ class user {
 			return 1;
 		}
 	}
-	
-	public static function random_password($length=8){
-		$passwordchars = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@$%&';
-		do {
-			$password = "";
-			for($i=0; $i<$length; $i++){
-				$password .= $passwordchars{self::devurandom_rand(0, strlen($passwordchars)-1)};
-			}
-		} while ( !(preg_match("/[A-Z]/u", $password)&&preg_match("/[a-z]/u", $password)&&preg_match("/[^A-Za-z]/u", $password)) );
-		return $password;
-	}
 
-	public static function get_all_users($ldap){
-		$users_array = array();
-		$filter = "(uid=*)";
-		$attributes = array('uid');
-		$result = $ldap->search($filter, __LDAP_PEOPLE_OU__, $attributes);
-		for ($i=0; $i<$result['count']; $i++) {
-			array_push($users_array, $result[$i]['uid'][0]);
-		}
-		sort($users_array);
-		return $users_array;
-	}
 
 	
 	public static function is_ldap_user($ldap, $username) {
@@ -151,41 +73,7 @@ class user {
 			return false;
 		}
 	}
-	
 
-	public static function is_ad_user($adldap,$username){
-		$filter = "(uid=".$username.")";
-		$results = $adldap->search($filter);
-		if($results && $results['count']>0){
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public static function is_ad_current($adldap,$username){
-		$filter = "(uid=".$username.")";
-		$attributes = array('uiucEduPhInactiveDate');
-		$results = $adldap->search($filter,"",$attributes);
-		if($results && (($results['count']>0 && $results[0]['count']==0)||($results['count']==0))){
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public function serializable(){
-		$data = array(
-			'username'=>$this->username,
-			'name'=>$this->name,
-			'homeDirectory'=>$this->homeDirectory,
-			'loginShell'=>$this->loginShell,
-			'email'=>$this->email,
-			'givenName'=>$this->givenName,
-			'sn'=>$this->sn			
-		);
-		return $data;
-	}
 
 //////////////////Private Functions//////////
 

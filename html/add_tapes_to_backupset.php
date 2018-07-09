@@ -46,7 +46,7 @@ if(isset($_POST['add_tapes_submit'])) {
             
             $id = $checked;
             
-            $tape = new tape($db, $id);
+            $tape = new tape_library_object($db, $id);
             $backupset = new backupset($db, $backupset_id);
             
             $result = $backupset->add_tape_to_backupset($id);

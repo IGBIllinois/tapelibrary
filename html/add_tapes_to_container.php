@@ -37,7 +37,7 @@ if(isset($_POST['tape_type']) && $_POST['tape_type'] != null) {
 
 if(isset($_POST['container_id']) && $_POST['container_id'] != null) {
     $container_id = $_POST['container_id'];
-    $container = new container($db, $container_id); 
+    $container = new tape_library_object($db, $container_id); 
 
 
 echo("<H3>Add Tapes to ".$container->get_label()."</H3>");
@@ -193,7 +193,7 @@ if(count($current_tapes)== 0) {
     echo("<tbody>");
     foreach($current_tapes as $tape_data) {
         $tape_id = $tape_data['id'];
-        $tape = new tape($db, $tape_id);
+        $tape = new tape_library_object($db, $tape_id);
         $backupset_id = $tape->get_backupset();
 
         $backupset_name = "";

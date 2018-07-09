@@ -85,9 +85,7 @@ if(count($current_tapes)== 0) {
     echo("<thead><tr><th>Tape ID Number</th><th>Type</th><th>Tape Label</th><th>Parent Location</th><th>Backup Set</th></thead>");
     echo("<tbody>");
     foreach($current_tapes as $tape) {
-        //echo("id = ".$tape->get_id());
-        //echo("id = ".$tape_result['id']);
-        //$tape = new tape($db, $tape_result['id']);
+
         $backupset_id = $tape->get_backupset();
         
         if($backupset_id == null || $backupset_id == -1) {

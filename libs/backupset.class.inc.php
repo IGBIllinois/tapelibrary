@@ -98,7 +98,7 @@ class backupset {
         $children_info = $this->db->get_tapes_in_backupset($this->id);
         $children = array();
         foreach($children_info as $child) {
-            $tape = new tape($child['id']);
+            $tape = new tape_library_object($child['id']);
             $children[] = $child;
         }
         return $children;
@@ -316,7 +316,7 @@ function edit_backupset($name, $begin, $end, $program, $location, $notes) {
             //echo("Removing tape $tape_id from backupset $backupset_id<BR>");
             $query = "UPDATE tape_library set backupset='-1' where id=:tape_id and backupset = :backupset_id";
             $result = $this->db->get_query_result($query, $params);
-            $tape = new tape($this->db, $tape_id);
+            $tape = new tape_library_object($this->db, $tape_id);
             return  array("RESULT"=>TRUE,
                             "MESSAGE"=>"Tape ".$tape->get_label(). " successfully removed from backup set ". $this->name . ".");
         } catch(Exception $e) {
