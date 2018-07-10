@@ -1,5 +1,6 @@
 <?php
 	require_once 'includes/main.inc.php';
+        require_once 'includes/session.inc.php';
         
         if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == ""){
     $redirect = "https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
