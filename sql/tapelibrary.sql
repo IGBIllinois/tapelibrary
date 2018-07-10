@@ -28,11 +28,12 @@ CREATE TABLE `backupset` (
   `begin` date NOT NULL,
   `end` date NOT NULL,
   `program` varchar(50) DEFAULT NULL,
+  `destruction_date` date DEFAULT NULL,
   `notes` varchar(500) DEFAULT NULL,
   `active` tinyint(4) DEFAULT '1',
   `main_location` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,8 +48,10 @@ CREATE TABLE `container_type` (
   `name` varchar(50) DEFAULT NULL,
   `container` tinyint(4) DEFAULT NULL,
   `can_contain_types` varchar(256) DEFAULT NULL,
+  `max_slots` int(11) DEFAULT '-1',
+  `is_location` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`container_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -62,7 +65,7 @@ CREATE TABLE `programs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -75,14 +78,16 @@ DROP TABLE IF EXISTS `tape_library`;
 CREATE TABLE `tape_library` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `label` varchar(50) DEFAULT NULL,
+  `tape_label` varchar(50) DEFAULT NULL,
   `container` int(11) DEFAULT NULL,
   `type` int(11) DEFAULT NULL,
   `backupset` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `last_update` date DEFAULT NULL,
+  `last_update_username` varchar(50) DEFAULT NULL,
+  `last_update` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `active` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=480 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=606 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,4 +115,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-16 13:16:46
+-- Dump completed on 2018-07-03 13:45:19
