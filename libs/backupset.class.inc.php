@@ -93,16 +93,7 @@ class backupset {
     public function get_main_location() {
         return $this->main_location;
     }
-    
-    public function get_children() {
-        $children_info = $this->db->get_tapes_in_backupset($this->id);
-        $children = array();
-        foreach($children_info as $child) {
-            $tape = new tape_library_object($child['id']);
-            $children[] = $child;
-        }
-        return $children;
-    }
+
     
     function add_backupset($name, $begin, $end, $program, $main_location, $notes) {
 
