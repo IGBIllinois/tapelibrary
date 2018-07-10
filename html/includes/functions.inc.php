@@ -24,7 +24,7 @@ function mysqlToArray($mysqlResult) {
   return $dataArray;
 }
 
-function createInput($type, $name, $default, $array=array(), $id="", $onChange="") {
+function createInput($type, $name, $default, $array=array(), $id="", $onChange="", $id_name="id") {
   $formName = $name;
     if($id != "") {
         $formName = $name . "_" . $id;
@@ -37,7 +37,7 @@ function createInput($type, $name, $default, $array=array(), $id="", $onChange="
       print "<option value=''>None</option>";
       $i=0;
       foreach ($array as $value) {
-        print "<option value={$value['id']}";
+        print "<option value={$value[$id_name]}";
         if ($value['id'] == $default)
           print " selected";
         

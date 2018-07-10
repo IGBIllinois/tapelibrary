@@ -245,17 +245,5 @@ switch ($type) {
 }
 
 
-function get_container_data($container_id) {
-    $result_array = array();
-    $container = new tape_library_object($db, $container_id);
-    $header;
-    $headers = array($container->get_label(), "Type: ".$type_name);
-    $children = $container->get_children();
-    foreach($children as $child) {
-        //$child = new tape_library_o
-    }
-    
-}
-
 
 ?>

@@ -50,9 +50,8 @@ if(count($current_tapes)== 0) {
 } else {
     echo("<thead><tr><th>Tape ID Number</th><th>Type</th><th>Tape Label</th><th>Backup Set</th></thead>");
     echo("<tbody>");
-    foreach($current_tapes as $tape_data) {
-        $tape_id = $tape_data['id'];
-        $tape = new tape_library_object($db, $tape_id);
+    foreach($current_tapes as $tape) {
+
         $backupset_id = $tape->get_backupset();
         //$backupset_id = $tape['backupset'];
         //echo("backupset = $backupset_id<BR>");

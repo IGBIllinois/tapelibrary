@@ -38,7 +38,7 @@ echo("<H3>Add Tapes</H3>");
     
     $tape_type=null;
     $container_id=null;
-    $service=null;
+
     $errors = "";
     $backupset = null;
     $messages = "";   
@@ -124,7 +124,6 @@ if(isset($_POST['submit'])) {
 
                     if ($result['RESULT']) {
                         $messages .=(html::success_message($result['MESSAGE']));
-                    } else {
                         
                         $messages .=(html::error_message($result['MESSAGE']));
                     }
@@ -140,9 +139,7 @@ if(isset($_POST['submit'])) {
     }
 
     
-    if(isset($_GET['tape_type'])) {
-        $tape_type = $_GET['tape_type'];
-    }
+
 
 
 

@@ -138,16 +138,9 @@ class report {
 
                 $data[] = $data_row;
                 $object = new tape_library_object($db, $id);
-                $children = $object->get_children_objects($id);
+                $children = $object->get_children($id);
                 if(count($children) > 0) {
                     $data[] = array();
-                    //$this_row = array();
-
-                        //for($i=0; $i<=$level; $i++) {
-                        //    $this_row[] = "";
-                        //}
-                       // $headers = array_merge($this_row, array("Name","Type","Backupset","Location"));
-                        //$data[] = $headers;
 
                     $data = array_merge($data, report::get_heirarchy($db, $children, (1+$level)));
                     $data[] = array();

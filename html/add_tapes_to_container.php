@@ -46,7 +46,6 @@ echo("<BR>");
 echo("Located in:".$container->get_full_path()."<BR><BR>");    
     $tape_type=null;
 
-    $service=null;
     $errors = "";
     $backupset = null;
     $messages = "";   
@@ -58,77 +57,85 @@ if(isset($_POST['submit'])) {
     } else {
         $errors .= html::error_message("Please input a tape type");
     }
-    
 
     if(isset($_POST['backupset'])) {
         $backupset = $_POST['backupset'];
     }
     if(isset($_POST['tape_from'])) {
         $tape_from = $_POST['tape_from'];
-    }
+    } 
     if(isset($_POST['tape_to'])) {
         $tape_to = $_POST['tape_to'];
     }
     //$tape_from = 1;
     //$tape_from = $_POST['tape_from'];
     //$tape_to = $_POST['tape_to'];
-    
-    if(!is_numeric($tape_to)) {
-        $errors .= html::error_message("Please input a proper number of tapes.");
-            
+    if(($tape_to != null && !is_numeric($tape_to)) && ($tape_from != null && !is_numeric($tape_from))) {
+        $errors .= html::error_message("'From' and 'To' fields cannot both contain alphabetical characters.<BR>Please make both numeric, or only input one in the 'From' field.");
     }
-    if(strlen($errors) > 0) {
+
+   
+    
+    
+    if($tape_from == null) {
+        $errors .= html::error_message("Please input a value for the 'From' field.");
+    }
+    if(is_numeric($tape_to) && is_numeric($tape_from)) {
+        if($tape_to <= $tape_from) {
+            $errors .= html::error_message("For numeric inputs, the 'To' field must be greater than the 'From' field.");
+        }
+        $numtapes = $tape_to - $tape_from + 1;
+    } else {
+        $numtapes = 1;
+    }
+
+ if(strlen($errors) > 0) {
         //echo $errors;
     } else {
 
     $label = array();
-    
-    //for ($i=$tape_from;$i<=$tape_to;$i++) {
-    //echo("from = $tape_from")
-    $numtapes = $tape_to - $tape_from + 1;
-    //echo("numtapes = $numtapes<BR>");
-    for($i=0; $i<$numtapes; $i++) {
-        // check for duplicates before starting to commit
-        //echo ("i = $i, label = "+$_POST['label'.$i]);
-        if(isset($_POST['label'.$i])  && $_POST['label'.$i]!="") {
-            if(tape_library_object::does_tape_exist($db, $_POST['label'.$i])) {
-                $name_errors .= html::error_message("Tape ". $_POST['label'.$i]. " already exists. Please change the name before adding this tape.");
-            }
-        } else {
-            $name_errors .= html::error_message("Please input a name for Tape $i.");
-        }
-        
-    }
-    if(strlen($name_errors) > 0) {
-        //echo($name_errors);
-        
-    } else {
-    //for ($i=$tape_from;$i<=$tape_to;$i++) {
+    $ids = array();
+
         for($i=0; $i<$numtapes; $i++) {
-            $label[$i] = $_POST['label'.$i];
+            $ids[$i] = $_POST['tape_id'.$i];
+            $label[$i] = $_POST['tape_label'.$i];
+            
             //echo("label[$i] = ".$label[$i]."<BR>");
+            //echo("ids[$i] = ".$ids[$i]."<BR>");
 	}
-    	if (is_numeric($tape_to) && $tape_from <= $tape_to) {
-		//for ($i = $tape_from; $i <= $tape_to; $i++) {
+        //echo("tape_to = $tape_to, tape_from = $tape_from<BR>");
+        if((is_null($tape_to) || $tape_to === "") && !is_null($tape_from)) {
+            // just add one
+            $i = 0;
+            //echo("Adding just one tape : ".$label[$i]."<BR>");
+            $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, $login_user->get_username(), $label[$i] );
+            if ($result['RESULT']) {
+                $messages .=(html::success_message($result['MESSAGE']));
+            } else {
+
+                $messages .=(html::error_message($result['MESSAGE']));
+            }
+        } else if (is_numeric($tape_to) && $tape_from <= $tape_to) {
+
                 for($i=0; $i<$numtapes; $i++) {
-                    //echo("Adding tape : ".$label[$i]."<BR>");
+                    //echo("Adding tape : ".$ids[$i]."<BR>");
 
-			//mysql_query("insert into tape (type,capacity,tape_number,container,backup_set,carton,label) values ('$type','$capacity','$i','$container','$backup_set','$carton','$label[$i]')");
-                    $result = tape_library_object::add_tape($db, $label[$i], $tape_type, $container_id, $backupset, $login_user->get_username() ); //TODO: userid?
-
+                    $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, $login_user->get_username(), $label[$i] );
 
                     if ($result['RESULT']) {
                         $messages .=(html::success_message($result['MESSAGE']));
                     } else {
+                        
                         $messages .=(html::error_message($result['MESSAGE']));
                     }
                 }
-
+		//print "<script type=\"text/javascript\">parent.window.container.href='index.php'</script>";
+                //print("<BR>Tapes added<BR>");
+                //unset($_POST);
 	} else {
-		$messages .= html::error_message("<p><b>Something went wrong, please try again.</b></p>");
+		$messages .= html::error_message("<p><b>Something went wrong, please try again</b></p>");
             
 	}
-    }
     }
     }
 
@@ -189,11 +196,10 @@ $current_tapes = $container->get_children();
 if(count($current_tapes)== 0) {
     echo "<tr><td>No tapes have been added.</td></tr>";
 } else {
-    echo("<thead><tr><th>Label</th><th>Type</th><th>Backup Set</th></thead>");
+    echo("<thead><tr><th>Tape ID Number</th><th>Type</th><th>Label</th><th>Backup Set</th></thead>");
     echo("<tbody>");
-    foreach($current_tapes as $tape_data) {
-        $tape_id = $tape_data['id'];
-        $tape = new tape_library_object($db, $tape_id);
+    foreach($current_tapes as $tape) {
+
         $backupset_id = $tape->get_backupset();
 
         $backupset_name = "";
@@ -207,6 +213,7 @@ if(count($current_tapes)== 0) {
 
         echo("<td>".$tape->get_label()."</td>");
         echo("<td>".$tape->get_type_name()."</td>");
+        echo("<td>".$tape->get_tape_label()."</td>");
         echo("<td><a href='view_backupset_data.php?backupset_id=$backupset_id'>".$backupset_name."</a></td></tr>");
         
     }
