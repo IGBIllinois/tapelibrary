@@ -261,19 +261,14 @@ class tape_library_object {
         }
         return $tape_array;
     }
-
+    
     function get_children() {
+        
         $container_id = $this->id;
         $query = "SELECT id from tape_library where container=:container_id order by label";
         $params = array("container_id"=>$container_id);
-        $result = $this->db->get_query_result($query, $params);
-
-        return $result;
-    }
-
-    function get_children_objects() {
-        $result = array();
-        $children = $this->get_children();
+        $children = $this->db->get_query_result($query, $params);
+        
         foreach($children as $child) {
             $new_child = new tape_library_object($this->db, $child['id']);
             $result[] = $new_child;
