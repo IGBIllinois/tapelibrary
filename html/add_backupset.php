@@ -77,7 +77,21 @@ echo("<tr><td>End Date (YYYY-MM-DD):</td><td><input type='text' name='end_date' 
 //createInput("select", "program",(isset($program) ? ("$program") : ""), $db->get_programs());
 echo("<tr><td>Program: <a href='add_program.php'>(Add a new program?)</a></td><td>");
 
-createInput("select", "program",(isset($program) ? ("$program") : ""), program::get_programs($db));
+//createInput("select", "program",(isset($program) ? ("$program") : ""), program::get_programs($db));
+
+$all_programs = program::get_programs($db);
+      echo "<select id='program' name='program'>";
+      echo "<option value=''>None</option>";
+      $i=0;
+      foreach ($all_programs as $curr_program) {
+        echo "<option value='".$curr_program->get_id()."'";
+        if (isset($program) && $program == $curr_program->get_id())
+          echo " selected";
+        
+        echo ">".$curr_program->get_name()."</option>";
+      }
+      echo "</select>";
+      
 echo("</td></tr>");
 
 echo("<tr><td>Main Location <a href='add_location.php'>(Add a new location?)</a></td><td>");

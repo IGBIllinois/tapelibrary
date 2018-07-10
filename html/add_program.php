@@ -70,7 +70,7 @@ echo("<table  class='table table-bordered table-hover table-striped display'><tr
 echo("<th>Program Name</th>");
 $program = new program($db);
 
-$programs = program::get_program_objects($db);
+$programs = program::get_programs($db);
 
 if(count($programs)== 0) {
     echo "<tr><td>No programs have been added.</td></tr>";

@@ -45,6 +45,10 @@ class program {
         return $this->name;
     }    
     
+    public function get_id() {
+        return $this->id;
+    }
+    
     
     function add_program($name) {
         try {
@@ -99,22 +103,16 @@ class program {
     public static function get_programs($db) {
         $query = "SELECT id, name from programs";
         $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $result = $db->query($query);
-        return $result;
-    }
-    
-    public static function get_program_objects($db) {
+        $programs = $db->query($query);
         $results = array();
-        $programs = program::get_programs($db);
         foreach($programs as $program) {
-            $program = new program($db, $program['id']);
-            $results[] = $program;
+            $curr_program = new program($db, $program['id']);
+            $results[] = $curr_program;
         }
         
         return $results;
+        
     }
-    
-    
     
         
     

@@ -94,7 +94,23 @@ echo("<tr><td width=30%>Backup Set Name:</td><td><input type='text' name='name' 
 echo("<tr><td>Start Date (YYYY-MM-DD):</td><td><input type='text' name='begin' pattern='[0-9]{4}-[0-9]{2}-[0-9]{2}' id='begin' ".(isset($begin) ? ("value='$begin'") : "")."></td></tr>");
 echo("<tr><td>End Date (YYYY-MM-DD):</td><td><input type='text' name='end' id='end' ".(isset($end) ? ("value='$end'") : "")."></td></tr>");
 echo("<tr><td>Program: </td><td>");
-createInput("select", "program",(isset($program) ? ("$program") : ""), program::get_programs($db));
+//createInput("select", "program",(isset($program) ? ("$program") : ""), program::get_programs($db));
+
+$all_programs = program::get_programs($db);
+      echo "<select id='program' name='program'>";
+      echo "<option value=''>None</option>";
+      $i=0;
+      foreach ($all_programs as $curr_program) {
+        echo "<option value='".$curr_program->get_id()."'";
+        if (isset($program) && $program == $curr_program->get_id())
+          echo " selected";
+        
+        echo ">".$curr_program->get_name()."</option>";
+      }
+      echo "</select>";
+      
+echo("</td></tr>");
+
 echo("</td></tr>");
 echo("<tr><td>Main Location <a href='add_location.php'>(Add a new location?)</a></td><td>");
 createInput("select", "main_location",(isset($main_location) ? ("$main_location") : ""), tape_library_object::get_locations($db));
