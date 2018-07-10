@@ -115,11 +115,24 @@ echo("<tr><td width=20%>Container Name:</td><td><input type='text' name='contain
 echo("<tr><td>Container Type :");
 echo("<BR><a href='add_container_type.php'>(Add a new container type?)</a>");
 echo("</td><td>");
-    createInput("select","container_type",(isset($container_type) ? $container_type : ""),type::get_container_types($db), "", "hide()");
+    //createInput("select","container_type",(isset($container_type) ? $container_type : ""),type::get_container_types($db), "", "hide()");
+$container_types = type::get_container_types($db);
+      echo "<select id='container_type' name='container_type' onChange=hide()>";
+      echo "<option value=''>None</option>";
+
+      foreach ($container_types as $curr_container_type) {
+        echo "<option value='".$curr_container_type->get_id()."'";
+        if (isset($container_type) && $container_type == $curr_container_type->get_id())
+          echo " selected";
+        
+        echo ">".$curr_container_type->get_name()."</option>";
+      }
+      echo "</select>";
+
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:<BR>(Leave blank for a top-level location)</td><td>");
 echo("<table>");
-$all_types = type::get_container_type_objects($db);
+$all_types = type::get_container_types($db);
 foreach($all_types as $type) {
     $id = $type->get_id();
     

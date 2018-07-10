@@ -344,19 +344,16 @@ class type {
     public static function get_container_types($db) {
         $query = "SELECT container_type_id as id, name from container_type  where can_contain_types is not null and can_contain_types != '' order by name";
         $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $result = $db->query($query);
-        return $result;
-    }
-    
-    public static function get_container_type_objects($db) {
-        $types_array = type::get_container_types($db);
+        $types_array = $db->query($query);
         $types = array();
         foreach($types_array as $type) {
             $type = new type($db, $type['id']);
             $types[] = $type;
         }
         return $types;
+       
     }
+
     
     /* gets a list of all top-level locations, those that can't be placed in anything else
     * 

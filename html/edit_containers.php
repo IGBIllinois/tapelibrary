@@ -52,7 +52,19 @@ echo("<table class='table table-bordered'><tr>");
 
       print "</tr>";
 echo("<tr><td>Container Type :</td><td>");
-    createInput("select","type","",type::get_container_types($db));
+    //createInput("select","type","",type::get_container_types($db));
+$container_types = type::get_container_types($db);
+      echo "<select id='type' name='type'>";
+      echo "<option value=''>None</option>";
+
+      foreach ($container_types as $curr_container_type) {
+        echo "<option value='".$curr_container_type->get_id()."'";
+        if (isset($container_type) && $container_type == $curr_container_type->get_id())
+          echo " selected";
+        
+        echo ">".$curr_container_type->get_name()."</option>";
+      }
+      echo "</select>";
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
     createInput("select","select_container","", tape_library_object::get_containers($db));

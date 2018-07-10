@@ -268,7 +268,7 @@ class tape_library_object {
         $query = "SELECT id from tape_library where container=:container_id order by label";
         $params = array("container_id"=>$container_id);
         $children = $this->db->get_query_result($query, $params);
-        
+        $result = array();
         foreach($children as $child) {
             $new_child = new tape_library_object($this->db, $child['id']);
             $result[] = $new_child;

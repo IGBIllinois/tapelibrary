@@ -50,7 +50,7 @@ echo("Current container types:") ;
 echo("<table id='container_types' class='table table-striped table-bordered'>");
 echo("<thead><tr><th>Container Type</th><th>Can contain types</th><th>Can be placed in</th><th>Max slots</th></tr></thead>");
 echo("<tbody>");
-$current_container_types = type::get_container_type_objects($db);
+$current_container_types = type::get_container_types($db);
 if(count($current_container_types)== 0) {
     echo "<tr><td>No container types have been added.</td></tr>";
     
