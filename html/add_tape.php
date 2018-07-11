@@ -124,7 +124,7 @@ if(isset($_POST['submit'])) {
 
                     if ($result['RESULT']) {
                         $messages .=(html::success_message($result['MESSAGE']));
-                        
+                    } else {
                         $messages .=(html::error_message($result['MESSAGE']));
                     }
                 }
