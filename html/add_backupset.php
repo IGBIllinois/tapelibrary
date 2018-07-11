@@ -88,7 +88,7 @@ $all_programs = program::get_programs($db);
         if (isset($program) && $program == $curr_program->get_id())
           echo " selected";
         
-        echo ">".$curr_program->get_name()."</option>";
+        echo ">".$curr_program->get_name(). " : " . $curr_program->get_version() ."</option>";
       }
       echo "</select>";
       

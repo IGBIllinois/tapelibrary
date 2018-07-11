@@ -10,6 +10,7 @@ class program {
 
     private $name = "";
     private $id = -1;
+    private $version = "";
     private $db;
     
 
@@ -17,29 +18,14 @@ class program {
     public function __construct($db, $id=0) {
         $this->db = $db;
         if($id != 0) {
-            $this->load_by_id($db, $id);
+            $this->load_by_id($id);
         }
     }
     
     public function __destruct() {
        
     }
-    
-    public function load_by_id($db, $id) {
-
-        $result = $this->get_program($db, $id);
-
-        if($result !=0) {
-            
-            $this->id = $result['id'];
-            $this->name = $result['name'];
-
-            
-        } else {
-            return null;
-        }
-        
-    }
+   
     
     public function get_name() {
         return $this->name;
@@ -49,20 +35,24 @@ class program {
         return $this->id;
     }
     
+    public function get_version() {
+        return $this->version;
+    }
     
-    function add_program($name) {
+    
+    public function add_program($name, $version) {
         try {
             $messages = "";
             $errors = false;
         
-        if(program::program_exists($this->db, $name)) {
+        if(self::program_exists($this->db, $name, $version)) {
             // already exists
-            $messages .= ("A program with the name $name already exists. Please choose a different name or version.");
+            $messages .= ("A program with the name $name and version $version already exists. Please choose a different name or version.");
             return array("RESULT"=>FALSE,
                         "MESSAGE"=>$messages);
         }
-        $query = "INSERT INTO programs (name) VALUES (:name)";
-        $params = array("name"=>$name);
+        $query = "INSERT INTO programs (name, version) VALUES (:name, :version)";
+        $params = array("name"=>$name, "version"=>$version);
         $result = $this->db->get_insert_result($query, $params);
         $this->id = $result;
             return array('RESULT'=>true,
@@ -74,34 +64,32 @@ class program {
         }
     }
         
-    public static function program_exists($db, $name, $id=0) {
-            $find_query = "SELECT * from programs where name=:name";
-            $params = array("name"=>$name);
+    /** 
+     * Determines if a program already exists
+     * 
+     * @param type $db Database Object
+     * @param type $name Name of the Program to check
+     * @param type $version Version of the program to check
+     * @return int The id of the Program, if it exists, 0 if it doesn't
+     */
+    public static function program_exists($db, $name, $version) {
+            $find_query = "SELECT * from programs where name=:name and version=:version";
+            $params = array("name"=>$name, "version"=>$version);
             $result = $db->get_query_result($find_query, $params);
             if(count($result) > 0) {   
-                return 1;
+                return $result[0]["id"];
             } else {
                 return 0;
             }
     }
     
-    
-    function get_program($db, $program_id) {
-        $query = "SELECT * from programs where id = :program_id";
-        $params = array("program_id"=>$program_id);
-        
-        $result = $db->get_query_result($query, $params);
-        if(count($result)==1) {
-                $result = $result[0];
-            } else {
-                $result = 0;
-            }
-        return $result;
-
-    }
-
+     /**
+     * 
+     * @param type $db Database object
+     * @return array An array of all existing Program objects 
+     */
     public static function get_programs($db) {
-        $query = "SELECT id, name from programs";
+        $query = "SELECT id from programs";
         $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $programs = $db->query($query);
         $results = array();
@@ -113,6 +101,32 @@ class program {
         return $results;
         
     }
+    
+    
+    /* Private functions */
+    
+    private function load_by_id($id) {
+
+        $this->get_program($id);
+        
+    }
+    
+    
+    private function get_program($program_id) {
+        $query = "SELECT * from programs where id = :program_id LIMIT 1";
+        $params = array("program_id"=>$program_id);
+        
+        $result = $this->db->get_query_result($query, $params);
+        if($result) {
+            $this->id = $result[0]['id'];
+            $this->name = $result[0]['name'];
+            $this->version = $result[0]['version'];
+        } else {
+            return false;
+        }
+    }
+
+
     
         
     

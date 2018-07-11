@@ -16,7 +16,7 @@ $max_slots = -1;
 //$is_location = 0;
 $errors = "";
 $container_type_name = null;
-echo("<H3>Add Container or Tape Types</H3>");
+echo("<H3>Add Container and Tape Types</H3>");
 if(isset($_POST['submit'])) {
 
 if(!isset($_POST['container_type_name']) || $_POST['container_type_name'] == "") {

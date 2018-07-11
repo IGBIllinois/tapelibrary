@@ -79,7 +79,11 @@ class backupset {
     
     public function get_program_name() {
         $program = new program($this->db, $this->program);
-        return $program->get_name();
+        return $program->get_name() . 
+                (($program->get_version() != null && $program->get_version() != "") ? 
+                ("/".$program->get_version()) : "");
+            
+            
     }
     
     public function get_id() {
