@@ -28,7 +28,7 @@ $current_backupsets = backupset::get_all_backupsets($db, $active);
 if(count($current_backupsets)== 0) {
     echo "<tr><td>No backup sets have been added.</td></tr>";
 } else {
-    echo("<thead><tr><th>Name</th><th>Begin Date</th><th>End Date</th><th>Program</th><th>Main Location</th><th>Notes</th><th>Status</th></thead>");
+    echo("<thead><tr><th>Name</th><th>Begin Date</th><th>End Date</th><th>Program/Version</th><th>Main Location</th><th>Notes</th><th>Status</th></thead>");
     echo("<tbody>");
     foreach($current_backupsets as $backupset) {
         //echo("<tr><td>".$tape['tape_number']."</td>");
