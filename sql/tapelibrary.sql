@@ -31,7 +31,6 @@ CREATE TABLE `backupset` (
   `destruction_date` date DEFAULT NULL,
   `notes` varchar(500) DEFAULT NULL,
   `active` tinyint(4) DEFAULT '1',
-  `main_location` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -66,7 +65,7 @@ CREATE TABLE `programs` (
   `name` varchar(100) DEFAULT NULL,
   `version` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,4 +99,4 @@ CREATE TABLE `tape_library` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-07-11 16:34:37
+-- Dump completed on 2018-07-13 13:39:34

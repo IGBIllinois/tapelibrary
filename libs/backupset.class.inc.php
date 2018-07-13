@@ -16,7 +16,6 @@ class backupset {
     private $end_date;
     private $program;
     private $notes;
-    private $main_location;
     
     private $active;
     
@@ -49,7 +48,6 @@ class backupset {
             $this->active = $result['active'];
             $this->notes = $result['notes'];
             $this->program = $result['program'];
-            $this->main_location = $result['main_location'];
             
         } else {
             return null;
@@ -77,11 +75,17 @@ class backupset {
         return $this->program;
     }
     
+    /** 
+     * Gets the name and version of the Program associated
+     * with this Backup Set
+     * @return string The name (and version if it exists) of the
+     * program associated with this Backup Set
+     */
     public function get_program_name() {
         $program = new program($this->db, $this->program);
         return $program->get_name() . 
                 (($program->get_version() != null && $program->get_version() != "") ? 
-                ("/".$program->get_version()) : "");
+                (" (Version ".$program->get_version()).")" : "");
             
             
     }
@@ -94,12 +98,9 @@ class backupset {
         return $this->active;
     }
     
-    public function get_main_location() {
-        return $this->main_location;
-    }
 
     
-    function add_backupset($name, $begin, $end, $program, $main_location, $notes) {
+    function add_backupset($name, $begin, $end, $program, $notes) {
 
         //print_r($search_result);
 
@@ -107,14 +108,12 @@ class backupset {
             return array("RESULT"=>FALSE,
                     "MESSAGE"=>"A backupset with the name '$name' already exists. Please choose a different name.");
         }
-        $query = "INSERT INTO backupset (name, begin, end, program, main_location, notes) VALUES (:name, :begin, :end, :program, :main_location, :notes)";
+        $query = "INSERT INTO backupset (name, begin, end, program, notes) VALUES (:name, :begin, :end, :program, :notes)";
         if( $program == "") {
             $program = null;
         }
-        if($main_location == "") {
-            $main_location = null;
-        }
-        $params = array('name'=>$name, 'begin'=>$begin, 'end'=>$end, 'program'=>$program, 'main_location'=>$main_location, 'notes'=>$notes);
+
+        $params = array('name'=>$name, 'begin'=>$begin, 'end'=>$end, 'program'=>$program, 'notes'=>$notes);
 
         $result = $this->db->get_insert_result($query, $params);
 
@@ -149,7 +148,7 @@ function get_backupset_data($db, $id) {
     return $result;
 }
 
-function edit_backupset($name, $begin, $end, $program, $location, $notes) {
+function edit_backupset($name, $begin, $end, $program, $notes) {
     $id = $this->id;
     $search_query = "SELECT * from backupset where name=:name and id != :id";
     $search_params = array("name"=>$name, "id"=>$id);
@@ -164,8 +163,8 @@ function edit_backupset($name, $begin, $end, $program, $location, $notes) {
         return array("RESULT"=>FALSE,
                     "MESSAGE"=>"A backupset with the name '$name' already exists. Please choose a different name.");
     }
-    $query = "UPDATE backupset set name=:name, begin=:begin, end=:end, program=:program, main_location=:main_location, notes=:notes where id=:id";
-    $params = array("id"=>$id, "name"=>$name, "begin"=>$begin, "end"=>$end, "program"=>$program, "main_location"=>$location, "notes"=>$notes);
+    $query = "UPDATE backupset set name=:name, begin=:begin, end=:end, program=:program, notes=:notes where id=:id";
+    $params = array("id"=>$id, "name"=>$name, "begin"=>$begin, "end"=>$end, "program"=>$program, "notes"=>$notes);
     $result = $this->db->get_query_result($query, $params);
     //return $result;
     return array("RESULT"=>TRUE,
