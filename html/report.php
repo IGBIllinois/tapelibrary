@@ -9,7 +9,6 @@ if (isset($_POST['create_full_report'])) {
     $filename = "fulltapereport";
     $backupsets = backupset::get_all_backupsets($db);
     $data = array();
-        //$excel->writeLine($backupsets);
         foreach($backupsets as $backupset_info) {
             
             $backupset_id = $backupset_info->get_id();
@@ -33,14 +32,12 @@ if (isset($_POST['create_full_report'])) {
             foreach($tapes as $tape) {
                 
                 $container_id = $tape->get_container_id();
-                //$container = $db->get_container_by_id($container_id);
                 $container_name = $tape->get_container_name();
                 
                 $data[] = array($tape->get_label(), $tape->get_type_name(), $tape->get_tape_label(), $container_name);
                 
             }
-        //$excel->writeLine(array());
-        //$excel->writeLine(array());
+
         }
         
         // unassigned tapes
@@ -48,23 +45,18 @@ if (isset($_POST['create_full_report'])) {
         if(count($unassigned_tapes) > 0) {
             $data[] = array();
             $data[] = array("Unassigned tapes");
-            //$excel->writeLine($header);
-            //$excel->writeLine(array());
+            
             foreach($unassigned_tapes as $tape) {
 
                     $container_id = $tape->get_id();
-                    //$container = $db->get_container_by_id($container_id);
+
                     $container_name = $tape->get_container_name();
 
                     $data[] = array($tape->get_label(), $tape->get_type_name(), $container_name);
-                    //$excel->writeLine($tape_array);
+
             }
         }
-            
-            
 
-            //header("Location: excel/". $filename);
-            //unlink("excel/".$filename);
         } catch(Exception $e) {
             //echo($e);
             //echo($e->getTrace());
@@ -86,21 +78,13 @@ if(isset($_POST['create_container_report'])) {
                 return;
             }
             
-            
-            
-            //$backupset = get_backupset($db, $container['backupset']);
-            //print_r($backupset);
-            //$backupset_name = $backupset['name'];
+
             $type_name = $container->get_type_name();
             $data[] = array("Report for ".$container->get_label(), "Type: ".$type_name);
             $data[] = array();
             $tapes = tape_library_object::get_tapes($db, null, null, null, $container_id);
             $data[] = array("Tape Label", "Tape Type", "Backupset");
 
-            //$excel= new ExcelWriter("excel/".$filename);
-            
-            //$excel->writeLine($header);
-            //$excel->writeLine($titles);
 
             foreach($tapes as $tape) {
                 $backupset = new backupset($db, $tape->get_backupset());
@@ -109,12 +93,9 @@ if(isset($_POST['create_container_report'])) {
                 $data[] = array($tape->get_label(), $tape->get_type_name(), $backupset_name);
                 //$excel->writeLine($tape_array);
             }
-            //$excel->close();
-            //header("Location: excel/". $filename);
-            //unlink("excel/".$filename);
+
         } catch(Exception $e) {
-            //echo($e);
-            //echo($e->getTrace());
+
         }
 }
 
@@ -128,7 +109,7 @@ if(isset($_POST['create_container_detail_report'])) {
 
     $data = array();
     
-    $containers = tape_library_object::get_container_objects($db, $name, $container_type, $parent);
+    $containers = tape_library_object::get_containers($db, $name, $container_type, $parent);
 
     foreach($containers as $container) {
         $container_id = $container->get_id();
@@ -138,17 +119,12 @@ if(isset($_POST['create_container_detail_report'])) {
             $tapes = tape_library_object::get_tapes($db, null, null, null, $container_id);
             $data[] = array("Tape ID Number", "Tape Type", "Tape Label", "Backupset");
 
-            //$excel= new ExcelWriter("excel/".$filename);
-            
-            //$excel->writeLine($header);
-            //$excel->writeLine($titles);
-
             foreach($tapes as $tape) {
                 $backupset = new backupset($db, $tape->get_backupset());
                 
                 $backupset_name = $backupset->get_name();
                 $data[] = array($tape->get_label(), $tape->get_type_name(), $tape->get_tape_label(), $backupset_name);
-                //$excel->writeLine($tape_array);
+
             }
             $data[] = array();
     }
@@ -217,13 +193,13 @@ if(isset($_POST['create_heirarchy_report'])) {
         $container_type = $_POST['type'];
         $parent = $_POST['parent'];
     
-        $containers = tape_library_object::get_container_objects($db, $name, $container_type, $parent);
+        $containers = tape_library_object::get_containers($db, $name, $container_type, $parent);
         $data = report::get_heirarchy($db, $containers);
     } else
     if(isset($_POST['container_id'])) {
         $data = report::get_heirarchy($db, array(new tape_library_object($db, $_POST['container_id'])));
     } else {
-        $data = report::get_heirarchy($db, tape_library_object::get_location_objects($db));
+        $data = report::get_heirarchy($db, tape_library_object::get_locations($db));
     }
     $filename = "heirarchyreport";
     $type = $_POST['report_type'];

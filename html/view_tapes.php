@@ -64,7 +64,19 @@ echo("<tr><td>Tape Type :</td><td>");
     createInput("select","type","",type::get_tape_types($db));
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    createInput("select","container","",tape_library_object::get_containers($db));
+    //createInput("select","container","",tape_library_object::get_containers($db));
+    $containers = tape_library_object::get_containers($db);
+      echo "<select id='container' name='container'>";
+      echo "<option value=''>None</option>";
+
+      foreach ($containers as $curr_container) {
+        echo "<option value='".$curr_container->get_id()."'";
+        if (isset($container) && $container == $curr_container->get_id())
+          echo " selected";
+        
+        echo ">".$curr_container->get_label()."</option>";
+      }
+      echo "</select>";
 echo(" </td></tr>");
 
 
@@ -77,7 +89,7 @@ echo("Current tapes:") ;
 
 echo("<fieldset><table id='view_tapes' class='table table-bordered table-hover table-striped display'>");
 
-$current_tapes = tape_library_object::get_tape_objects($db, $begin, $end, $type, $container, $active);
+$current_tapes = tape_library_object::get_tapes($db, $begin, $end, $type, $container, $active);
 
 if(count($current_tapes)== 0) {
     echo "<tr><td>No tapes have been added.</td></tr>";
@@ -98,7 +110,6 @@ if(count($current_tapes)== 0) {
         echo("<td>".$tape->get_label()."</td>");
         echo("<td>".$tape->get_type_name()."</td>");
         echo("<td>".$tape->get_tape_label()."</td>");
-        //echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$tape->get_container_name()."</a></td>");
         echo("<td><a href=view_container.php?container_id=".$tape->get_container_id().">".$tape->get_full_path()."</a></td>");
         if($backupset_id != -1) {
             echo("<td><a href=view_backupset_data.php?backupset_id=".$backupset_id.">".$backupset_name."</a></td></tr>");

@@ -10,18 +10,22 @@ class tape_library_object {
     
     protected $db; // database
     protected $id =-1;
-    //private $item_id;
     protected $label; // unique name
     protected $container=-1;
     protected $type;
     protected $time_created;
     protected $backupset;
     protected $active;
-    protected $tape_label; // label
+    protected $tape_label; // optional extra label for tapes
     
     protected $time_last_modified;
     protected $user_last_modified;
     
+    /** Constructor
+     * 
+     * @param db $db database object 
+     * @param int $id id number of the tape_library_object
+     */
     public function __construct($db, $id) {
         
         $this->load_by_id($db, $id);
@@ -31,27 +35,19 @@ class tape_library_object {
        
     }
     
-    public function load_by_id($db, $id) {
+    /**
+     * Loads data from the database to create a new Tape Library Object
+     * 
+     * @param db $db database object 
+     * @param int $id id number of the tape_library_object
+     */
+    public function load_by_id($db, $id = 0) {
 
         $this->db = $db;
-        $result = $this->get_tape_library_object_data($db, $id);
+        if($id != 0) {
+            $this->get_tape_library_object($id);
         
-        if($result['RESULT']) {
-            
-            $this->id = $result['id'];
-            $this->label = $result['label'];
-            $this->type = $result['type'];
-            $this->container = $result['container'];
-            $this->active = $result['active'];
-            $this->backupset = $result['backupset'];
-            $this->tape_label = $result['tape_label'];
-            
-            
-            
-        } else {
-            
         }
-        
     }
     
     public function get_label() {
@@ -79,9 +75,11 @@ class tape_library_object {
     }
 
     
-    /** Get the name of the container of this object
+    /** 
+     * Get the name of the container of this Tape Library Object
      * 
-     * @return 
+     * @return string the name of the container of this object, 
+     * or "None" if there is none.
      */
     public function get_container_name() {
         
@@ -93,24 +91,33 @@ class tape_library_object {
         }
     }
     
+    /**
+     * Gets the name of the Type of this Tape Library Object
+     * @return string The name of the Type of this Tape Library Object or "None" 
+     * if it cannot be found
+     */
     public function get_type_name() {
 
-        //return $this->db->get_container_type_name($this->type);
-    $query = "SELECT name from container_type where container_type_id=:container_type_id";
-    $params = array("container_type_id"=>$this->type);
-    
-    $result = $this->db->get_query_result($query, $params);
-    if($result != null && $result[0]['name'] != null) {
-        return $result[0]['name'];
-    } else {
-        return "None";
-    }
+        $type = new type($this->db, $this->type);
+        return $type->get_name();
     }
     
+    /** 
+     * Gets the id number of the Backup Set for this Tape Library Object
+     * 
+     * @return integer the id number of the backup set 
+     * for this Tape Library Object
+     */
     public function get_backupset() {
         return $this->backupset;
     }
     
+    /** 
+     * Gets the name of the Backup Set that this Tape Library Object
+     * is in, or "None" if it is in none.
+     * 
+     * @return string The name of 
+     */
     public function get_backupset_name() {
         $backupset = new backupset($this->db, $this->backupset);
         if($backupset->get_id() == -1) {
@@ -120,11 +127,25 @@ class tape_library_object {
         }
     }
     
+    /**
+     * Returns the maximum number of slots this container can hold,
+     * as designated by its type.
+     * @return int the number of slots this container can hold
+     *  (-1 if therre is no limit)
+     */
     public function get_max_slots() {
         $type = new type($this->db, $this->get_type());
         return $type->get_max_slots();
     }
     
+    /**
+     * Determines if this Tape Library Object is a top-level location
+     * (it is a top-level location if it cannot be placed in
+     * any other container.)
+     * 
+     * @return bool 1 if it is a top-level location, else 0
+     * 
+     */
     public function is_location() {
         if($this->container == null || $this->container == -1) {
             return 1;
@@ -134,6 +155,12 @@ class tape_library_object {
     }
 
     
+    /**
+     * 
+     * Determines if theis Tape Library Object is a tape.
+     * (it is a tape if it cannot contain any other objects.)
+     * @return bool 1 if this object is a tape, else 0
+     */
     public function is_tape() {
         if(count($this->can_contain_types()) == 0) {
             return 1;
@@ -142,11 +169,21 @@ class tape_library_object {
         }
     }
         
+    /**
+     * Returns a list of type ids that this Tape Library Object can contain, as
+     * designated by its Type.
+     * @return array An array of type ids that this Tape Library Object can contain.
+     */
     public function can_contain_types() {
         $this_type = new type($this->db, $this->type);
         return $this_type->get_can_contain_types();
     }
     
+    /**
+     * Determines if this Tape Library Object can contain tapes
+     * (as opposed to only containers), as determined by its type.
+     * @return bool 1 if this object can contain tapes, else 0
+     */
     public function can_contain_tapes() {
         $this_type = new type($this->db, $this->type);
         return $this_type->can_contain_tapes();
@@ -154,30 +191,27 @@ class tape_library_object {
     
     
     
-    function get_tape_library_object_data($db, $id) {
 
-        $query = "SELECT * from tape_library where id = :id";
-        $params = array("id"=>$id);
-        //echo("query = $query, ");
-        //echo("id = $id <BR>");
-        $result = $db->get_query_result($query, $params);
-        if(count($result)==1) {
-            //$result = $result[0];
-            $meta =  array("RESULT"=>TRUE,
-                           "MESSAGE"=>"SUCCESS");
-            return array_merge($meta, $result[0]);
-        } else {
-            //$result = 0;
-            return array("RESULT"=>FALSE,
-                        "MESSAGE"=>"Objecct with id $id not found.");
-        }
-        return $result;
-    }
 
-    function edit($label, $container, $active, $tape_label=null, $username=null) {
+    /** 
+     * 
+     * Edits this Tape Library Object, and updates the database
+     * 
+     * @param string $label Unique ID for this Object
+     * @param int $container Container ID for where this object is to be placed
+     * @param bool $active Is this Object active?
+     * @param string $tape_label Additional optional label for tapes
+     * @param string $username Name of the user doing the updating
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message.
+     * 
+     */
+    public function edit($label, $container, $active, $tape_label=null, $username=null) {
         $id = $this->id;
         if($container == "") {
-            //echo("container is blank, setting to null<BR>");
             $container = null;
         }
         if($container == $id) {
@@ -243,26 +277,16 @@ class tape_library_object {
         }
     }
     
-    function get_tapes_in_container_array() {
-
-        $query = "select tape_library.id as id, tape_library.label as label, tape_library.container as parent, tape_library.type as type, tape_library.service as service, tape_library.backupset as backupset, tape_library.active as active where container=:container_id";
-
-        $params = array("container_id"=>$this->id);
-        $result = $this->db->get_query_result($query, $params);
-        return $result;
-    }
-
-    function get_tapes_in_container() {
-        $tape_array = array();
-        $tapes = $this->get_tapes_in_container_array();
-        foreach($tapes as $tape) {
-            $new_tape = new tape_library_object($this->db, $tape['id']);
-            $tape_array[] = $new_tape;
-        }
-        return $tape_array;
-    }
     
-    function get_children() {
+    /** 
+     * 
+     * Gets all the child objects (tapes and containers) of this 
+     * Tape Library Object.
+     * 
+     * @return \tape_library_object an array of all the objects contained
+     * within this Tape Library Object, sorted by label.
+     */
+    public function get_children() {
         
         $container_id = $this->id;
         $query = "SELECT id from tape_library where container=:container_id order by label";
@@ -277,29 +301,62 @@ class tape_library_object {
         return $result;
     }
 
-    public function get_full_path() {
-        $path = "";
+
+    /**
+     * 
+     * @return array An array of Tape Library Objects tracing a full
+     * path for this object, with the top-level object first.
+     */
+    public function get_full_path_array() {
+        $path = array();
         $container_id = $this->container;
         $container = new tape_library_object($this->db, $container_id);
-        $path = $container->get_label();
+        $path[] = $container;
 
         $new_container_id = $container->get_container_id();
 
-        $i=0;
         while(($new_container_id != -1 && $new_container_id != null && $new_container_id != "")) {
             $container = new tape_library_object($this->db, $new_container_id);
-            $path .= ", located in ".$container->get_label();
+            $path[] = $container;
             $new_container_id = $container->get_container_id();
-            $i++;
+
         }
         return $path;
     }
+    
+    /**
+     * Gets a full path for this object
+     * 
+     * @param string a text string representing the path for this 
+     * Tape Library Object
+     */
+    public function get_full_path() {
+        $text = "";
+        $path = $this->get_full_path_array();
+        foreach($path as $obj) {
+            if($text != "") {
+                $text .= " / ";
+            }
+            $text .= $obj->get_label();
+            
+        }
+        return $text;
+    }
 
     
-    /* Moves object with id $object_id to this container, if applicable
+    /**
+     *  Moves an object with the given id to this container, if possible
      * 
+     * @param $object_id The ID of the object to move to this
+     * Tape Library Object
+     * 
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message.
      */
-    function move_object($object_id) {
+    public function move_object($object_id) {
 
         $object = new tape_library_object($this->db, $object_id);
         if($object->get_id() == -1) {
@@ -337,13 +394,23 @@ class tape_library_object {
         return $result;   
     }
 
-    /* returns the number of objects currently in this container
+    /** Gets the number of objects currently in this container
      * 
+     * @return int the number of objects in this container
      */
     public function get_object_count() {
         return count($this->get_children());
     }
 
+    /**
+     * 
+     * @param bool $active
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else TRUE,
+     * and "MESSAGE" is an output message.
+     */
     public function set_active($active) {
         $id = $this->get_id();
         $query = "UPDATE tape_library set active=:active where id=:id";
@@ -358,17 +425,18 @@ class tape_library_object {
     
     /** Static functions */
     
+    /**
+     * Gets a list of all top-level locations. A Tape Library object is considered
+     * a location if it cannot be placed into another container.
+     * @param db $db The Database object
+     * @return type
+     */
     public static function get_locations($db) {
         //$query = "select tape_library.id as id, tape_library.item_id as tape_id, tape_library.label as name, tape_library.type as type, tape_library.container as parent, (SELECT label from tape_library where parent = id) as container_name, (SELECT container from container_type where container_type_id=tape_library.type) as is_container from tape_library left join tape_library on (tape_library.container = tape_library.id)  join  container_type on  (container_type.container=1 and container_type_id=type)";
         $query = "select id, label as name from tape_library where container is null or container=-1";
         $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $result = $db->query($query);
-        return $result;
-    }
-    
-    public static function get_location_objects($db) {
-        //$query = "select tape_library.id as id, tape_library.item_id as tape_id, tape_library.label as name, tape_library.type as type, tape_library.container as parent, (SELECT label from tape_library where parent = id) as container_name, (SELECT container from container_type where container_type_id=tape_library.type) as is_container from tape_library left join tape_library on (tape_library.container = tape_library.id)  join  container_type on  (container_type.container=1 and container_type_id=type)";
-        $locations = tape_library_object::get_locations($db);
+        $locations = $db->query($query);
+
         $result = array();
         foreach($locations as $location) {
             $new_loc = new tape_library_object($db, $location['id']);
@@ -377,7 +445,13 @@ class tape_library_object {
         return $result;
     }
     
-    // Determines if a tape of with a label and optional type exissts
+    /** Determines if a tape of with a label and optional type exists
+     * 
+     * @param db $db Database object
+     * @param string $label Name of the tape to check
+     * @param int $type Optional type of the tape to check
+     * @return int ID of the tape if it exists, or 0 if it does not.
+     */
     public static function does_tape_exist($db, $label, $type=null) {
         $search_query = "SELECT * from tape_library where label=:label";
         $search_params = array("label"=>$label);
@@ -389,7 +463,6 @@ class tape_library_object {
         }
         
         $search_result = $db->get_query_result($search_query, $search_params);
-        //echo("count = ".count($search_result));
         
         if(count($search_result) > 0) {
             return $search_result[0]['id'];
@@ -397,11 +470,25 @@ class tape_library_object {
         return 0;
     }
     
+    /**
+     * 
+     * @param db $db
+     * @param string $label
+     * @param int $type
+     * @param int $container_id
+     * @param int $backupset
+     * @param string $username
+     * @param string $tape_label
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else TRUE,
+     * and "MESSAGE" is an output message.
+     */
     public static function add_tape($db, $label, $type, $container_id, $backupset, $username, $tape_label=null) {
         
         if(tape_library_object::does_tape_exist($db,$label,$type)) {
-            //echo("<div class='alert alert-danger'>A tape or container with the name '$label' already exists. Please choose a different name.</div>");
-            //return 0;
+
             $new_type = new type($db, $type);
             $type_name = $new_type->get_name();    
             $message = "A tape or container with the name '$label' of type $type_name already exists. Please choose a different name.";
@@ -409,9 +496,6 @@ class tape_library_object {
                             "MESSAGE"=>$message);
         }
 
-        if($container_id == "" || $container_id == -1) {
-            // container is a top
-        }
         if($container_id != "" && $container_id != -1) {
             $container = new tape_library_object($db, $container_id);
             
@@ -447,6 +531,13 @@ class tape_library_object {
         
     }
     
+    /**
+     * Returns an array of tapes that are not currently in a backup set.
+     * 
+     * @param db $db Database Object
+     * @return tape_library_object[] array of tapes not currently in a 
+     * Backup Set
+     */
     public static function get_tapes_without_backupset($db) {
         $query = "select tape_library.id as id, tape_library.label as label, tape_library.container as parent, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active, (SELECT label from tape_library as containers where containers.id = tape_library.container) as container_name from tape_library   left join container_type on (tape_library.type = container_type.container_type_id ) where (tape_library.backupset is null or tape_library.backupset = '-1') and (container_type.can_contain_types is null or container_type.can_contain_types='')";
         $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -463,6 +554,7 @@ class tape_library_object {
     }
     
     public static function get_tapes($db, $begin=null, $end=null, $type=null, $parent=null, $active=1, $tapes=1) {
+        $tape_array = array();
         if($tapes) {
             $query = "select tape_library.id as id, tape_library.label as label, tape_library.label as name, tape_library.container as container, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active from tape_library where type in (SELECT container_type_id from container_type where container_type.can_contain_types is null or container_type.can_contain_types='')";
         } else {
@@ -501,17 +593,10 @@ class tape_library_object {
         }
         $query .= " order by tape_library.label ASC ";
 
-        $result = $db->get_query_result($query, $params);
+        $tapes = $db->get_query_result($query, $params);
 
-        return $result;
-    }
-    
-    public static function get_tape_objects($db, $begin=null, $end=null, $type=null, $parent=null, $active=1) {
-        $tape_array = array();
-        $tapes = tape_library_object::get_tapes($db, $begin, $end, $type, $parent, $active);
         foreach($tapes as $tape) {
             $new_tape = new tape_library_object($db, $tape['id']);
-            //echo("new tape id = ".$new_tape->get_id());
             $tape_array[] = $new_tape;
         }
         return $tape_array;
@@ -521,40 +606,35 @@ class tape_library_object {
         return tape_library_object::get_tapes($db, $name, null, $type, $parent, $active, 0);
 
     }
-    
-    public static function get_container_objects($db, $name=null, $type=null, $parent=null, $active=1) {
-        //echo("name = $name");
-        //$query = "select tape_library.id as id, tape_library.item_id as tape_id, tape_library.label as name, tape_library.type as type, tape_library.container as parent, (SELECT label from tape_library where parent = id) as container_name, (SELECT container from container_type where container_type_id=tape_library.type) as is_container from tape_library left join tape_library on (tape_library.container = tape_library.id)  join  container_type on  (container_type.container=1 and container_type_id=type)";
-        //$query = "SELECT id from containers where container != -1";
-        //$statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        //$result = $this->query($query);
-        $result = tape_library_object::get_containers($db, $name, $type, $parent, $active);
-        $containers = array();
-        foreach($result as $container_id) {
-            $id = $container_id['id'];
-            
-            $container = new tape_library_object($db, $id);
-            $containers[] = $container;
-        }
-        return $containers;
-    }
-    
-    
-    public static function get_full_linked_path($db, $container_id) {
-        $path = "";
-        $container = new tape_library_object($db, $container_id);
-        $path = $container->get_label();
 
-        $new_container_id = $container->get_container_id();
+    
 
-        $i=0;
-        while(($new_container_id != -1 && $new_container_id != null && $new_container_id != "")) {
-            $container = new tape_library_object($db, $new_container_id);
-            $path .= ", located in ".$container->get_label();
-            $new_container_id = $container->get_container_id();
-            $i++;
+    
+    /* Private functions */
+    
+    /** 
+     * Gets data for a Tape Library Object and loads it into this object.
+     * 
+     * @param int $id The ID number of the Tape Library Object to load
+     */
+        private function get_tape_library_object($id) {
+
+            $query = "SELECT * from tape_library where id = :id";
+            $params = array("id"=>$id);
+
+            $result = $this->db->get_query_result($query, $params);
+
+            if($result) {
+                $this->id = $result[0]['id'];
+                $this->label = $result[0]['label'];
+                $this->type = $result[0]['type'];
+                $this->container = $result[0]['container'];
+                $this->active = $result[0]['active'];
+                $this->backupset = $result[0]['backupset'];
+                $this->tape_label = $result[0]['tape_label'];
+            } else {
+                return false;
+            }
         }
-        return $path;
-    }
 
 }

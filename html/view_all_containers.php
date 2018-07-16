@@ -65,7 +65,19 @@ $container_types = type::get_container_types($db);
       echo "</select>";
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    createInput("select","container",$parent, tape_library_object::get_containers($db));
+    //createInput("select","container",$parent, tape_library_object::get_containers($db));
+$containers = tape_library_object::get_containers($db);
+      echo "<select id='container' name='container'>";
+      echo "<option value=''>None</option>";
+
+      foreach ($containers as $curr_container) {
+        echo "<option value='".$curr_container->get_id()."'";
+        if (isset($container) && $container == $curr_container->get_id())
+          echo " selected";
+        
+        echo ">".$curr_container->get_label()."</option>";
+      }
+      echo "</select>";
 echo(" </td></tr>");
 
 
@@ -77,7 +89,7 @@ echo("<BR>");
 echo("Current containers:") ;
 echo("<table id='containers' class='table table-bordered table-hover table-striped display'>");
 
-$current_containers = tape_library_object::get_container_objects($db, $name, $type, $parent);
+$current_containers = tape_library_object::get_containers($db, $name, $type, $parent);
 
 if(count($current_containers)== 0) {
     echo "<tr><td>No containers have been added.</td></tr>";
