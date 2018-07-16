@@ -98,6 +98,9 @@ function get_query_result($query_string, $query_array) {
 
 
 function get_update_result($query_string, $query_params) {
+    // Update queries should probably only update one record. This will ensure 
+    // only one record gets updated in case of a malformed query.
+    $query_string .= " LIMIT 1"; 
     $statement = $this->get_link()->prepare($query_string, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $result = $statement->execute($query_params);
     return $result;
