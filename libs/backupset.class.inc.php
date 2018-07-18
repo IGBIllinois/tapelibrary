@@ -232,7 +232,7 @@ function edit_backupset($name, $begin, $end, $program, $notes) {
         $tapes = $this->db->get_query_result($query, $params);
         
         foreach($tapes as $tape) {
-            $new_tape = new tape_library_object($this->db, $tape->get_id());
+            $new_tape = new tape_library_object($this->db, $tape['id']);
             if(!$new_tape->is_tape()) {
                 $tape_array[] = $new_tape;
             }

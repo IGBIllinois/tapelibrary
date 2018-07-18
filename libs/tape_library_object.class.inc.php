@@ -553,6 +553,17 @@ class tape_library_object {
         
     }
     
+    /** 
+     * 
+     * @param type $db
+     * @param type $begin
+     * @param type $end
+     * @param type $type
+     * @param type $parent
+     * @param type $active
+     * @param type $tapes
+     * @return \tape_library_object
+     */
     public static function get_tapes($db, $begin=null, $end=null, $type=null, $parent=null, $active=1, $tapes=1) {
         $tape_array = array();
         if($tapes) {
