@@ -122,7 +122,7 @@ if(isset($_POST['submit'])) {
         }
     }
 
-$containers = tape_library_object::get_containers($db, $begin, $select_type, $select_container, $active, 1);
+$containers = tape_library_object::get_containers($db, $begin, $select_type, $select_container, $active);
   if(strlen($messages) > 0) {
       echo($messages);
   }
@@ -132,11 +132,11 @@ echo("<table id='edit_container' class='table table-bordered table-hover table-s
 echo("<th><input type=checkbox onClick='toggleAll(this,\"checkbox\")' /></th><th>Label</th><th>Type</th><th>Location");
 
 echo("<BR>Move selected containers to:");
-$containers = tape_library_object::get_containers($db);
+$all_containers = tape_library_object::get_containers($db);
       echo "<select id='tape_container' name='tape_container'>";
       echo "<option value=''>None</option>";
 
-      foreach ($containers as $curr_container) {
+      foreach ($all_containers as $curr_container) {
         echo "<option value='".$curr_container->get_id()."'";
         if (isset($container) && $container == $curr_container->get_id())
           echo " selected";
@@ -146,6 +146,8 @@ $containers = tape_library_object::get_containers($db);
       echo "</select>";
 
 echo("</th><th>Active</th></tr></thead>");
+
+
 foreach($containers as $container) {
 
     $container_id = $container->get_id();
