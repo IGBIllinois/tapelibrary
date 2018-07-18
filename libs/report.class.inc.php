@@ -45,15 +45,15 @@ class report {
 		$excel_file->setActiveSheetIndex(0);
 		if (count($data) !== 0 ) {
 			//Creates headers
-			//$headings = array_keys($data[0]);
-			//for ($i=0;$i<count($headings);$i++) {
-			//	$excel_file->getActiveSheet()->setCellValueByColumnAndRow($i,1,$headings[$i]);
-			//	$excel_file->getActiveSheet()->getStyleByColumnAndRow($i,1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-			//	$excel_file->getActiveSheet()->getStyleByColumnAndRow($i,1)->getFont()->setBold(true);
-			//	$excel_file->getActiveSheet()->getStyleByColumnAndRow($i,1)->getFont()->setUnderline(PHPExcel_STYLE_Font::UNDERLINE_SINGLE);
-			//	$excel_file->getActiveSheet()->getColumnDimensionByColumn($i)->setAutoSize(true);
-			//}
-                        //
+			$headings = array_keys($data[0]);
+			for ($i=0;$i<count($headings);$i++) {
+				$excel_file->getActiveSheet()->setCellValueByColumnAndRow($i,1,$headings[$i]);
+				$excel_file->getActiveSheet()->getStyleByColumnAndRow($i,1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+				$excel_file->getActiveSheet()->getStyleByColumnAndRow($i,1)->getFont()->setBold(true);
+				$excel_file->getActiveSheet()->getStyleByColumnAndRow($i,1)->getFont()->setUnderline(PHPExcel_STYLE_Font::UNDERLINE_SINGLE);
+				$excel_file->getActiveSheet()->getColumnDimensionByColumn($i)->setAutoSize(true);
+			}
+                        
 			//Adds data
 			$rows = count($data);
 			$start_row = 1;
@@ -119,20 +119,11 @@ class report {
                 }
                 $headers = array_merge($this_row, array("Name","Type","Backupset","Tape Label", "Location"));
                 $data[] = $headers;
-            //print_r($object_list);
+
             foreach($object_list as $object) {
-                //print_r($object);
+
                 $id = $object->get_id();
                 $tape_library_object = new tape_library_object($db, $id);
-                //$headers = array();
-
-                //test
-                //echo("adding:"+$tape_library_object->get_label());
-                //echo("<BR>");
-                //$this_row = array();
-                ////for($i=0; $i<$level; $i++) {
-                //    $this_row[] = "";
-                //}
 
                 $data_row = array_merge($this_row, array($tape_library_object->get_label(), $tape_library_object->get_type_name(), $tape_library_object->get_backupset_name(), $tape_library_object->get_tape_label(), $tape_library_object->get_container_name()));
 
