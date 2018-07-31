@@ -37,7 +37,6 @@ if (isset($_POST['login'])) {
 		if ($success==0) {
 			$session_vars = array('login'=>true,
                 'username'=>$username,
-                'password'=>$password,
                 'timeout'=>time(),
                 'ipaddress'=>$_SERVER['REMOTE_ADDR']
         	);
