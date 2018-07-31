@@ -54,18 +54,15 @@ if($container->is_tape()) {
     $object_type = "Container";
 }
 
-//$name = $_POST['container_name'];
     $container_type=$container->get_type();
     $parent_id = $container->get_container_id();
     $name = $container->get_label();
     $active = $container->is_active();
     $tape_label = $container->get_tape_label();
-    //$errors = "";
-    $backupset = $container->get_backupset();
+
     $messages = "";
 if(isset($_POST['submit_edit_container'])) {
 if(isset($_POST['container_name'])) {
-    //echo("Adding container : ".$_POST['container_name']."<BR>");
 
     if(isset($_POST['container_name']) && $_POST['container_name'] != null) {
         $name = $_POST['container_name'];
@@ -92,7 +89,7 @@ if(isset($_POST['container_name'])) {
 
         $tape_label = $_POST['tape_label'];
     }
-
+    
     if(strlen($messages) == 0) {
 
         $container = new tape_library_object($db, $container_id);
@@ -103,6 +100,8 @@ if(isset($_POST['container_name'])) {
             $messages .=(html::success_message($result['MESSAGE']));
         } else {
             $messages .=(html::error_message($result['MESSAGE']));
+        }
+        
         }
     } else {
         //echo($errors);
@@ -143,11 +142,6 @@ foreach($all_types as $type) {
 echo("</table>");
 echo(" </td></tr>");
 
-if(!$container->is_location()) {
-echo("<tr><td>Backup Set:</td><td>");
-createInput("select","backupset",$backupset,backupset::get_all_backupsets_array($db));
-echo("</td></tr>");
-}
 echo("</table>");
 echo("<input type='hidden' name='container_id' value='".$container_id."'>");
 echo("<input type='hidden' name='container_type' value='".$container->get_type()."'>");
@@ -157,5 +151,5 @@ echo("<BR>");
 if(strlen($messages) > 0) {
     echo($messages);
 }
-}
+
 include 'includes/footer.inc.php';

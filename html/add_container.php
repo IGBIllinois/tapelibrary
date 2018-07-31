@@ -29,11 +29,9 @@ function hide() {
 <?php
 
 echo("<h3>Add Container</h3>");
-//$name = $_POST['container_name'];
+
     $container_type=null;
     $container_id=-1;
-    //$errors = "";
-    $backupset = null;
     $messages = "";
 if(isset($_POST['container_type']) && $_POST['container_type'] != null) {
 ?>
@@ -63,10 +61,6 @@ if(isset($_POST['container_name'])) {
         $messages .= html::error_message("Please select a valid name for this container.");
         
     }
-    
-    if(isset($_POST['backupset'])) {
-        $backupset = $_POST['backupset'];
-    }
 
     if(isset($_POST['container_type']) && $_POST['container_type'] != null) {
         $container_type = $_POST['container_type'];
@@ -79,7 +73,7 @@ if(isset($_POST['container_name'])) {
             if(!$this_type->is_location()) {
                 $messages .= html::error_message("Please select a valid parent location for this container.");
             } else {
-                //$this_type = new type($db, $type);
+
                 $container_id=-1;
             }
         }
@@ -92,17 +86,16 @@ if(isset($_POST['container_name'])) {
 
     if(strlen($messages) == 0) {
 
-        $result = tape_library_object::add_tape($db, $name, $container_type, $container_id, $backupset, $login_user->get_username());
+        $result = tape_library_object::add_tape($db, $name, $container_type, $container_id, -1, $login_user->get_username());
    
 
         if ($result['RESULT']) {
-            //header('Location:view_container.php?container_id='.$result['id'].'&add_success=1');
             $messages .= html::success_message($result['MESSAGE']);
         } else {
             $messages .= html::error_message($result['MESSAGE']);
         }
     } else {
-        //echo($errors);
+
     }
 }
 }
@@ -115,7 +108,6 @@ echo("<tr><td width=20%>Container Name:</td><td><input type='text' name='contain
 echo("<tr><td>Container Type :");
 echo("<BR><a href='add_container_type.php'>(Add a new container type?)</a>");
 echo("</td><td>");
-    //createInput("select","container_type",(isset($container_type) ? $container_type : ""),type::get_container_types($db), "", "hide()");
 $container_types = type::get_container_types($db);
       echo "<select id='container_type' name='container_type' onChange=hide()>";
       echo "<option value=''>None</option>";
@@ -142,10 +134,6 @@ foreach($all_types as $type) {
 }
 echo("</table>");
 echo(" </td></tr>");
-//echo("<tr><td>Service:</td><td><input type='text' name='service' id='service'></td></tr>");
-echo("<tr><td>Backup Set:</td><td>");
-createInput("select","backupset",$backupset,backupset::get_all_backupsets_array($db));
-echo("</td></tr>");
 echo("</table>");
 echo("<input type='submit' name='submit_add_container' value='Add Container'>");
 echo("</form>");
