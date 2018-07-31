@@ -520,9 +520,9 @@ class tape_library_object {
 
             $result = $db->get_insert_result($query, $params);
             return array("RESULT"=>TRUE,
-                        "MESSAGE"=>"Tape $label added successfully.",
+                        "MESSAGE"=>"$label added successfully.",
                         "id"=>$result);
-            echo("add result = $result<BR>");
+
         
         } catch(Exception $e) {
             echo $e;
@@ -535,7 +535,7 @@ class tape_library_object {
      * Returns an array of tapes that are not currently in a backup set.
      * 
      * @param db $db Database Object
-     * @return tape_library_object[] array of tapes not currently in a 
+     * @return tape_library_object[] Array of tapes not currently in a 
      * Backup Set
      */
     public static function get_tapes_without_backupset($db) {
@@ -555,14 +555,19 @@ class tape_library_object {
     
     /** 
      * 
-     * @param type $db
-     * @param type $begin
-     * @param type $end
-     * @param type $type
-     * @param type $parent
-     * @param type $active
-     * @param type $tapes
-     * @return \tape_library_object
+     * Returns a list of tapes based on certain criteria. 
+     * 
+     * @param db $db Database Object
+     * @param string $begin beginning of a range to search for. If 'end' is null,
+     *     it will search only on this entry
+     * @param string $end end of the range to search for. If null, it will
+     *     only search on 'begin'.
+     * @param int $type ID of the type to return
+     * @param int $parent The id of the parent container
+     * @param bool $active If true, return only active tapes, else inactive tapes
+     * @param int $tapes If 1, return tapes, else return containers
+     * @return tape_library_object An array of Tape Library Objects
+     * that fit the given criteria.
      */
     public static function get_tapes($db, $begin=null, $end=null, $type=null, $parent=null, $active=1, $tapes=1) {
         $tape_array = array();
@@ -572,6 +577,7 @@ class tape_library_object {
             $query = "select tape_library.id as id, tape_library.label as label, tape_library.label as name, tape_library.container as container, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active from tape_library where type in (SELECT container_type_id from container_type where container_type.can_contain_types is not null && container_type.can_contain_types != '')";
 
         }
+        
 
         $subquery = "";
         $params = array();
@@ -613,6 +619,19 @@ class tape_library_object {
         return $tape_array;
     }
     
+    /** 
+     * 
+     * Returns a list of containers based on certain criteria. 
+     * 
+     * @param db $db Database Object
+     * @param string $name the name or part of a name to search for
+     * @param int $type ID of the type to return
+     * @param int $parent the id of the parent container
+     * @param bool $active if true, return only active tapes, else inactive tapes
+     * @param int $tapes if 1, return tapes, else return containers
+     * @return tape_library_object an array of Tape Library Objects
+     * that fit the given criteria.
+     */
     public static function get_containers($db, $name=null, $type=null, $parent=null, $active=1) {
         return tape_library_object::get_tapes($db, $name, null, $type, $parent, $active, 0);
 

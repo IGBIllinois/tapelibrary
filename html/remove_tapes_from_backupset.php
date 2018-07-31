@@ -30,7 +30,7 @@ if(!isset($_POST['backupset_id'])) {
 
 
             if($result['RESULT']) {
-                $messages .= ("<div class='alert alert-success'>".$result['MESSAGE']."</div>");
+                $messages .= html::success_message($result['MESSAGE']);
             } else {
                 $messages .= (html::error_message($result['MESSAGE']));
             }
@@ -82,6 +82,6 @@ echo("<input type=submit name=submit_remove value='Remove Selected Tapes from Ba
     echo("<input type=button onclick=\"window.location='view_backupsets.php'\" name=cancel value='Cancel'>");
     echo("</form>");
 
-
+    
 }
 include_once 'includes/footer.inc.php';

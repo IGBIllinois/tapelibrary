@@ -15,17 +15,18 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title><?php echo __TITLE__.(isset($title)?" - $title":''); ?></title>
+                
 		<link rel="stylesheet" href="includes/bootstrap/css/bootstrap.min.css" type="text/css"/>
-		<link rel="stylesheet" href="includes/select2/css/select2.css" type="text/css" />
+                
 		<link rel="stylesheet" href="includes/main.inc.css" type="text/css"/>
 		<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
+                   
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-		<script type="text/javascript" src="includes/select2/js/select2.full.js"></script>
+                
 		<script type="text/javascript" src="includes/main.inc.js"></script>
                 <script type='text/javascript' language='javascript' src='includes/jquery.min.js'></script>
                 <script type="text/javascript" src="includes/script.js"></script>
+                
 <script type='text/javascript' language='javascript' src='includes/jquery.dataTables.min.js'></script>
 
 
