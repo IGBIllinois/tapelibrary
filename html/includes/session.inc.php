@@ -38,7 +38,6 @@ elseif ($_SERVER['REMOTE_ADDR'] != $session->get_var('ipaddress')) {
 else {
 	$login_user = new user($ldap,$session->get_var('username'));
 	$ldap->set_bind_user($login_user->get_user_rdn());
-	$ldap->set_bind_pass($session->get_var('password'));
 	//Reset Timeout
 	$session_vars = array('timeout'=>time());
 	$session->set_session($session_vars);
