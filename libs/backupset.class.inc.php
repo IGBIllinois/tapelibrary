@@ -11,7 +11,6 @@ class backupset {
     private $db; // database
     private $id = -1;
     private $name = "None";
-    //private $item_id;
     private $begin_date;
     private $end_date;
     private $program;
@@ -25,7 +24,7 @@ class backupset {
     public function __construct($db, $id=0) {
         $this->db = $db;
     
-        if($id != 0) {
+        if($id != null && $id != 0) {
             $this->load_by_id($db, $id);
         }
     }
@@ -99,7 +98,21 @@ class backupset {
     }
     
 
-    
+    /** 
+     * 
+     * @param string $name
+     * @param string $begin
+     * @param string $end
+     * @param int $program
+     * @param string $notes
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string],
+     *  "backupset_id"=>[int])
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message,
+     * and "backupset_id" is the id of the newly created backup set
+     */
     function add_backupset($name, $begin, $end, $program, $notes) {
 
         //print_r($search_result);
@@ -123,6 +136,14 @@ class backupset {
                     "backupset_id"=>$result);
     }
     
+    /**
+     * 
+     * Determines if a backupset with a given name already exists
+     * 
+     * @param db $db Database Object
+     * @param string $name the name of the Backup Set to search for.
+     * @return int 1 if a Backup Set with the given name exists, else 0
+     */
     public static function backupset_exists($db, $name) {
         $search_query = "SELECT * from backupset where name=:name";
         $search_params = array("name"=>$name);
@@ -135,45 +156,55 @@ class backupset {
         }
     }
     
-function get_backupset_data($db, $id) {
-    $query = "SELECT * from backupset where id=:id";
-    $params = array("id"=>$id);
-    $result = $db->get_query_result($query, $params);
-    
-    if(count($result)==1) {
-        $result = $result[0];
-    } else {
-        $result = 0;
+
+
+    /**
+     * 
+     * Edits this Backup Set
+     * 
+     * @param string $name The new name for this Backup Set
+     * @param string $begin The new start date for this Backup Set (YYYY-MM-DD)
+     * @param string $end The new end date for this Backup Set (YYYY-MM-DD)
+     * @param int $program The new Program ID
+     * @param string $notes Additional notes for this Backup Set
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message
+     */
+    public function edit_backupset($name, $begin, $end, $program, $notes) {
+        $id = $this->id;
+        $search_query = "SELECT * from backupset where name=:name and id != :id";
+        $search_params = array("name"=>$name, "id"=>$id);
+        $search_result = $this->db->get_query_result($search_query, $search_params);
+
+        if(count($search_result) > 0) {
+
+            return array("RESULT"=>FALSE,
+                        "MESSAGE"=>"A backupset with the name '$name' already exists. Please choose a different name.");
+        }
+        $query = "UPDATE backupset set name=:name, begin=:begin, end=:end, program=:program, notes=:notes where id=:id";
+        $params = array("id"=>$id, "name"=>$name, "begin"=>$begin, "end"=>$end, "program"=>$program, "notes"=>$notes);
+        $result = $this->db->get_query_result($query, $params);
+
+        return array("RESULT"=>TRUE,
+                    "MESSAGE"=>"Backup set $name edited successfully,");
     }
-    return $result;
-}
 
-function edit_backupset($name, $begin, $end, $program, $notes) {
-    $id = $this->id;
-    $search_query = "SELECT * from backupset where name=:name and id != :id";
-    $search_params = array("name"=>$name, "id"=>$id);
-    $search_result = $this->db->get_query_result($search_query, $search_params);
-    
-    
-    //print_r($search_result);
-    
-    if(count($search_result) > 0) {
-        //echo("<div class='alert alert-danger'>A backupset with the name '$name' already exists. Please choose a different name.</div>");
-        //return 0;
-        return array("RESULT"=>FALSE,
-                    "MESSAGE"=>"A backupset with the name '$name' already exists. Please choose a different name.");
-    }
-    $query = "UPDATE backupset set name=:name, begin=:begin, end=:end, program=:program, notes=:notes where id=:id";
-    $params = array("id"=>$id, "name"=>$name, "begin"=>$begin, "end"=>$end, "program"=>$program, "notes"=>$notes);
-    $result = $this->db->get_query_result($query, $params);
-    //return $result;
-    return array("RESULT"=>TRUE,
-                "MESSAGE"=>"Backup set $name edited successfully,");
-}
+    /**
+     * 
+     * Deactivates this Backup Set
+     * 
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message
+     */
+    public function deactivate_backupset() {
 
-    function deactivate_backupset() {
-
-        if(count($this->get_tapes_in_backupset()) == 0 && count($this->get_containers_in_backupset()) == 0){
+        if(count($this->get_tapes_in_backupset()) == 0) {
         $query = "UPDATE backupset set active=0 where id=:id";
         $params = array("id"=>$this->get_id());
         $result = $this->db->get_query_result($query, $params);
@@ -181,13 +212,23 @@ function edit_backupset($name, $begin, $end, $program, $notes) {
                                 "MESSAGE"=>"Backupset ".$this->get_name() . " successfully deactivated.");
         } else {
             $return_result = array("RESULT"=>FALSE,
-                                "MESSAGE"=>"Backupset ".$this->get_name() . " is not empty. Plese remove all tapes and containers from it before deactivating.");
+                                "MESSAGE"=>"Backupset ".$this->get_name() . " is not empty. Please remove all tapes and containers from it before deactivating.");
         }
         
         return $return_result;
     }
-    
-    function activate_backupset() {
+
+    /**
+     * 
+     * Activates this Backup Set
+     * 
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message
+     */
+    public function activate_backupset() {
 
         $backupset_id = $this->get_id();
         $query = "UPDATE backupset set active=1 where id=:id";
@@ -198,14 +239,20 @@ function edit_backupset($name, $begin, $end, $program, $notes) {
 
         return $return_result;
     }
-    
-    function get_tapes_in_backupset() {
+
+     /**
+     * 
+     * Deactivates this Backup Set
+     * 
+     * @return tape_library_object[] An array of Tape Library Objects that
+      *     are in this Backup Set
+     */
+    public function get_tapes_in_backupset() {
 
         $backupset_id = $this->id;
         $tape_array = array();
         $backupset_id = $this->id;
         $query = "SELECT * from tape_library where backupset=:backupset_id order by tape_label, label";
-        //$query = "select tapes.id as id, tapes.item_id as tape_number, tapes.label as label, tapes.container as parent, tapes.type as type, tapes.backupset as backupset, tapes.active as active, (SELECT label from tape_library where parent = id) as container_name";
 
         $params = array("backupset_id"=>$backupset_id);
         $tapes = $this->db->get_query_result($query, $params);
@@ -220,36 +267,16 @@ function edit_backupset($name, $begin, $end, $program, $notes) {
        
     }
     
-    function get_containers_in_backupset() {
-        //echo("1");
-        $tape_array = array();
-        $backupset_id = $this->get_id();
-        
-        $query = "SELECT * from tape_library where backupset=:backupset_id order by label";
-        //$query = "select tapes.id as id, tapes.item_id as tape_number, tapes.label as label, tapes.container as parent, tapes.type as type, tapes.backupset as backupset, tapes.active as active, (SELECT label from tape_library where parent = id) as container_name";
-
-        $params = array("backupset_id"=>$backupset_id);
-        $tapes = $this->db->get_query_result($query, $params);
-        
-        foreach($tapes as $tape) {
-            $new_tape = new tape_library_object($this->db, $tape['id']);
-            if(!$new_tape->is_tape()) {
-                $tape_array[] = $new_tape;
-            }
-        }
-        return $tape_array;
-    }
     
-    public static function get_all_backupsets_array($db) {
-        
-    $query = "SELECT * from backupset order by name";
-    $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    $result = $db->query($query);
-    //print_r($results);
-    return $result;
-      
-    }
 
+    /**
+     * Gets a list of all Backup Sets
+     * 
+     * @param db $db The Database Object
+     * @param int $active 1 to return active backup sets, 0 to return inactive
+     *  backup sets, null to return both
+     * @return backupset[] An array of Backupset Objects
+     */
     public static function get_all_backupsets($db, $active=null) {
 
         $query = "SELECT id from backupset ".(($active != null) ? " where active=:active " : ""). " order by name";
@@ -275,6 +302,16 @@ function edit_backupset($name, $begin, $end, $program, $notes) {
 
     }
 
+    
+    /**
+     * Adds a Tape to this Backup Set
+     * @param type $tape_id
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message
+     */
     function add_tape_to_backupset($tape_id) {
         if(!$this->is_active()) {
             return  array("RESULT"=>FALSE,
@@ -294,30 +331,63 @@ function edit_backupset($name, $begin, $end, $program, $notes) {
         }
     }
     
+    
+    /**
+     * Removes a Tape to this Backup Set, setting the backup set of the tape 
+     * to NULL
+     * @param type $tape_id
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message
+     */
     function remove_tape_from_backupset($tape_id) {
         try {
             $backupset_id = $this->id;
             $find_query = "SELECT * from tape_library where id=:tape_id and backupset = :backupset_id";
             $params = array("tape_id"=>$tape_id, "backupset_id"=>$backupset_id);
-            //print_r($params);
+
             $find_result = $this->db->get_query_result($find_query, $params);
-           // print_r($find_result);
+
             if(count($find_result) == 0) {
                 
                 return array("RESULT"=>FALSE,
                             "MESSAGE"=>"Tape not found.");
             }
-            //echo("Removing tape $tape_id from backupset $backupset_id<BR>");
-            $query = "UPDATE tape_library set backupset='-1' where id=:tape_id and backupset = :backupset_id";
+
+            $query = "UPDATE tape_library set backupset = NULL where id=:tape_id and backupset = :backupset_id";
             $result = $this->db->get_query_result($query, $params);
             $tape = new tape_library_object($this->db, $tape_id);
             return  array("RESULT"=>TRUE,
                             "MESSAGE"=>"Tape ".$tape->get_label(). " successfully removed from backup set ". $this->name . ".");
         } catch(Exception $e) {
-            //echo($e->getTraceAsString());
+
             return array("RESULT"=>FALSE,
                             "MESSAGE"=>$e->getTraceAsString());
         }
         
+    }
+    
+    // Private Functions
+    
+    
+     /**
+     *  Gets data for a Backup Set from the database
+     * @param db $db The Database Object
+     * @param type $id ID number of the Backupset Object to load
+     * @return mixed An array of Backupset data if success, else 0
+     */
+    private function get_backupset_data($db, $id) {
+        $query = "SELECT * from backupset where id=:id";
+        $params = array("id"=>$id);
+        $result = $db->get_query_result($query, $params);
+
+        if(count($result)==1) {
+            $result = $result[0];
+        } else {
+            $result = 0;
+        }
+        return $result;
     }
 }

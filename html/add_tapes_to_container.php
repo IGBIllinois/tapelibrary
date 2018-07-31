@@ -160,7 +160,19 @@ echo(" </td></tr>");
 
 //echo("<tr><td>Service:</td><td><input type='text' name='backupset' id='service'></td></tr>");
 echo("<tr><td>Backup Set:</td><td>");
-createInput("select","backupset",$backupset,backupset::get_all_backupsets_array($db));
+//createInput("select","backupset",$backupset,backupset::get_all_backupsets_array($db));
+$all_backupsets = backupset::get_all_backupsets($db);
+      echo "<select id='backupset' name='backupset'>";
+      echo "<option value=''>None</option>";
+
+      foreach ($all_backupsets as $curr_backupset) {
+        echo "<option value='".$curr_backupset->get_id()."'";
+        if (isset($backupset) && $backupset == $curr_backupset->get_id())
+          echo " selected";
+        
+        echo ">".$curr_backupset->get_name()."</option>";
+      }
+      echo "</select>";
 echo("</td></tr>");
 
 echo("</table>");

@@ -100,14 +100,12 @@ if(isset($_POST['submit'])) {
             $ids[$i] = $_POST['tape_id'.$i];
             $label[$i] = $_POST['tape_label'.$i];
             
-            //echo("label[$i] = ".$label[$i]."<BR>");
-            //echo("ids[$i] = ".$ids[$i]."<BR>");
 	}
-        //echo("tape_to = $tape_to, tape_from = $tape_from<BR>");
+
         if((is_null($tape_to) || $tape_to === "") && !is_null($tape_from)) {
             // just add one
             $i = 0;
-            //echo("Adding just one tape : ".$label[$i]."<BR>");
+
             $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, $login_user->get_username(), $label[$i] );
             if ($result['RESULT']) {
                 $messages .=(html::success_message($result['MESSAGE']));
@@ -118,7 +116,6 @@ if(isset($_POST['submit'])) {
         } else if (is_numeric($tape_to) && $tape_from <= $tape_to) {
 
                 for($i=0; $i<$numtapes; $i++) {
-                    //echo("Adding tape : ".$ids[$i]."<BR>");
 
                     $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, $login_user->get_username(), $label[$i] );
 
@@ -128,9 +125,7 @@ if(isset($_POST['submit'])) {
                         $messages .=(html::error_message($result['MESSAGE']));
                     }
                 }
-		//print "<script type=\"text/javascript\">parent.window.container.href='index.php'</script>";
-                //print("<BR>Tapes added<BR>");
-                //unset($_POST);
+
 	} else {
 		$messages .= html::error_message("<p><b>Something went wrong, please try again</b></p>");
             
@@ -138,25 +133,13 @@ if(isset($_POST['submit'])) {
     }
     }
 
-    
-
-
-
-
-
 
 echo("<form id='addform' name='add_tape' action='add_tape.php' method='POST'>");
 echo("<table class='table  display'><tr><td width=50% valign='top'>");
 echo("<table class='table table-bordered display'>");
-//echo("<tr><td>Location Name:</td><td><input type='text' name='container_name' id='container_name'></td></tr>");
 
       print "<tr >";
         print "<td width=40%>Tapes to add:</td>";
-        /*
-        print(" <div class='tooltip'>Notes:
-            <span class='tooltiptext'>Inputting numeric values in both the 'From' and 'To' fields will generate a list of values. If 'From' containes alphabetic characters, only one value will be input.</span>
-          </div> ");
-         * */
          
         print "<td>From:";
         createInput("text","tape_from",isset($tape_from) ? $tape_from : "");
@@ -185,11 +168,22 @@ foreach($all_types as $type) {
 }
 echo("</table>");
 echo(" </td></tr>");
-//echo("<tr><td>Service:</td><td><input type='text' name='backupset' id='service'></td></tr>");
 echo("<tr><td>Backup Set:");
 echo("<BR><a href=add_backupset.php>(Add a new backup set?)</a>");
 echo("</td><td>");
-createInput("select","backupset",$backupset,backupset::get_all_backupsets_array($db));
+//createInput("select","backupset",$backupset,backupset::get_all_backupsets_array($db));
+$all_backupsets = backupset::get_all_backupsets($db);
+      echo "<select id='backupset' name='backupset'>";
+      echo "<option value=''>None</option>";
+
+      foreach ($all_backupsets as $curr_backupset) {
+        echo "<option value='".$curr_backupset->get_id()."'";
+        if (isset($backupset) && $backupset == $curr_backupset->get_id())
+          echo " selected";
+        
+        echo ">".$curr_backupset->get_name()."</option>";
+      }
+      echo "</select>";
 echo("</td></tr>");
 
 echo("</table>");
