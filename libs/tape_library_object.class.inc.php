@@ -258,8 +258,19 @@ class tape_library_object {
         
         try {
 
-        $query = "UPDATE tape_library set label=:label, container=:container, last_update_username=:username, active=:active, tape_label=:tape_label, last_update=NOW() where id=:id";
-        $params = array('label'=>$label,  'container'=>$container,  'username'=>$username, 'id'=>$id, 'active'=>$active, 'tape_label'=>$tape_label);
+        $query = "UPDATE tape_library set label=:label, ".
+                " container=:container, ".
+                " last_update_username=:username, ".
+                " active=:active, ".
+                " tape_label=:tape_label, ".
+                " last_update=NOW() where id=:id";
+        
+        $params = array('label'=>$label,  
+            'container'=>$container,  
+            'username'=>$username, 
+            'id'=>$id, 
+            'active'=>$active, 
+            'tape_label'=>$tape_label);
 
         $result = $this->db->get_query_result($query, $params);
 
@@ -376,7 +387,9 @@ class tape_library_object {
 
         if(!in_array($object_type->get_id(), $container_type->get_can_contain_types())) {
             $result = array("RESULT"=>FALSE,
-                            "MESSAGE"=>"An object of type ".$object_type->get_name(). " cannot be placed into a ".$container_type->get_name().". ".$object->get_label(). " has not been moved.");
+                            "MESSAGE"=>"An object of type ".$object_type->get_name(). 
+                " cannot be placed into a ".$container_type->get_name().". ".
+                $object->get_label(). " has not been moved.");
             return $result;
         }
 
@@ -432,7 +445,6 @@ class tape_library_object {
      * @return type
      */
     public static function get_locations($db) {
-        //$query = "select tape_library.id as id, tape_library.item_id as tape_id, tape_library.label as name, tape_library.type as type, tape_library.container as parent, (SELECT label from tape_library where parent = id) as container_name, (SELECT container from container_type where container_type_id=tape_library.type) as is_container from tape_library left join tape_library on (tape_library.container = tape_library.id)  join  container_type on  (container_type.container=1 and container_type_id=type)";
         $query = "select id, label as name from tape_library where container is null or container=-1";
         $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $locations = $db->query($query);
@@ -487,6 +499,11 @@ class tape_library_object {
      */
     public static function add_tape($db, $label, $type, $container_id, $backupset, $username, $tape_label=null) {
         
+        if($label == null || $label == "") {
+            $message = "A tape or container cannot have a blank name. Please input a proper name or ID Number.";
+            return array("RESULT"=>FALSE,
+                            "MESSAGE"=>$message);
+        }
         if(tape_library_object::does_tape_exist($db,$label,$type)) {
 
             $new_type = new type($db, $type);
@@ -513,8 +530,16 @@ class tape_library_object {
             $backupset = -1;
         }
 
-        $query = "INSERT INTO tape_library ( label, type, container, backupset, last_update_username, tape_label, last_update, active) VALUES(:label, :type, :container_id, :backupset, :username, :tape_label, NOW(),1)";
-        $params = array('label'=>$label, 'type'=>$type, 'container_id'=>$container_id, 'backupset'=>$backupset, 'username'=>$username, 'tape_label'=>$tape_label);
+        $query = "INSERT INTO tape_library ( ".
+                "label, type, container, backupset, last_update_username, tape_label, last_update, active) ".
+                " VALUES(:label, :type, :container_id, :backupset, :username, :tape_label, NOW(),1)";
+        
+        $params = array('label'=>$label, 
+            'type'=>$type, 
+            'container_id'=>$container_id, 
+            'backupset'=>$backupset, 
+            'username'=>$username, 
+            'tape_label'=>$tape_label);
 
         try {
 
@@ -539,7 +564,18 @@ class tape_library_object {
      * Backup Set
      */
     public static function get_tapes_without_backupset($db) {
-        $query = "select tape_library.id as id, tape_library.label as label, tape_library.container as parent, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active, (SELECT label from tape_library as containers where containers.id = tape_library.container) as container_name from tape_library   left join container_type on (tape_library.type = container_type.container_type_id ) where (tape_library.backupset is null or tape_library.backupset = '-1') and (container_type.can_contain_types is null or container_type.can_contain_types='')";
+        $query = "select tape_library.id as id, ".
+                " tape_library.label as label, ".
+                " tape_library.container as parent, ".
+                " tape_library.type as type, ".
+                " tape_library.backupset as backupset, ".
+                " tape_library.active as active, ".
+                " (SELECT label from tape_library as containers where containers.id = tape_library.container) as container_name ".
+                " from tape_library ".
+                " left join container_type on (tape_library.type = container_type.container_type_id ) ".
+                " where (tape_library.backupset is null or tape_library.backupset = '-1') ".
+                " and (container_type.can_contain_types is null or container_type.can_contain_types='')";
+        
         $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $result = $db->query($query);
         
@@ -572,9 +608,27 @@ class tape_library_object {
     public static function get_tapes($db, $begin=null, $end=null, $type=null, $parent=null, $active=1, $tapes=1) {
         $tape_array = array();
         if($tapes) {
-            $query = "select tape_library.id as id, tape_library.label as label, tape_library.label as name, tape_library.container as container, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active from tape_library where type in (SELECT container_type_id from container_type where container_type.can_contain_types is null or container_type.can_contain_types='')";
+            $query = "select tape_library.id as id, ".
+                    " tape_library.label as label, ".
+                    " tape_library.label as name, ".
+                    " tape_library.container as container, ".
+                    " tape_library.type as type, ".
+                    " tape_library.backupset as backupset, ".
+                    " tape_library.active as active from tape_library ".
+                    " where type in ".
+                    " (SELECT container_type_id from container_type ".
+                    " where container_type.can_contain_types is null or container_type.can_contain_types='')";
         } else {
-            $query = "select tape_library.id as id, tape_library.label as label, tape_library.label as name, tape_library.container as container, tape_library.type as type, tape_library.backupset as backupset, tape_library.active as active from tape_library where type in (SELECT container_type_id from container_type where container_type.can_contain_types is not null && container_type.can_contain_types != '')";
+            $query = "select tape_library.id as id, ".
+                    " tape_library.label as label, ".
+                    " tape_library.label as name, ".
+                    " tape_library.container as container, ".
+                    " tape_library.type as type, ".
+                    " tape_library.backupset as backupset, ".
+                    " tape_library.active as active ".
+                    " from tape_library where type in ".
+                    " (SELECT container_type_id from container_type ".
+                    " where container_type.can_contain_types is not null && container_type.can_contain_types != '')";
 
         }
         
