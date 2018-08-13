@@ -105,7 +105,6 @@ echo("<tr><td width=40%>New type name</td>");
 echo("<td><input type='text' name='container_type_name' id='container_type_name' value='$container_type_name'></td></tr>");
 
 echo("<tr><td>How many objects can be put in a container? (if there is a limit)</td><td><input name='max_slots' value='".((is_numeric($max_slots) && $max_slots >=0) ? $max_slots : "Any")."'></td></tr>");
-//echo("<tr><td>Is this a physical location (like a room or a building)?</td><td><input type='checkbox' value=1 name='is_location'".(($is_location) ? " CHECKED " : "")."></td></tr>");
 echo("</table>");
 
 
@@ -115,15 +114,15 @@ echo("<tr><Td>What types can this container contain?</td></tr>");
 echo("<TR><TD>");
 $types = type::get_all_types($db);
 foreach($types as $type) {
-    $id = $type['id'];
-    echo("<input type=checkbox  id='type$id' onclick=toggle('placedtype$id') name=types[".$type['id']."] value='".$type['id']."'>".$type['name']."<BR>");
+    $id = $type->get_id();
+    echo("<input type=checkbox  id='type$id' onclick=toggle('placedtype$id') name=types[".$id."] value='".$id."'>".$type->get_name()."<BR>");
 }
 echo("</td></tr><tr><td>");
 echo("In what types can this container be placed?<BR>(If it cannot be placed in anything, it will be considered a top-level location type)</td></tr><tr><td>");
 $types = type::get_all_types($db);
 foreach($types as $type) {
-    $id = $type['id'];
-    echo("<input type=checkbox  id='placedtype$id' onclick=toggle('type$id') name=placedtypes[".$type['id']."] value='".$type['id']."'>".$type['name']."<BR>");
+    $id = $type->get_id();
+    echo("<input type=checkbox  id='placedtype$id' onclick=toggle('type$id') name=placedtypes[".$id."] value='".$id."'>".$type->get_name()."<BR>");
 }
 echo("</td></tr></table>");
 echo("<input type='submit' name='submit' value='Add Location Type'>");

@@ -84,7 +84,7 @@ echo("Current Tape Types:");
 echo("<table id='tape_types' class='table table-striped table-bordered'>");
 echo("<thead><tr><th>Tape Type</th><th>Can contain types</th><th>Can be placed in</th><th>Max slots</th></tr></thead>");
 echo("<tbody>");
-$current_tape_types = type::get_tape_type_objects($db);
+$current_tape_types = type::get_tape_types($db);
 if(count($current_tape_types)== 0) {
     echo "<tr><td>No tape types have been added.</td></tr>";
     

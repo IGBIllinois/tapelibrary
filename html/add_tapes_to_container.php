@@ -8,32 +8,9 @@
 
 include 'includes/header.inc.php';
 ?>
-<script type='text/javascript'>
-    var current = -1;
-function hide() {
-    // collapse?
-    //alert("hi");
-    //alert("current = "+current);
-    var value = document.getElementsByName("tape_type")[0].value;
-    //alert("newval = "+value);
-    document.getElementById("tapediv"+value).style.visibility = "visible";
-    if(current != -1) {
-        document.getElementById("tapediv"+current).style.visibility = "collapse";
-    }
-    current = value;
-    //alert("new current = "+current);
-    return;
-}
-</script>
+
 <?php
-if(isset($_POST['tape_type']) && $_POST['tape_type'] != null) {
-    ?>
-    <script type='text/javascript'>
-        current = <?php echo( $_POST['tape_type']); ?>;
-    </script>
-    
-<?php
-}
+
 
 if(isset($_POST['container_id']) && $_POST['container_id'] != null) {
     $container_id = $_POST['container_id'];
@@ -67,16 +44,11 @@ if(isset($_POST['submit'])) {
     if(isset($_POST['tape_to'])) {
         $tape_to = $_POST['tape_to'];
     }
-    //$tape_from = 1;
-    //$tape_from = $_POST['tape_from'];
-    //$tape_to = $_POST['tape_to'];
+
     if(($tape_to != null && !is_numeric($tape_to)) && ($tape_from != null && !is_numeric($tape_from))) {
         $errors .= html::error_message("'From' and 'To' fields cannot both contain alphabetical characters.<BR>Please make both numeric, or only input one in the 'From' field.");
     }
-
-   
-    
-    
+  
     if($tape_from == null) {
         $errors .= html::error_message("Please input a value for the 'From' field.");
     }
@@ -155,7 +127,19 @@ echo("<table class='table table-bordered display'>");
       print "</tr>";
 echo("<tr><td>Tape Type :</td><td>");
 $container_type = new type($db, $container->get_type());
-    createInput("select","tape_type",$tape_type, $container_type->get_tape_types_for_container_type(),"","hide()");
+    //createInput("select","tape_type",$tape_type, $container_type->get_tape_types_for_container_type(),"","hide()");
+$tape_types = $container_type->get_tape_types_for_container_type();
+      echo "<select id='tape_type' name='tape_type'>";
+      echo "<option value=''>None</option>";
+
+      foreach ($tape_types as $curr_tape_type) {
+        echo "<option value='".$curr_tape_type->get_id()."'";
+        if (isset($tape_type) && $tape_type == $curr_tape_type->get_id())
+          echo " selected";
+        
+        echo ">".$curr_tape_type->get_name()."</option>";
+      }
+      echo "</select>";
 echo(" </td></tr>");
 
 //echo("<tr><td>Service:</td><td><input type='text' name='backupset' id='service'></td></tr>");

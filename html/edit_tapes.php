@@ -64,8 +64,23 @@ echo("<table class='table table-bordered display'><tr>");
         print "</td>";
       print "</tr>";
 echo("<tr><td>Tape Type :</td><td>");
-    createInput("select","type",$select_type,type::get_tape_types($db));
+    //createInput("select","type",$select_type,type::get_tape_types($db));
+$tape_types = type::get_tape_types($db);
+
+      echo "<select id='type' name='type'>";
+      echo "<option value=''>None</option>";
+
+      foreach ($tape_types as $curr_tape_type) {
+        echo "<option value='".$curr_tape_type->get_id()."'";
+        if (isset($select_type) && $select_type == $curr_tape_type->get_id()) {
+          echo " selected";
+        }
+        echo ">".$curr_tape_type->get_name()."</option>";
+      }
+      echo "</select>";
+      
 echo(" </td></tr>");
+
 echo("<tr><td>Parent Location:</td><td>");
 $containers = tape_library_object::get_containers($db);
       echo "<select id='select_container' name='select_container'>";
@@ -73,7 +88,7 @@ $containers = tape_library_object::get_containers($db);
 
       foreach ($containers as $curr_container) {
         echo "<option value='".$curr_container->get_id()."'";
-        if (isset($container) && $container == $curr_container->get_id())
+        if (isset($select_container) && $select_container == $curr_container->get_id())
           echo " selected";
         
         echo ">".$curr_container->get_label()."</option>";

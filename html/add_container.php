@@ -50,9 +50,9 @@ if(isset($_GET['container_type'])) {
     
 <?php
 }
+
 if(isset($_POST['submit_add_container'])) {
 if(isset($_POST['container_name'])) {
-    //echo("Adding container : ".$_POST['container_name']."<BR>");
 
     if(isset($_POST['container_name']) && $_POST['container_name'] != null) {
         $name = $_POST['container_name'];
@@ -109,7 +109,7 @@ echo("<tr><td>Container Type :");
 echo("<BR><a href='add_container_type.php'>(Add a new container type?)</a>");
 echo("</td><td>");
 $container_types = type::get_container_types($db);
-      echo "<select id='container_type' name='container_type' onChange=hide()>";
+      echo "<select id='container_type' name='container_type' onChange='hide()'>";
       echo "<option value=''>None</option>";
 
       foreach ($container_types as $curr_container_type) {
@@ -129,7 +129,19 @@ foreach($all_types as $type) {
     $id = $type->get_id();
     
     echo("<tr id='containerdiv$id' ".((isset($container_type) && $container_type == $id) ? " style='visibility:visible' ": " style='visibility:collapse' ") ."><td> ");
-    createInput("select","container".$id,(isset($container_id)? $container_id : ""),$type->get_containers_for_type());
+    $containers = $type->get_containers_for_type();
+      echo "<select id='container".$id."' name='container".$id."'>";
+      echo "<option value=''>None</option>";
+
+      foreach ($containers as $curr_container) {
+        echo "<option value='".$curr_container->get_id()."'";
+        if (isset($container_id) && $container_id == $curr_container->get_id())
+          echo " selected";
+        
+        echo ">".$curr_container->get_label()."</option>";
+      }
+      echo "</select>";
+      
     echo("</td></tr>");
 }
 echo("</table>");

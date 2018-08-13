@@ -52,31 +52,21 @@ if($types != null && $placed_types != null) {
 if(!$errors) {
     $type = new type($db, $type_id);
     $this_type = new type($db,$type_id);
-    //echo("Adding container type ".$_POST['container_type_name']."<BR>");
-    
+
     //parents
     $current_placed_types = $type->get_container_types_for_type();
-    //echo("Current placed types:");
-    //print_r($current_placed_types);
 
-    //echo("<BR>new placed typess:");
-    //print_r($placed_types);
-    //echo("<BR>types:<BR>");
-    //print_r($types);
     $name = $_POST['container_type_name'];
-    //echo("name = $name");
+
     
     $loop_error = type::find_loop($db, $placed_types, $types);
     if( $loop_error == 0) {
         
         foreach($current_placed_types as $curr_type) {
-            //echo("<BR>curr_type=$curr_type<BR>");
-            if(!in_array($curr_type, $placed_types)) {
+            $curr_type_id = $curr_type->get_id();
+            if(!in_array($curr_type_id, $placed_types)) {
                 // remove type
-                //echo("removing $curr_type from $type_id<BR>");
-                //$this_type->remove_container_type_from_type($curr_type);
-                $new_type = new type($db, $curr_type);
-                $new_type->remove_container_type_from_type($this_type->get_id());
+                $curr_type->remove_container_type_from_type($this_type->get_id());
             }
         }
         foreach($placed_types as $new_type) {
@@ -88,8 +78,7 @@ if(!$errors) {
             }
         }
         $can_contain_types_string = implode(",", $types);
-        //$result = $db->add_type($_POST['container_type_name'], $can_contain_types);
-        //$result = $db->edit_type($type_id, $name, $can_contain_types_string, $max_slots);
+
         $result = $this_type->edit($name, $can_contain_types_string, $max_slots);
         
         
@@ -130,9 +119,11 @@ if($max_slots == -1) {
     $max_slots = "Any";
 }
 
-//print_r($can_contain_types);
-//$can_contain_types_array = explode(",", $can_contain_types);
-$container_types = $this_type->get_container_types_for_type();
+$container_type_objects = $this_type->get_container_types_for_type();
+$container_types = array();
+foreach($container_type_objects as $curr_type) {
+    $container_types[] = $curr_type->get_id();
+}
 
 echo("<form name='edit_type' action='edit_type.php' method='POST'>");
 echo("<input type='hidden' name='type_id' value='$type_id'>");
@@ -149,18 +140,19 @@ echo("<tr><Td>What types can this container contain?</td></tr>");
 echo("<TR><TD>");
 $types = type::get_all_types($db);
 foreach($types as $type) {
-    $id = $type['id'];
+    $id = $type->get_id();
     if($id != $type_id) {
-        echo("<input type=checkbox ".(in_array($id, $can_contain_types) ? " CHECKED ": ""). (in_array($id, $container_types)? " disabled " : ""). " id='type$id' onclick=toggle('placedtype$id') name=types[".$type['id']."] value='".$type['id']."'>".$type['name']."<BR>");
+        echo("<input type=checkbox ".(in_array($id, $can_contain_types) ? " CHECKED ": ""). (in_array($id, $container_types)? " disabled " : ""). " id='type$id' onclick=toggle('placedtype$id') name=types[".$type->get_id()."] value='".$type->get_id()."'>".$type->get_name()."<BR>");
     }
 }
 echo("</td></tr><tr><td>");
 echo("In what types can this container be placed?</td></tr><tr><td>");
 $types = type::get_all_types($db);
+
 foreach($types as $type) {
-    $id = $type['id'];
+    $id = $type->get_id();
     if($id != $type_id) {
-        echo("<input type=checkbox  ".(in_array($id, $container_types) ? " CHECKED " : ""). (in_array($id, $can_contain_types)? " disabled " : ""). " id='placedtype$id' onclick=toggle('type$id') name=placedtypes[".$type['id']."] value='".$type['id']."'>".$type['name']."<BR>");
+        echo("<input type=checkbox  ".(in_array($id, $container_types) ? " CHECKED " : ""). (in_array($id, $can_contain_types)? " disabled " : ""). " id='placedtype$id' onclick=toggle('type$id') name=placedtypes[".$type->get_id()."] value='".$type->get_id()."'>".$type->get_name()."<BR>");
     }
 }
 echo("</td></tr></table>");
