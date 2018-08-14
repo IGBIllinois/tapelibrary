@@ -18,9 +18,6 @@ class backupset {
     
     private $active;
     
-    private $time_last_modified;
-    private $user_last_modified;
-    
     public function __construct($db, $id=0) {
         $this->db = $db;
     

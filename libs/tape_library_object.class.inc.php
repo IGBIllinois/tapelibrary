@@ -18,8 +18,6 @@ class tape_library_object {
     protected $active;
     protected $tape_label; // optional extra label for tapes
     
-    protected $time_last_modified;
-    protected $user_last_modified;
     
     /** Constructor
      * 
