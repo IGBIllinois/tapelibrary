@@ -11,17 +11,15 @@ include 'includes/header.inc.php';
 <script type='text/javascript'>
     var current = -1;
 function hide() {
-    // collapse?
-    //alert("hi");
-    //alert("current = "+current);
+
     var value = document.getElementsByName("tape_type")[0].value;
-    //alert("newval = "+value);
+
     document.getElementById("tapediv"+value).style.visibility = "visible";
     if(current != -1) {
         document.getElementById("tapediv"+current).style.visibility = "collapse";
     }
     current = value;
-    //alert("new current = "+current);
+
     return;
 }
 </script>
@@ -151,19 +149,42 @@ echo("<table class='table table-bordered display'>");
 echo("<tr><td>Tape Type: ");
 echo("<BR><a href=add_container_type.php>(Add a new tape type?)</a>");
 echo("</td><td>");
-    createInput("select","tape_type",$tape_type, type::get_tape_types($db),"","hide()");
+
+$all_types = type::get_tape_types($db);
+      echo "<select id='tape_type' name='tape_type' onchange='hide()'>";
+      echo "<option value=''>None</option>";
+
+      foreach ($all_types as $curr_type) {
+        echo "<option value='".$curr_type->get_id()."'";
+        if (isset($tape_type) && $tape_type == $curr_type->get_id())
+          echo " selected";
+        
+        echo ">".$curr_type->get_name()."</option>";
+      }
+      echo "</select>";
 
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:");
 echo("<BR><a href=add_container.php>(Add a new container?)</a>");
 echo("</td><td>");
 echo("<table>");
-$all_types = type::get_tape_type_objects($db);
+$all_types = type::get_tape_types($db);
 foreach($all_types as $type) {
     $id = $type->get_id();
     
     echo("<tr id='tapediv$id' ".((isset($tape_type) && $tape_type == $id) ? " style='visibility:visible' ": " style='visibility:collapse' ") ."><td> ");
-    createInput("select","container".$id,(isset($container_id)? $container_id : ""),$type->get_containers_for_type());
+      $containers = $type->get_containers_for_type();
+      echo "<select id='container".$id."' name='container".$id."'>";
+      echo "<option value=''>None</option>";
+
+      foreach ($containers as $curr_container) {
+        echo "<option value='".$curr_container->get_id()."'";
+        if (isset($container_id) && $container_id == $curr_container->get_id())
+          echo " selected";
+        
+        echo ">".$curr_container->get_label()."</option>";
+      }
+      echo "</select>";
     echo("</td></tr>");
 }
 echo("</table>");
@@ -171,7 +192,7 @@ echo(" </td></tr>");
 echo("<tr><td>Backup Set:");
 echo("<BR><a href=add_backupset.php>(Add a new backup set?)</a>");
 echo("</td><td>");
-//createInput("select","backupset",$backupset,backupset::get_all_backupsets_array($db));
+
 $all_backupsets = backupset::get_all_backupsets($db);
       echo "<select id='backupset' name='backupset'>";
       echo "<option value=''>None</option>";

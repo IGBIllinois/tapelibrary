@@ -103,8 +103,6 @@ if(isset($_POST['container_name'])) {
         }
         
         }
-    } else {
-        //echo($errors);
     }
 }
 }
@@ -131,12 +129,24 @@ $parent_id = $container->get_container_id();
 echo(" </td></tr>");
 echo("<tr><td>Location:</td><td>");
 echo("<table>");
-$all_types = type::get_all_type_objects($db);
+$all_types = type::get_all_types($db);
 
 foreach($all_types as $type) {
     $id = $type->get_id();
     echo("<tr id='containerdiv$id' ".((isset($container_type) && $container_type == $id) ? " style='visibility:visible' ": " style='visibility:collapse' ") ."><td> ");
-    createInput("select","container".$id,(isset($parent_id)? $parent_id : ""),$type->get_containers_for_type($id));
+      $containers = $type->get_containers_for_type();
+
+      echo "<select id='container".$id."' name='container_type' onChange=hide()>";
+      echo "<option value=''>None</option>";
+
+      foreach ($containers as $curr_container) {
+        echo "<option value='".$curr_container->get_id()."'";
+        if (isset($container_id) && $container_id == $curr_container->get_id())
+          echo " selected";
+        
+        echo ">".$curr_container->get_label()."</option>";
+      }
+      echo "</select>";
     echo("</td></tr>");
 }
 echo("</table>");
