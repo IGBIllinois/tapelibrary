@@ -80,14 +80,14 @@ if(isset($_POST['container_name'])) {
         
     }
 
-    if(isset($_POST['container'.$container_type])) {
-
-        $parent_id = $_POST['container'.$container_type];
-    }
     
     if(isset($_POST['tape_label'])) {
 
         $tape_label = $_POST['tape_label'];
+    }
+    
+    if(isset($_POST['parent_container_id'])) {
+        $parent_id = $_POST['parent_container_id'];
     }
     
     if(strlen($messages) == 0) {
@@ -108,10 +108,10 @@ if(isset($_POST['container_name'])) {
 }
 
 
-$container = new tape_library_object($db, $container_id);
+//$container = new tape_library_object($db, $container_id);
 echo("<h3>Edit $object_type:".$container->get_label()."</h3>");
 
-echo("<form name=edit_container' action='edit_container.php' method='POST'>");
+echo("<form name='edit_container' action='edit_container.php' method='POST'>");
 
 echo("<table class='table table-bordered display'>");
 echo("<tr><td width=20%>$object_type Name:</td><td><input type='text' name='container_name' id='container_name'". (isset($name) ? " value='$name' " : "")."></td></tr>");
@@ -119,38 +119,36 @@ if($container->is_tape()) {
     echo("<tr><td width=20%>Tape Label:</td><td><input type='text' name='tape_label' id='tape_label'". (isset($tape_label) ? " value='$tape_label' " : "")."></td></tr>");
 }
 echo("<tr><td>$object_type Type :");
-echo("<BR><a href='add_container_type.php'>(Add a new container type?)</a>");
+echo("<BR><a href='add_container_type.php'>(Add a new type?)</a>");
 echo("</td><td>");
 
 echo($container->get_type_name());
 
-$container_type = $container->get_type();
-$parent_id = $container->get_container_id();
+$container_type = new type($db, $container->get_type());
+
+//$parent_id = $container->get_container_id();
 echo(" </td></tr>");
 echo("<tr><td>Location:</td><td>");
 echo("<table>");
-$all_types = type::get_all_types($db);
 
-foreach($all_types as $type) {
-    $id = $type->get_id();
-    echo("<tr id='containerdiv$id' ".((isset($container_type) && $container_type == $id) ? " style='visibility:visible' ": " style='visibility:collapse' ") ."><td> ");
-      $containers = $type->get_containers_for_type();
+$containers = $container_type->get_containers_for_type();
 
-      echo "<select id='container".$id."' name='container_type' onChange=hide()>";
+
+echo "<select id='parent_container_id' name='parent_container_id'>";
       echo "<option value=''>None</option>";
+foreach($containers as $curr_container) {
 
-      foreach ($containers as $curr_container) {
         echo "<option value='".$curr_container->get_id()."'";
-        if (isset($container_id) && $container_id == $curr_container->get_id())
+        if (isset($parent_id) && $parent_id == $curr_container->get_id())
           echo " selected";
         
         echo ">".$curr_container->get_label()."</option>";
       }
       echo "</select>";
-    echo("</td></tr>");
-}
-echo("</table>");
-echo(" </td></tr>");
+    echo("</table></td></tr>");
+
+
+
 
 echo("</table>");
 echo("<input type='hidden' name='container_id' value='".$container_id."'>");
