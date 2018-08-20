@@ -102,11 +102,10 @@ if(count($current_unassigned_tapes)== 0) {
             $backupset = "None";
         } else {
             if($curr_backupset_id != null && $curr_backupset_id != "") {
-                 //$fullbackupset = $db->get_backupset($curr_backupset_id);
+
                  $fullbackupset = new backupset($db, $curr_backupset_id);
-                 //if(isset($fullbackupset['name'])) {
-                     $backupset = $fullbackupset->get_name();
-                 //}
+                 $backupset = $fullbackupset->get_name();
+
              }
         }
         echo("<td>".$backupset."</td></tr>");
@@ -124,7 +123,6 @@ echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
     echo("<input type=button onclick=\"window.location='view_backupsets.php'\" name=cancel value='Cancel'>");
     echo("</form>");
 
-//list_all($db);
 echo("</fieldset>");
 
 if($messages != "") {

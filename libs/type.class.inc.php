@@ -218,7 +218,6 @@ class type {
      * @return type[] An array of Type objects that this Type can be placed into.
     */
     public function get_container_types_for_type() {
-
         $type_id = $this->id;
         $query = "SELECT container_type_id, can_contain_types from container_type";
         $containers = array();
@@ -230,6 +229,7 @@ class type {
             $type_list = explode(",", $curr_list);
             // if this id is in the list of 'can_contain_types' for the given type
             if(in_array($type_id, $type_list)) {
+                
                 $new_type = new type($this->db, $id);
                 $containers[] = $new_type;
            }
@@ -249,7 +249,7 @@ class type {
         $list = "";
         foreach($container_types as $container_type) {
             $container_type_id = $container_type->get_id();
-            //echo($container_id);
+
             if(strlen($list) > 0) {
                 $list .=", ";  
             }

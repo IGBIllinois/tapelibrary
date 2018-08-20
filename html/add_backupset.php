@@ -54,7 +54,7 @@ if(isset($_POST['backupset_name'])) {
         } catch(Exception $e) {
             echo($e->getTraceAsString());
         }
-        //echo("result = $result<BR>");
+
         if($result['RESULT']) {
             echo(html::success_message($result['MESSAGE']));
         } else {

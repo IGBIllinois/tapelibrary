@@ -13,7 +13,6 @@ include 'includes/header.inc.php';
 $types = null;
 $placed_types = null;
 $max_slots = -1;
-//$is_location = 0;
 $errors = "";
 $container_type_name = null;
 echo("<H3>Add Container and Tape Types</H3>");
@@ -52,23 +51,16 @@ if(isset($_POST['max_slots'])) {
         if($can_contain_types != "") {
             $can_contain_types .= ",";
         }
-        //echo("Can contain type " . $type ." <BR>");
+
         $can_contain_types .= $type;
     }
-    //echo("type list = $can_contain_types");
+
     }
     
-    
-    //echo("Adding container type ".$_POST['container_type_name']."<BR>");
-    //echo("types:");
-    //print_r($types);
-    //echo("placed types:");
-    //print_r($placed_types);
  if(strlen($errors) == 0) {
     $loop_error = type::find_loop($db, $placed_types, $types);
     if($loop_error == 0) {
         $type = new type($db);
-        //$result = $type->add_type($container_type_name, $can_contain_types, $max_slots, $is_location);
         
         $result = $type->add_type($container_type_name, $can_contain_types, $max_slots);
         
@@ -79,13 +71,13 @@ if(isset($_POST['max_slots'])) {
             }
         }
      if($result['RESULT']) {
-         //header('Location:edit_types.php?type_id='.$result.'&add_success=1');
+
          echo(html::success_message("Container ".$container_type_name." successfully added."));
      } else {
          echo(html::error_message("Error:".$result['MESSAGE']));
      }
     } else {
-        //echo("Loop error = $loop_error<BR>");
+
         $loop_type = new type($db,$loop_error);
         $name = $loop_type->get_name();
         echo(html::error_message("There is an error in where this container can be placed. <BR> It could both contain and be placed in a <B>$name</B>.<BR>Please double check and try again."));

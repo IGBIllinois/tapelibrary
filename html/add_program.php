@@ -12,9 +12,6 @@ echo("<h3>Add Programs</h3>");
 echo("For adding programs used for backup sets.<BR>");
 if(isset($_POST['submit_add_program'])) {
 
-    //echo("Adding program : ".$_POST['program_name']."<BR>");
-
-    //$name = $_POST['program_name'];
     $program_type=null;
     $program_id=-1;
     $errors = "";
@@ -40,7 +37,6 @@ if(isset($_POST['submit_add_program'])) {
     
     if(strlen($errors) == 0) {
 
-    //$result = $db->add_program( $name);
         $program = new program($db);
         $result = $program->add_program($name, $version);
 

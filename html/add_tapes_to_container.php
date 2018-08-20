@@ -62,7 +62,7 @@ if(isset($_POST['submit'])) {
     }
 
  if(strlen($errors) > 0) {
-        //echo $errors;
+
     } else {
 
     $label = array();
@@ -71,15 +71,12 @@ if(isset($_POST['submit'])) {
         for($i=0; $i<$numtapes; $i++) {
             $ids[$i] = $_POST['tape_id'.$i];
             $label[$i] = $_POST['tape_label'.$i];
-            
-            //echo("label[$i] = ".$label[$i]."<BR>");
-            //echo("ids[$i] = ".$ids[$i]."<BR>");
 	}
-        //echo("tape_to = $tape_to, tape_from = $tape_from<BR>");
+
         if((is_null($tape_to) || $tape_to === "") && !is_null($tape_from)) {
             // just add one
             $i = 0;
-            //echo("Adding just one tape : ".$label[$i]."<BR>");
+
             $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, $login_user->get_username(), $label[$i] );
             if ($result['RESULT']) {
                 $messages .=(html::success_message($result['MESSAGE']));
@@ -90,7 +87,6 @@ if(isset($_POST['submit'])) {
         } else if (is_numeric($tape_to) && $tape_from <= $tape_to) {
 
                 for($i=0; $i<$numtapes; $i++) {
-                    //echo("Adding tape : ".$ids[$i]."<BR>");
 
                     $result = tape_library_object::add_tape($db, $ids[$i], $tape_type, $container_id, $backupset, $login_user->get_username(), $label[$i] );
 
@@ -101,9 +97,7 @@ if(isset($_POST['submit'])) {
                         $messages .=(html::error_message($result['MESSAGE']));
                     }
                 }
-		//print "<script type=\"text/javascript\">parent.window.container.href='index.php'</script>";
-                //print("<BR>Tapes added<BR>");
-                //unset($_POST);
+                
 	} else {
 		$messages .= html::error_message("<p><b>Something went wrong, please try again</b></p>");
             
@@ -127,7 +121,7 @@ echo("<table class='table table-bordered display'>");
       print "</tr>";
 echo("<tr><td>Tape Type :</td><td>");
 $container_type = new type($db, $container->get_type());
-    //createInput("select","tape_type",$tape_type, $container_type->get_tape_types_for_container_type(),"","hide()");
+
 $tape_types = $container_type->get_tape_types_for_container_type();
       echo "<select id='tape_type' name='tape_type'>";
       echo "<option value=''>None</option>";
@@ -142,9 +136,9 @@ $tape_types = $container_type->get_tape_types_for_container_type();
       echo "</select>";
 echo(" </td></tr>");
 
-//echo("<tr><td>Service:</td><td><input type='text' name='backupset' id='service'></td></tr>");
+
 echo("<tr><td>Backup Set:</td><td>");
-//createInput("select","backupset",$backupset,backupset::get_all_backupsets_array($db));
+
 $all_backupsets = backupset::get_all_backupsets($db);
       echo "<select id='backupset' name='backupset'>";
       echo "<option value=''>None</option>";

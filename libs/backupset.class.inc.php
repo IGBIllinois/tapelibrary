@@ -322,7 +322,6 @@ class backupset {
             return  array("RESULT"=>TRUE,
                             "MESSAGE"=>"Tape ".$tape->get_label(). " successfully added to backup set ". $this->name . ".");
         } catch(Exception $e) {
-            //echo($e->getTraceAsString());
             return  array("RESULT"=>FALSE,
                             "MESSAGE"=>$e->getTraceAsString());
         }

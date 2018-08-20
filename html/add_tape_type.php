@@ -10,7 +10,6 @@ include 'includes/header.inc.php';
 echo("<H3>Tape Types</H3>");
 if(isset($_POST['tape_type_name'])) {
 
-    //echo("Adding tape type ".$_POST['tape_type_name']."<BR>");
     $result = $db->add_tape_type($_POST['tape_type_name']);
 
      if($result != 0) {

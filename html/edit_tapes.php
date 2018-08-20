@@ -64,7 +64,6 @@ echo("<table class='table table-bordered display'><tr>");
         print "</td>";
       print "</tr>";
 echo("<tr><td>Tape Type :</td><td>");
-    //createInput("select","type",$select_type,type::get_tape_types($db));
 $tape_types = type::get_tape_types($db);
 
       echo "<select id='type' name='type'>";
