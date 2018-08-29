@@ -18,9 +18,8 @@ if(isset($_POST['submit'])) {
     
     if(isset($_POST['begin'])) {
 
-        //if(is_numeric($begin)) {
         $name = $_POST['begin'];
-        //}
+
     }
 
     if(isset($_POST['type'])) {
@@ -38,7 +37,7 @@ if(isset($_POST['submit'])) {
 }
 
 echo("<form method=POST action=view_all_containers.php>");
-//
+
 echo("Limit By:<BR>");
 echo("<table  class='table table-bordered display'><tr>");
 
@@ -50,7 +49,6 @@ echo("<table  class='table table-bordered display'><tr>");
 
       print "</tr>";
 echo("<tr><td>Container Type :</td><td>");
-    //createInput("select","type",$type,type::get_container_types($db));
 $container_types = type::get_container_types($db);
       echo "<select id='type' name='type'>";
       echo "<option value=''>None</option>";
@@ -65,7 +63,7 @@ $container_types = type::get_container_types($db);
       echo "</select>";
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    //createInput("select","container",$parent, tape_library_object::get_containers($db));
+
 $containers = tape_library_object::get_containers($db);
       echo "<select id='container' name='container'>";
       echo "<option value=''>None</option>";
@@ -110,7 +108,6 @@ echo("<BR>");
 
 
 <form class='form-inline' action='report.php' method='post'>
-<!--<input class='btn btn-primary' type='submit'-->
 <input  type='submit'
                 name='create_heirarchy_report' value='Download Full Container Report'>
 

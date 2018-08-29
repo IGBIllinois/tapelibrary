@@ -46,7 +46,8 @@ if(isset($_POST['submit'])) {
     }
 
     if(($tape_to != null && !is_numeric($tape_to)) && ($tape_from != null && !is_numeric($tape_from))) {
-        $errors .= html::error_message("'From' and 'To' fields cannot both contain alphabetical characters.<BR>Please make both numeric, or only input one in the 'From' field.");
+        $errors .= html::error_message("'From' and 'To' fields cannot both contain alphabetical characters.<BR>".
+                "Please make both numeric, or only input one in the 'From' field.");
     }
   
     if($tape_from == null) {

@@ -97,7 +97,6 @@ if(!$errors) {
          echo(html::error_message($result['MESSAGE']));
      }
     } else {
-        //echo("Loop error = $loop_error<BR>");
         $loop_type = new type($db,$loop_error);
         $name = $loop_type->get_name();
         echo(html::error_message("There is an error in where this container can be placed. <BR> It could both contain and be placed in a <B>$name</B>.<BR>Please double check and try again."));

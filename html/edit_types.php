@@ -30,16 +30,14 @@ if(isset($_POST['container_type_name'])) {
             echo(html::error_message("Error, a container cannot be placed and contain the same type."));
         }
     }
-    //print_r($types);
+
     $can_contain_types = "";
     foreach($types as $type) {
         if($can_contain_types != "") {
             $can_contain_types .= ",";
         }
-        //echo("Can contain type " . $type ." <BR>");
         $can_contain_types .= $type;
     }
-    //echo("type list = $can_contain_types");
 
      if($result != 0) {
          echo("Container ".$_POST['container_type_name']." successfully edited.<BR>");

@@ -58,8 +58,7 @@ if (isset($_POST['create_full_report'])) {
         }
 
         } catch(Exception $e) {
-            //echo($e);
-            //echo($e->getTrace());
+
         }
 
 }
@@ -71,10 +70,10 @@ if(isset($_POST['create_container_report'])) {
     try {
         $container_id = $_POST['container_id'];
         $data = array();
-            //$container = $db->get_container_by_id($container_id);
+
             $container = new tape_library_object($db, $container_id);
             if($container->get_id() == -1) {
-                //echo("No such container.<BR>");
+
                 return;
             }
             
@@ -91,7 +90,7 @@ if(isset($_POST['create_container_report'])) {
                 
                 $backupset_name = $backupset->get_name();
                 $data[] = array($tape->get_label(), $tape->get_type_name(), $backupset_name);
-                //$excel->writeLine($tape_array);
+
             }
 
         } catch(Exception $e) {
@@ -138,10 +137,10 @@ if(isset($_POST['create_backupset_report'])) {
     $data = array();
         $backupset_id = $_POST['backupset_id'];    
         try {
-            //$backupset = $db->get_backupset($backupset_id);
+
             $backupset = new backupset($db, $backupset_id);
             if($backupset == null) {
-                //echo("No such backupset.<BR>");
+
                 return;
             }
 
@@ -170,15 +169,14 @@ if(isset($_POST['create_backupset_report'])) {
                 
                 $container_id = $tape->get_container_id();
                 $container_name = $tape->get_container_name();
-                //$container_name = $container['label'];
+
                 
                 $tape_array = array($tape->get_label(), $tape->get_type_name(), $tape->get_tape_label(), $container_name, $tape->get_full_path());
                 $data[] = ($tape_array);
             }
 
         } catch(Exception $e) {
-            //echo($e);
-            //echo($e->getTrace());
+
         }
         
 }

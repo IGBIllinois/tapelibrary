@@ -1,15 +1,14 @@
-
-
 <?php
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Add a new Backup Set to the database
  */
 
 include 'includes/header.inc.php';
+
 echo("<H3>Add Backup Set</H3>");
+
 if(isset($_POST['backupset_name'])) {
+    // Submit the form...
     
     $name = $_POST['backupset_name'];
     $container_type=null;

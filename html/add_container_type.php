@@ -58,6 +58,8 @@ if(isset($_POST['max_slots'])) {
     }
     
  if(strlen($errors) == 0) {
+     // Check for loops in this type, to make sure it can't be placed in a
+     // parent Type
     $loop_error = type::find_loop($db, $placed_types, $types);
     if($loop_error == 0) {
         $type = new type($db);
@@ -77,10 +79,12 @@ if(isset($_POST['max_slots'])) {
          echo(html::error_message("Error:".$result['MESSAGE']));
      }
     } else {
-
+        // There's a dependency error
         $loop_type = new type($db,$loop_error);
         $name = $loop_type->get_name();
-        echo(html::error_message("There is an error in where this container can be placed. <BR> It could both contain and be placed in a <B>$name</B>.<BR>Please double check and try again."));
+        echo(html::error_message("There is an error in where this container can ".
+                "be placed. <BR> It could both contain and be placed in a ".
+                "<B>$name</B>.<BR>Please double check and try again."));
     }
     
 } else {
@@ -94,9 +98,13 @@ echo("<form name='add_container_type' action='add_container_type.php' method='PO
 
 echo("<table id='container_types' class='table table-bordered'>");
 echo("<tr><td width=40%>New type name</td>");
-echo("<td><input type='text' name='container_type_name' id='container_type_name' value='$container_type_name'></td></tr>");
+echo("<td><input type='text' name='container_type_name' id='container_type_name'".
+        "value='$container_type_name'></td></tr>");
 
-echo("<tr><td>How many objects can be put in a container? (if there is a limit)</td><td><input name='max_slots' value='".((is_numeric($max_slots) && $max_slots >=0) ? $max_slots : "Any")."'></td></tr>");
+echo("<tr><td>How many objects can be put in a container? (if there is a limit) ".
+        "</td><td><input name='max_slots' value='".
+        ((is_numeric($max_slots) && $max_slots >=0) ? $max_slots : "Any").
+        "'></td></tr>");
 echo("</table>");
 
 
@@ -107,14 +115,19 @@ echo("<TR><TD>");
 $types = type::get_all_types($db);
 foreach($types as $type) {
     $id = $type->get_id();
-    echo("<input type=checkbox  id='type$id' onclick=toggle('placedtype$id') name=types[".$id."] value='".$id."'>".$type->get_name()."<BR>");
+    echo("<input type=checkbox  id='type$id' onclick=toggle('placedtype$id') ".
+            "name=types[".$id."] value='".$id."'>".$type->get_name()."<BR>");
 }
 echo("</td></tr><tr><td>");
-echo("In what types can this container be placed?<BR>(If it cannot be placed in anything, it will be considered a top-level location type)</td></tr><tr><td>");
+echo("In what types can this container be placed?<BR>".
+        "(If it cannot be placed in anything, ".
+        "it will be considered a top-level location type)</td></tr><tr><td>");
+
 $types = type::get_all_types($db);
 foreach($types as $type) {
     $id = $type->get_id();
-    echo("<input type=checkbox  id='placedtype$id' onclick=toggle('type$id') name=placedtypes[".$id."] value='".$id."'>".$type->get_name()."<BR>");
+    echo("<input type=checkbox  id='placedtype$id' onclick=toggle('type$id') ".
+            "name=placedtypes[".$id."] value='".$id."'>".$type->get_name()."<BR>");
 }
 echo("</td></tr></table>");
 echo("<input type='submit' name='submit' value='Add Location Type'>");

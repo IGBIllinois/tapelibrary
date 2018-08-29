@@ -1,9 +1,7 @@
 
 <?php
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+This page allows a user to add existing tapes to a Backup Set
  */
 
 include_once 'includes/header.inc.php';
@@ -23,26 +21,20 @@ if(isset($_POST['backupset_id'])) {
     echo(html::error_message("There was an error with the specified backup set. Please try again."));
     return 0;
 }    
-    
 
-    
-
-//$backupset = $db->get_backupset($backupset_id);
 $backupset = new backupset($db, $backupset_id);
 
 if($backupset == null) {
     echo(html::error_message("Please select a valid backup set."));
 } else {
 $messages = "";
-//echo("Add tapes to backup set: ".$backupset['name']);
+
+
 if(isset($_POST['add_tapes_submit'])) {
-    //print_r($_POST);
-
+// Submit the form...    
     if(isset($_POST['checkbox'])) {
-        
+        // Update each checked checkbox
         foreach($_POST['checkbox'] as $checked) {
-
-            //echo("ID $checked is checked.<BR>");
             
             $id = $checked;
             
@@ -58,26 +50,25 @@ if(isset($_POST['add_tapes_submit'])) {
                 $messages .=(html::error_message($result['MESSAGE']) );
             }
 
-             
-             
         }
     } else {
         $messages .= (html::warning_message("Nothing checked"));
     }
 }
+
+
 echo("<h3>Adding tapes to ".$backupset->get_name()."</h3>");
 echo("<fieldset>");
 echo("<form method=POST action=add_tapes_to_backupset.php>");
 
-
-//
-//$backupset = $db->get_backupset($backupset_id);
-$backupset = new backupset($db, $backupset_id);
 $backupset_name = $backupset->get_name();
 echo("Current tapes not assigned to a backup set:</B>:") ;
 echo("<form method='POST' name='add_tapes_submit' action='add_tapes_to_backupset.php'>");
 echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
 echo("<fieldset><table id='view_tapes' class='table table-bordered table-hover table-striped display'>");
+
+
+// Get a list of tapes currently not in a Backup Set
 
 $current_unassigned_tapes = tape_library_object::get_tapes_without_backupset($db);
 
@@ -88,7 +79,6 @@ if(count($current_unassigned_tapes)== 0) {
     echo("<tbody>");
     foreach($current_unassigned_tapes as $tape) {
         
-        //echo("<tr><td>".$tape['tape_number']."</td>");
         echo("<tr><td>");
         echo("<input type='checkbox' name=checkbox[] id='".$tape->get_id()."' value='".$tape->get_id()."'>");
         echo("</td>");
@@ -97,18 +87,18 @@ if(count($current_unassigned_tapes)== 0) {
         echo("<td>".$tape->get_full_path()."</td>");
         // Shouldn't have a backupset
         $curr_backupset_id = $tape->get_backupset();
-        $backupset = ""; 
+
         if($curr_backupset_id == -1) {
-            $backupset = "None";
+            $tape_backupset_name = "None";
         } else {
             if($curr_backupset_id != null && $curr_backupset_id != "") {
 
-                 $fullbackupset = new backupset($db, $curr_backupset_id);
-                 $backupset = $fullbackupset->get_name();
+                 $tape_backupset = new backupset($db, $curr_backupset_id);
+                 $tape_backupset_name = $tape_backupset->get_name();
 
              }
         }
-        echo("<td>".$backupset."</td></tr>");
+        echo("<td>".$tape_backupset_name."</td></tr>");
         
     }
     echo("</tbody>");

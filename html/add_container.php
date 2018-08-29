@@ -11,20 +11,7 @@ include 'includes/header.inc.php';
 ?>
 <script type='text/javascript'>
     var current = -1;
-function hide() {
-    // collapse?
-    //alert("hi");
-    //alert("current = "+current);
-    var value = document.getElementsByName("container_type")[0].value;
-    //alert("newval = "+value);
-    document.getElementById("containerdiv"+value).style.visibility = "visible";
-    if(current != -1) {
-        document.getElementById("containerdiv"+current).style.visibility = "collapse";
-    }
-    current = value;
-    //alert("new current = "+current);
-    return;
-}
+
 </script>
 <?php
 
@@ -108,8 +95,10 @@ echo("<tr><td width=20%>Container Name:</td><td><input type='text' name='contain
 echo("<tr><td>Container Type :");
 echo("<BR><a href='add_container_type.php'>(Add a new container type?)</a>");
 echo("</td><td>");
+
+// Select the Type for the new Container
 $container_types = type::get_container_types($db);
-      echo "<select id='container_type' name='container_type' onChange='hide()'>";
+      echo "<select id='container_type' name='container_type' onChange=hide('container_type','containerdiv')>";
       echo "<option value=''>None</option>";
 
       foreach ($container_types as $curr_container_type) {
@@ -122,6 +111,8 @@ $container_types = type::get_container_types($db);
       echo "</select>";
 
 echo(" </td></tr>");
+
+// Set the location of this container
 echo("<tr><td>Parent Location:<BR>(Leave blank for a top-level location)</td><td>");
 echo("<table>");
 $all_types = type::get_container_types($db);
