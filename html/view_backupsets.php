@@ -29,7 +29,7 @@ if(count($current_backupsets)== 0) {
     echo "<tr><td>No backup sets have been added.</td></tr>";
 } else {
     echo("<thead><tr><th>Name</th><th>Begin Date</th><th>End Date</th><th>Program/Version</th><th>Notes</th><th>Status</th></thead>");
-    echo("<tbody>");
+    echo("<tbody><tr>");
     foreach($current_backupsets as $backupset) {
         //echo("<tr><td>".$tape['tape_number']."</td>");
         $id = $backupset->get_id();
@@ -39,10 +39,19 @@ if(count($current_backupsets)== 0) {
         $program_name = $backupset->get_program_name();
         $notes = $backupset->get_notes();
         $is_active = $backupset->is_active();
-        echo("<td><a href=view_backupset_data.php?backupset_id=".$id.">".$name."</s></td>");
+        echo("<td><a href=view_backupset_data.php?backupset_id=".$id.">".$name."</a></td>");
 echo("<td>".$start_date."</td>");
 echo("<td>".$end_date."</td>");
 echo("<td>".$program_name."</td>");
+$notes = $backupset->get_notes();
+if(strlen($notes) > 256) {
+    $full_notes = $notes;
+    $notes = "<div id=noteDiv".$id."-orig>".substr($notes, 0, 256) . "...".
+            "<a onClick=showText('noteDiv".$id."')>Show more</a></div>".
+            "<div id=noteDiv".$id." style='display:none'>".$full_notes.
+            "<a onClick=showText('noteDiv".$id."')>Show less</a></div>";
+                
+}
 echo("<td>".$notes."</td>");
 echo("<td>".(($is_active) ? "Active" : "Inactive")."</td></tr>");        
     }

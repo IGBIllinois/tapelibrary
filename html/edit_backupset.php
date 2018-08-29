@@ -106,7 +106,7 @@ echo("</td></tr>");
 
 echo("</td></tr>");
 
-echo("<tr><td>Notes:</td><td><textarea rows='2' name='notes' id='notes'>".(isset($notes) ? $notes : "")."</textarea></td></tr>");
+echo("<tr><td>Notes:</td><td><textarea rows='4' cols='50' name='notes' id='notes'>".(isset($notes) ? $notes : "")."</textarea></td></tr>");
 
 echo("</table>");
 echo("<input type='submit' name='submit_edit' value='Edit Backup Set'>");

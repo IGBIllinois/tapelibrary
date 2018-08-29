@@ -55,12 +55,7 @@ if((!isset($_GET['backupset_id'])&& !isset($_POST['backupset_id']) ||
     if(isset($_POST['backupset_id'])) {
 
         $backupset_id = $_POST['backupset_id'];
-        if(isset($_POST['report_submit'])) {
 
-            echo("Writing Report...");
-            $filename = "backupsetreport.xls";
-            write_backupset_report($db, $backupset_id, $filename);
-        }
     } else {
         $backupset_id = $_GET['backupset_id'];
     }
@@ -70,12 +65,20 @@ $backupset_data = new backupset($db, $backupset_id);
 if($backupset_data != null) {
     
 $tapes = $backupset_data->get_tapes_in_backupset();
-
+$notes = $backupset_data->get_notes();
+if(strlen($notes) > 256) {
+    $full_notes = $notes;
+    $notes = "<div id=noteDiv".$backupset_id."-orig>".substr($notes, 0, 256) . "...".
+            "<a onClick=showText('noteDiv".$backupset_id."')>Show more</a></div>".
+            "<div id=noteDiv".$backupset_id." style='display:none'>".$full_notes.
+            "<a onClick=showText('noteDiv".$backupset_id."')>Show less</a></div>";
+                
+}
 echo("<h3>".$backupset_data->get_name()."</h3>");
 echo("<B>Begin Date: </B> ".$backupset_data->get_begin_date()."<BR>");
 echo("<B>End Date: </B> ".$backupset_data->get_end_date()."<BR>");
 echo("<B>Program: </B> ".$backupset_data->get_program_name()."<BR>");
-echo("<B>Notes: </B> ".$backupset_data->get_notes()."<BR>");
+echo("<B>Notes: </B> ".$notes."<BR>");
 echo("<B>Status: </B>".($backupset_data->is_active() ? "Active" : "Inactive"));
 echo("<BR>");
 echo("Tapes in this backupset:<BR>");
@@ -88,7 +91,6 @@ if(count($tapes)== 0) {
     echo("<thead><tr><th>Tape ID Number</th><th>Type</th><th>Label</th><th>Parent Location</th></thead>");
     echo("<tbody>");
     foreach($tapes as $tape) {
-        //echo("<tr><td>".$tape['tape_number']."</td>");
         echo("<td>".$tape->get_label()."</td>");
         echo("<td>".$tape->get_type_name()."</td>");
         echo("<td>".$tape->get_tape_label()."</td>");
@@ -137,7 +139,7 @@ echo("</form>");
 }
 ?>
 <form class='form-inline' action='report.php' method='post'>
-    <!--class='btn btn-primary'-->
+
  <input  type='submit' 
                 name='create_backupset_report' value='Download Backup Set Report'>
   <select
