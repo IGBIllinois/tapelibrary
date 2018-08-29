@@ -9,32 +9,9 @@
 
 include 'includes/header.inc.php';
 ?>
-<script type='text/javascript'>
-    var current = -1;
-function hide() {
-    // collapse?
-    //alert("hi");
-    //alert("current = "+current);
-    var value = document.getElementsByName("container_type")[0].value;
-    //alert("newval = "+value);
-    document.getElementById("containerdiv"+value).style.visibility = "visible";
-    if(current != -1) {
-        document.getElementById("containerdiv"+current).style.visibility = "collapse";
-    }
-    current = value;
-    //alert("new current = "+current);
-    return;
-}
-</script>
+
 <?php
-if(isset($_POST['container_type']) && $_POST['container_type'] != null) {
-    ?>
-    <script type='text/javascript'>
-        current = <?php echo( $_POST['container_type']); ?>;
-    </script>
-    
-<?php
-}
+
 
 if(!isset($_POST['container_id'])&& !isset($_GET['container_id'])) {
     echo(html::error_message("Please select a proper tape or container."));
@@ -108,7 +85,6 @@ if(isset($_POST['container_name'])) {
 }
 
 
-//$container = new tape_library_object($db, $container_id);
 echo("<h3>Edit $object_type:".$container->get_label()."</h3>");
 
 echo("<form name='edit_container' action='edit_container.php' method='POST'>");
@@ -126,7 +102,6 @@ echo($container->get_type_name());
 
 $container_type = new type($db, $container->get_type());
 
-//$parent_id = $container->get_container_id();
 echo(" </td></tr>");
 echo("<tr><td>Location:</td><td>");
 echo("<table>");

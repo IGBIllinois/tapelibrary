@@ -15,7 +15,7 @@ $('#addform').ready(function(){
   });
 
 })*/
-
+var current = -1;
 function set_new_tapes() {
 
     if($('.tape_from').val() != 0 && ($('.tape_to').val() == 0 || !jQuery.isNumeric($('.tape_to').val()))) {
@@ -230,3 +230,40 @@ function format_backupset_table(tape_array) {
     return html;
 }
 
+// Hides or shows an element from a set, given the element name and div name
+// Currently used to show the proper drop-down menus to select the proper
+// potential parent locations for tapes or containers. A series of drop-down menus
+// is created, and when a type or tape library object is selected, only the 
+// correct corresponding menu for its parent types is displayed.
+// 
+// 'current' is the id of the currently displayed menu
+// 
+// 
+// @param element: The element from which to get the new value. Typically an id
+//                 corresponding to which menu to display
+// @param div: The name of the <div> tag to hide or show.
+
+function hide(element, div) {
+
+    var value = document.getElementsByName(element)[0].value;
+
+    document.getElementById(div+value).style.visibility = "visible";
+    if(current != -1) {
+        document.getElementById(div+current).style.visibility = "collapse";
+    }
+    current = value;
+
+    return;
+}
+
+function showText(id) {
+    var x = document.getElementById(id);
+    var y = document.getElementById(id+"-orig");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.display = "none";
+    } else {
+        x.style.display = "none";
+        y.style.display = "block";
+    }
+} 

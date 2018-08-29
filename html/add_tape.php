@@ -10,18 +10,6 @@ include 'includes/header.inc.php';
 ?>
 <script type='text/javascript'>
     var current = -1;
-function hide() {
-
-    var value = document.getElementsByName("tape_type")[0].value;
-
-    document.getElementById("tapediv"+value).style.visibility = "visible";
-    if(current != -1) {
-        document.getElementById("tapediv"+current).style.visibility = "collapse";
-    }
-    current = value;
-
-    return;
-}
 </script>
 <?php
 if(isset($_POST['tape_type']) && $_POST['tape_type'] != null) {
@@ -67,7 +55,8 @@ if(isset($_POST['submit'])) {
     }
 
     if(($tape_to != null && !is_numeric($tape_to)) && ($tape_from != null && !is_numeric($tape_from))) {
-        $errors .= html::error_message("'From' and 'To' fields cannot both contain alphabetical characters.<BR>Please make both numeric, or only input one in the 'From' field.");
+        $errors .= html::error_message("'From' and 'To' fields cannot both contain alphabetical characters.<BR>".
+                "Please make both numeric, or only input one in the 'From' field.");
     }
 
    
@@ -149,7 +138,7 @@ echo("<BR><a href=add_container_type.php>(Add a new tape type?)</a>");
 echo("</td><td>");
 
 $all_types = type::get_tape_types($db);
-      echo "<select id='tape_type' name='tape_type' onchange='hide()'>";
+      echo "<select id='tape_type' name='tape_type' onchange=hide('tape_type', 'tapediv')>";
       echo "<option value=''>None</option>";
 
       foreach ($all_types as $curr_type) {
