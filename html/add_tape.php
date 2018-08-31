@@ -138,7 +138,7 @@ echo("<BR><a href=add_container_type.php>(Add a new tape type?)</a>");
 echo("</td><td>");
 
 $all_types = type::get_tape_types($db);
-      echo "<select id='tape_type' name='tape_type' onchange=hide('tape_type', 'tapediv')>";
+      echo "<select id='tape_type' name='tape_type' onchange=hide('tape_type','tapediv')>";
       echo "<option value=''>None</option>";
 
       foreach ($all_types as $curr_type) {
