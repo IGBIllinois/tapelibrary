@@ -14,8 +14,6 @@ include 'includes/header.inc.php';
 
 <?php 
 
-// TODO: Clean up code. Merge with edit_containers.php to reduce code duplication.
-
 $begin = null;
     $end = null;
     $select_type = null;
@@ -142,7 +140,6 @@ echo("<form name='edit_tapes_form' method='POST'>");
 echo("<table id='edit_tapes_table' name='edit_tapes_table' class='table table-bordered table-hover table-striped display'><thead><tr>");
 echo("<th><input type=checkbox onClick=toggleAll(this,'checkbox') /><th>Tape ID Number</th><th>Type</th><th>Label</th><th>Location");
 echo("<BR>Move selected to:");
-//createInput("select", "tape_container", "", tape_library_object::get_containers($db), "",  "changeAllCheckedLocations(this, \"checkbox\", \"tape_container\")");
 
 $containers = tape_library_object::get_containers($db);
       echo "<select id='tape_container' name='tape_container'>";

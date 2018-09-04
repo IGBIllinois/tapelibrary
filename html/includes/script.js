@@ -128,22 +128,7 @@ $(document).ready(function(){
     } );
     
 
-    
-    var dates = $( "#from, #to" ).datepicker({
-    defaultDate: "+1w",
-    dateFormat: 'yy-mm-dd',
-    changeMonth: true,
-    numberOfMonths: 1,
-    onSelect: function( selectedDate ) {
-      var option = this.id == "from" ? "minDate" : "maxDate",
-      instance = $( this ).data( "datepicker" ),
-      date = $.datepicker.parseDate(
-        instance.settings.dateFormat ||
-        $.datepicker._defaults.dateFormat,
-        selectedDate, instance.settings );
-          dates.not( this ).datepicker( "option", option, date );
-    }
-  });
+
 
   $('#checkall').click(function(){
     $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
@@ -153,7 +138,6 @@ $(document).ready(function(){
     $("#log").html( $(".multiedit:checkbox:checked").length + " records checked" );
   });
 
-  $("#datepicker").datepicker({dateFormat: 'yy-mm-dd'});
   
   $(".iframe_add").fancybox({
     'width': 450,
@@ -194,28 +178,6 @@ function toggle(id) {
 
 }
 
-function changeAllCheckedLocations(source, checkbox_name, id_name) {
-    //containers = document.getElementsByName('tape_container');
-    //alert("numLocations = "+containers.length);
-    //for(var i=0, n=containers.length; i<n; i++) {
-    //    containers[i].value = source.value;
-    //}
-    checkboxes = document.getElementsByName(checkbox_name+'[]');
-    //alert("numCheckboxes = "+checkboxes.length);
-        for(var i=0, n=checkboxes.length;i<n;i++) {
-            //alert("i = "+i + ":"+checkboxes[i].checked);
-            if(checkboxes[i].checked) {
-                var id = checkboxes[i].id;
-                //alert("id = "+id);
-                //alert("newLoc="+id_name+id);
-                newLoc = document.getElementById(id_name+"_"+id);
-                //alert("newVal = "+source.value);
-                if(newLoc != null) {
-                    newLoc.value = source.value;
-                }
-            }
-  }
-}
 
 function format_backupset_table(tape_array) {
     html = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+

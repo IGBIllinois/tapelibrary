@@ -16,25 +16,22 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title><?php echo __TITLE__.(isset($title)?" - $title":''); ?></title>
                 
-		<link rel="stylesheet" href="includes/bootstrap/css/bootstrap.min.css" type="text/css"/>
+                <!-- Bootstrap -->
+                <link rel="stylesheet" href="vendor/components/bootstrap/css/bootstrap.min.css" type="text/css"/>
                 
-		<link rel="stylesheet" href="includes/main.inc.css" type="text/css"/>
+                <!-- Local javascript methods -->
+                <script type="text/javascript" src="includes/script.js"></script>
+                
+                <!-- Icon -->
 		<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
                    
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-                
-		<script type="text/javascript" src="includes/main.inc.js"></script>
-                <script type='text/javascript' language='javascript' src='includes/jquery.min.js'></script>
-                <script type="text/javascript" src="includes/script.js"></script>
-                
-<script type='text/javascript' language='javascript' src='includes/jquery.dataTables.min.js'></script>
+                <script type='text/javascript' language='javascript' src='vendor/components/jquery/jquery.min.js'></script>
+    
+                <!-- Datatables -->
+                <script type='text/javascript' language='javascript' src='includes/jquery.dataTables.min.js'></script>
+                <link rel="stylesheet" type="text/css" href="includes/datatables.css"></link>
 
-
-<link rel="stylesheet" type="text/css" href="includes/datatables.css"></link>
-
-<script type='text/javascript' language='javascript'>
-
-</script>
 
 
 	</head>
