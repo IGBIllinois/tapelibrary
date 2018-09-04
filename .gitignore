@@ -1,6 +1,8 @@
 /nbproject
 /conf/settings.inc.php
 /vendor
+/html/vendor
+
 
 # Windows image file caches
 Thumbs.db
