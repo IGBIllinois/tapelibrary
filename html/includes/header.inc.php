@@ -15,24 +15,22 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title><?php echo __TITLE__.(isset($title)?" - $title":''); ?></title>
-                
-                <!-- Bootstrap -->
-                <link rel="stylesheet" href="vendor/components/bootstrap/css/bootstrap.min.css" type="text/css"/>
-                
-                <!-- Local javascript methods -->
-                <script type="text/javascript" src="includes/script.js"></script>
-                
-                <!-- Icon -->
-		<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
-                   
-		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+                		
+                <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
                 <script type='text/javascript' language='javascript' src='vendor/components/jquery/jquery.min.js'></script>
     
                 <!-- Datatables -->
                 <script type='text/javascript' language='javascript' src='includes/jquery.dataTables.min.js'></script>
                 <link rel="stylesheet" type="text/css" href="includes/datatables.css"></link>
+                
+                <!-- Bootstrap -->
+                <link rel="stylesheet" href="vendor/components/bootstrap/css/bootstrap.min.css" type="text/css"/>
+                
+                <!-- Local javascript methods -->
+                <script type="text/javascript" language='javascript' src="includes/script.js"></script>
 
-
+                <!-- Icon -->
+		<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
 
 	</head>
 	<body>
