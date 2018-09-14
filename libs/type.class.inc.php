@@ -159,8 +159,8 @@ class type {
             $result = $this->db->get_insert_result($query, $params);
 
             $this->id = $result;
-            return array('RESULT'=>true,
-			'MESSAGE'=>"<div class='alert'>Project successfully created.</div>",
+            return array('RESULT'=>TRUE,
+			'MESSAGE'=>"Type $type_name successfully created.</div>",
 			'type_id'=>$this->id);
 
         } catch(Exception $e) {

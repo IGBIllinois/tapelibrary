@@ -127,9 +127,9 @@ echo("<table class='table table-bordered display'>");
         print "<td width=40%>Tapes to add:</td>";
          
         print "<td>From:";
-        createInput("text","tape_from",isset($tape_from) ? $tape_from : "");
+        html::createInput("text","tape_from",isset($tape_from) ? $tape_from : "");
         print "<br />To: ";
-        createInput("text","tape_to",isset($tape_to) ? $tape_to : "");
+        html::createInput("text","tape_to",isset($tape_to) ? $tape_to : "");
         print "</td>";
         
       print "</tr>";

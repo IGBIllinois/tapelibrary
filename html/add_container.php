@@ -74,13 +74,8 @@ if(isset($_POST['container_name'])) {
     if(strlen($messages) == 0) {
 
         $result = tape_library_object::add_tape($db, $name, $container_type, $container_id, -1, $login_user->get_username());
-   
-
-        if ($result['RESULT']) {
-            $messages .= html::success_message($result['MESSAGE']);
-        } else {
-            $messages .= html::error_message($result['MESSAGE']);
-        }
+        html::write_message($result);
+        
     } else {
 
     }

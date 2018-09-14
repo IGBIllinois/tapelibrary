@@ -46,7 +46,7 @@ echo("<table class='table table-bordered'><tr>");
       print "<tr>";
         print "<td>Container name</td>";
         print "<td>";
-        createInput("text","container_name","");
+        html::createInput("text","container_name","");
 
         print "</td>";
 
@@ -109,11 +109,7 @@ if(isset($_POST['submit'])) {
 
                 
                 $result = $this_container->edit($new_label, $container, $active, null, $login_user->get_username());
-                if($result['RESULT']) {
-                    $messages.=(html::success_message($result['MESSAGE']));
-                } else {
-                    $messages .= (html::error_message($result['MESSAGE']));
-                }
+                html::write_message($result);
 
         }
              

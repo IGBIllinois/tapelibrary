@@ -79,40 +79,33 @@ class db {
 		return $this->link;
 	}
 
-        function pdo_query($query, $params) {
-            $statement = $this->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-            $statement->execute($params);
-            //echo("user id= $user_id, copier_id = $copier_id, num_copies=$num_copies, date = $date <BR>");
+    
+
+        public function get_query_result($query_string, $query_array) {
+            $statement = $this->get_link()->prepare($query_string, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            $statement->execute($query_array);
             $result = $statement->fetchAll();
             return $result;
-    }
-    
 
-function get_query_result($query_string, $query_array) {
-    $statement = $this->get_link()->prepare($query_string, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    $statement->execute($query_array);
-    $result = $statement->fetchAll();
-    return $result;
-    
-}
+        }
 
 
-function get_update_result($query_string, $query_params) {
-    // Update queries should probably only update one record. This will ensure 
-    // only one record gets updated in case of a malformed query.
-    $query_string .= " LIMIT 1"; 
-    $statement = $this->get_link()->prepare($query_string, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    $result = $statement->execute($query_params);
-    return $result;
-}
+        public function get_update_result($query_string, $query_params) {
+            // Update queries should probably only update one record. This will ensure 
+            // only one record gets updated in case of a malformed query.
+            $query_string .= " LIMIT 1"; 
+            $statement = $this->get_link()->prepare($query_string, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            $result = $statement->execute($query_params);
+            return $result;
+        }
 
-function get_insert_result($query_string, $query_array) {
+        public function get_insert_result($query_string, $query_array) {
 
-    $statement = $this->get_link()->prepare($query_string, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    $stmt = $statement->execute($query_array);
-    $result =  $this->get_link()->lastInsertId();
-    return $result;
-}
+            $statement = $this->get_link()->prepare($query_string, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            $stmt = $statement->execute($query_array);
+            $result =  $this->get_link()->lastInsertId();
+            return $result;
+        }
 
 
 

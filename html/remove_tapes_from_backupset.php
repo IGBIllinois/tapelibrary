@@ -28,12 +28,7 @@ if(!isset($_POST['backupset_id'])) {
 
             $result = $backupset->remove_tape_from_backupset($tape_id);
 
-
-            if($result['RESULT']) {
-                $messages .= html::success_message($result['MESSAGE']);
-            } else {
-                $messages .= (html::error_message($result['MESSAGE']));
-            }
+            html::write_message($result);
              
         }
     } else {

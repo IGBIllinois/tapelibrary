@@ -14,7 +14,6 @@ function my_autoloader($class_name) {
 }
 spl_autoload_register('my_autoloader');
 
-include_once "functions.inc.php";
 include_once('../conf/settings.inc.php');
 
 require_once '../vendor/autoload.php';

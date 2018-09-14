@@ -56,9 +56,9 @@ echo("<table class='table table-bordered display'><tr>");
       print "<tr>";
         print "<td>Tape Number(s)</td>";
         print "<td>From: ";
-        createInput("text","begin",$begin);
+        html::createInput("text","begin",$begin);
         print "<br />To: ";
-        createInput("text","end",$end);
+        html::createInput("text","end",$end);
         print "</td>";
       print "</tr>";
 echo("<tr><td>Tape Type :</td><td>");
@@ -119,11 +119,7 @@ if(isset($_POST['submit'])) {
 
                 
                 $result = $this_tape->edit($tape_label, $container, $active, $new_tape_label, $login_user->get_username());
-                if($result['RESULT']) {
-                    $messages.=(html::success_message($result['MESSAGE']));
-                } else {
-                    $messages .= (html::error_message($result['MESSAGE']));
-                }
+                html::write_message($result);
 
         }
     } else {

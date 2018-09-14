@@ -41,11 +41,8 @@ if(isset($_POST['submit_add_program'])) {
         $result = $program->add_program($name, $version);
 
     
-     if($result['RESULT']) {
-        echo(html::success_message("Program ".$_POST['program_name']." successfully added."));
-     } else {
-         echo(html::error_message("ERROR: ".$result['MESSAGE']));
-     }
+     html::write_message($result);
+     
     } else {
         echo(html::error_message($errors));
     }

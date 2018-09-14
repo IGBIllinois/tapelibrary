@@ -31,7 +31,6 @@ if (isset($_POST['login'])) {
 		$message .= html::error_message("Please enter your password.");
 	}
 	if ($error == false) {
-// 		$ldap = new ldap(__LDAP_HOST__,__LDAP_SSL__,__LDAP_PORT__,__LDAP_BASE_DN__);
 		$login_user = new user($ldap,$username);
 		$success = $login_user->authenticate($password);
 		if ($success==0) {
@@ -65,7 +64,7 @@ if (isset($_POST['login'])) {
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title><?php echo __TITLE__; ?></title>
-		<link rel="stylesheet" href="includes/bootstrap/css/bootstrap.min.css" type="text/css">
+		<link rel="stylesheet" href="vendor/components/bootstrap/css/bootstrap.min.css" type="text/css">
 		<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 	</head>
 	<body OnLoad="document.login.username.focus();">

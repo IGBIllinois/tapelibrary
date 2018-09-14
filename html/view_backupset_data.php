@@ -22,11 +22,8 @@ if((!isset($_GET['backupset_id'])&& !isset($_POST['backupset_id']) ||
     
     $backupset = new backupset($db, $backupset_id);
     $result = $backupset->deactivate_backupset();
-    if($result['RESULT'] == TRUE) {
-        echo(html::success_message($result['MESSAGE']));
-    } else {
-        echo(html::error_message($result['MESSAGE']));
-    }
+    html::write_message($result);
+    
     } else {
         echo(html::error_message("Please input a valid backupset id."));
     }
@@ -40,11 +37,7 @@ if((!isset($_GET['backupset_id'])&& !isset($_POST['backupset_id']) ||
     
     $backupset = new backupset($db, $backupset_id);
     $result = $backupset->activate_backupset();
-    if($result['RESULT'] == TRUE) {
-        echo(html::success_message($result['MESSAGE']));
-    } else {
-        echo(html::error_message($result['MESSAGE']));
-    }
+    html::write_message($result);
     } else {
         echo(html::error_message("Please input a valid backupset id."));
     }

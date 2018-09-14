@@ -66,11 +66,7 @@ $backupset_id = $_POST['backupset_id'];
     if(strlen($error) == 0) {
         $backupset = new backupset($db, $backupset_id);
         $result = $backupset->edit_backupset($name, $begin, $end, $program, $notes);
-        if($result['RESULT']) {
-            echo(html::success_message($result['MESSAGE']));
-        } else {
-            echo(html::error_message($result['MESSAGE']));
-        }
+        html::write_message($result);
      } else {
          echo($error."<BR>");
      }

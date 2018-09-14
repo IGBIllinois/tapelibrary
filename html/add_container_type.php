@@ -72,12 +72,9 @@ if(isset($_POST['max_slots'])) {
                 $add_result = $placed_type->add_container_type_to_type($type->get_id());
             }
         }
-     if($result['RESULT']) {
-
-         echo(html::success_message("Container ".$container_type_name." successfully added."));
-     } else {
-         echo(html::error_message("Error:".$result['MESSAGE']));
-     }
+     
+        html::write_message($result);
+        
     } else {
         // There's a dependency error
         $loop_type = new type($db,$loop_error);

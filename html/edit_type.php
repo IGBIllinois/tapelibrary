@@ -91,11 +91,8 @@ if(!$errors) {
                 }
             }
         }
-     if($result['RESULT']) {
-         echo(html::success_message("Container Type ".$_POST['container_type_name']." successfully edited."));
-     } else {
-         echo(html::error_message($result['MESSAGE']));
-     }
+        html::write_message($result);
+     
     } else {
         $loop_type = new type($db,$loop_error);
         $name = $loop_type->get_name();

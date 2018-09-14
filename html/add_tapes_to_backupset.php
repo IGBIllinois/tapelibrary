@@ -42,13 +42,8 @@ if(isset($_POST['add_tapes_submit'])) {
             $backupset = new backupset($db, $backupset_id);
             
             $result = $backupset->add_tape_to_backupset($id);
-
             
-            if($result['RESULT']) {
-                $messages .= (html::success_message($result['MESSAGE']));
-            } else {
-                $messages .=(html::error_message($result['MESSAGE']) );
-            }
+            html::write_message($result);
 
         }
     } else {
