@@ -9,6 +9,7 @@
 - PHP
 - PHP Mysql
 - PHP LDAP
+- composer
 
 
 1.  Create an alias in apache that points to html folder
@@ -18,3 +19,6 @@
 4.  Edit /conf/settings.inc.php to reflect your settings.
 5.  Run composer to install php dependencies
 ```composer install```
+6. Copy the /vendor/datatables directory to the  /html/vendor directory
+```cp -rf /vendor/datatables /html/vendor/```
+

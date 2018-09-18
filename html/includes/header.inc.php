@@ -20,9 +20,14 @@
                 <script type='text/javascript' language='javascript' src='vendor/components/jquery/jquery.min.js'></script>
     
                 <!-- Datatables -->
+                <!--
                 <script type='text/javascript' language='javascript' src='includes/jquery.dataTables.min.js'></script>
                 <link rel="stylesheet" type="text/css" href="includes/datatables.css"></link>
-                
+                -->
+
+                <script type='text/javascript' language='javascript' src='vendor/datatables/media/js/jquery.dataTables.min.js'></script>
+                <link rel="stylesheet" type="text/css" href="vendor/datatables/media/css/jquery.dataTables.css"></link>
+
                 <!-- Bootstrap -->
                 <link rel="stylesheet" href="vendor/components/bootstrap/css/bootstrap.min.css" type="text/css"/>
                 
