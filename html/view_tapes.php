@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-include_once 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 echo("<H3>View Tapes</H3>");
 echo("<fieldset>");
 $begin = null;
@@ -20,14 +20,13 @@ if(isset($_POST['submit'])) {
     
     if(isset($_POST['begin'])) {
 
-        //if(is_numeric($begin)) {
         $begin = $_POST['begin'];
-        //}
+
     }
     if(isset($_POST['end'])) {
-        //if(is_numeric($end)) {
+
         $end = $_POST['end'];
-        //}
+
     }
 
     if(isset($_POST['type'])) {
@@ -45,11 +44,9 @@ if(isset($_POST['submit'])) {
 }
 
 echo("<form method=POST action=view_tapes.php>");
-//
-//echo("<form id='addform' name='add_tape' action='add_tape.php' method='POST'>");
+
 echo("Limit By:<BR>");
 echo("<table  class='table table-bordered display'><tr>");
-//echo("<tr><td>Location Name:</td><td><input type='text' name='container_name' id='container_name'></td></tr>");
 
       print "<tr >";
         print "<td>Tape Number(s)</td>";
@@ -75,7 +72,6 @@ $all_types = type::get_tape_types($db);
       echo "</select>";
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
-    //createInput("select","container","",tape_library_object::get_containers($db));
     $containers = tape_library_object::get_containers($db);
       echo "<select id='container' name='container'>";
       echo "<option value=''>None</option>";
@@ -95,7 +91,7 @@ echo("</table>");
 echo("<input type='submit' name='submit' value='Select'>");
 echo("</form>");
 echo("<BR>");
-//
+
 echo("Current tapes:") ;
 
 echo("<fieldset><table id='view_tapes' class='table table-bordered table-hover table-striped display'>");
@@ -136,7 +132,6 @@ echo("</table></fieldset>");
 
 echo("<BR><a href='add_tape.php'>Add new tapes</a><BR>");
 
-//list_all($db);
 echo("</fieldset>");
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';
 

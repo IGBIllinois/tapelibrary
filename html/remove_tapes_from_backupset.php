@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-include_once 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 ?>
 
 <?php
@@ -79,4 +79,4 @@ echo("<input type=submit name=submit_remove value='Remove Selected Tapes from Ba
 
     
 }
-include_once 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';

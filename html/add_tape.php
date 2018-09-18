@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-include 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 ?>
 <script type='text/javascript'>
     var current = -1;
@@ -219,4 +219,4 @@ if(strlen($name_errors) > 0) {
 if(strlen($messages) > 0) {
     echo($messages);
 }
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';

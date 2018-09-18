@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-include 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 ?>
 
 <?php
@@ -108,4 +108,4 @@ if(count($current_tape_types)== 0) {
 echo("<BR>");
 
 
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';

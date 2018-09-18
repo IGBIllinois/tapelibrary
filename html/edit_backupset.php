@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-include 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 echo("<h3>Edit Backup Set</H3>");
 if(isset($_POST['id'])) {
 
@@ -113,5 +113,5 @@ echo("</form>");
 } else {
     echo(html::error_message("The backupset you selected does not exist. Please try again."));
 }
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';
 

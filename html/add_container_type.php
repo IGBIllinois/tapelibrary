@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-include 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 ?>
 
 <?php
@@ -130,4 +130,4 @@ echo("</td></tr></table>");
 echo("<input type='submit' name='submit' value='Add Location Type'>");
 echo("</form>");
 
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';

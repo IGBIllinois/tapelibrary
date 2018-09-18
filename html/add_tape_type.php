@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-include 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 echo("<H3>Tape Types</H3>");
 if(isset($_POST['tape_type_name'])) {
 
@@ -45,4 +45,4 @@ echo("</tr></table>");
 echo("<input type='submit' name='submit' value='Add Tape Type'>");
 echo("</form>");
 
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';

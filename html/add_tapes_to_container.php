@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-include 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 ?>
 
 <?php
@@ -218,4 +218,4 @@ echo("<BR>");
 } else {
     $errors = html::error_message("Please input a proper container.");
 }
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';

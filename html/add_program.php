@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-include 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 echo("<h3>Add Programs</h3>");
 echo("For adding programs used for backup sets.<BR>");
 if(isset($_POST['submit_add_program'])) {
@@ -85,4 +85,4 @@ foreach($programs as $program) {
 }
 echo("</table>");
 
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';

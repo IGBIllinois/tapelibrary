@@ -3,7 +3,7 @@
 <?php
 
 
-include 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 echo("<H3>Edit Containers</H3>");
 ?>
 
@@ -180,6 +180,6 @@ echo("<BR><BR>");
   print "</fieldset>";
   echo("<BR>");
 
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';
 
 

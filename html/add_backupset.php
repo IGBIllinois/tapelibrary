@@ -3,7 +3,7 @@
  * Add a new Backup Set to the database
  */
 
-include 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 
 echo("<H3>Add Backup Set</H3>");
 
@@ -94,4 +94,4 @@ echo("</table>");
 echo("<input type='submit' name='submit' value='Add Backup Set'>");
 echo("</form>");
 
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';

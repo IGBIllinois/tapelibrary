@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-include_once 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 
 $container_id = -1;
 if(!isset($_GET['container_id']) && !isset($_POST['container_id'])) {
@@ -53,8 +53,7 @@ if(count($current_tapes)== 0) {
     foreach($current_tapes as $tape) {
 
         $backupset_id = $tape->get_backupset();
-        //$backupset_id = $tape['backupset'];
-        //echo("backupset = $backupset_id<BR>");
+
         $backupset_name = "";
         if($backupset_id == null || $backupset_id == -1) {
             $backupset_name = "None";
@@ -107,5 +106,5 @@ echo("</form>");
 
 </form>
 <?php
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';
 

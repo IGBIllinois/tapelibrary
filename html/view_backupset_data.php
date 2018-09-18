@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-include_once 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 if((!isset($_GET['backupset_id'])&& !isset($_POST['backupset_id']) || 
         (isset($_POST['backupset_id']) && $_POST['backupset_id']=="") ||
         (isset($_GET['backupset_id']) && $_GET['backupset_id'] == ""))) {
@@ -146,5 +146,5 @@ echo("</form>");
 </form>
 <?php
 
-include_once 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';
 

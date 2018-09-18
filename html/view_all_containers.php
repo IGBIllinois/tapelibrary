@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-include 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 echo("<H3>View Containers</H3>");
 $name = null;
 $type = null;
@@ -131,4 +131,4 @@ if($parent != null) {
 </form>
 <?php
 
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';

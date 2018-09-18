@@ -9,7 +9,7 @@
  * and open the template in the editor.
  */
 
-include 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 ?>
 
 <?php 
@@ -186,5 +186,5 @@ echo("<BR><BR>");
     echo("</form>");
   print "</fieldset>";
 
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';
 

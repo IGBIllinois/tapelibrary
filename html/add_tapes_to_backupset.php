@@ -4,7 +4,7 @@
 This page allows a user to add existing tapes to a Backup Set
  */
 
-include_once 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
 
 ?>
 
@@ -115,4 +115,4 @@ if($messages != "") {
     echo($messages);
 }
 }
-include 'includes/footer.inc.php';
+require_once 'includes/footer.inc.php';
