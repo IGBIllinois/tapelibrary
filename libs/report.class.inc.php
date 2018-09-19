@@ -62,15 +62,9 @@ class report {
 				foreach ($row_data as $key => $value) {
 					$excel_file->getActiveSheet()->setCellValueByColumnAndRow($column,$start_row,$value);
                                         
-					//if (($key == 'Cost') || ($key == 'Billed Amount') || ($key == 'COST')) {
-					//	$excel_file->getActiveSheet()->getStyleByColumnAndRow($column,$start_row)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER_00);
-					//}
-					//else {
-						$excel_file->getActiveSheet()->getStyleByColumnAndRow($column,$start_row)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-						$excel_file->getActiveSheet()->getStyleByColumnAndRow($column,$start_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-					//}
-                                         
-                                         
+                                        $excel_file->getActiveSheet()->getStyleByColumnAndRow($column,$start_row)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                                        $excel_file->getActiveSheet()->getStyleByColumnAndRow($column,$start_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                                        $excel_file->getActiveSheet()->getColumnDimensionByColumn($column)->setAutoSize(true);
 					$column++;
 				}
 				$start_row++;
@@ -89,9 +83,9 @@ class report {
 	public static function create_csv_report($data,$filename) {
 		$delimiter = ",";
 		$file_handle = fopen('php://output','w');
-		$headings = array_keys($data[0]);
+
 		ob_start();
-		fputcsv($file_handle,$headings,$delimiter);
+
 		foreach ($data as $row) {
 			fputcsv($file_handle,$row,$delimiter);
 		}
@@ -109,7 +103,6 @@ class report {
 	}
         
         public static function get_heirarchy($db, $object_list, $level=0) {
-            //$data = $db->get_tape_library_object($id);
 
             $data= array();
             $this_row = array();
@@ -139,7 +132,6 @@ class report {
                 }
 
             }
-            //print_r($data);
             return $data;
             }
 
