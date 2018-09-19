@@ -20,5 +20,5 @@
 5.  Run composer to install php dependencies
 ```composer install```
 6. Copy the /vendor/datatables directory to the  /html/vendor directory
-```cp -rf /vendor/datatables /html/vendor/```
+```cp -rf vendor/datatables/datatables html/vendor/```
 
