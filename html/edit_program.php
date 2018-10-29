@@ -8,13 +8,23 @@
  */
 
 require_once 'includes/header.inc.php';
-echo("<h3>Add Programs</h3>");
-echo("For adding programs used for backup sets.<BR>");
-if(isset($_POST['submit_add_program'])) {
+echo("<h3>Edit Program</h3>");
+echo("For editing programs used for backup sets.<BR>");
+
 
     $program_id=-1;
     $errors = "";
     $version = null;
+
+if(isset($_POST['submit_edit_program'])) {   
+    
+    if(isset($_POST['program_id'])) {
+
+        $program_id = $_POST['program_id'];
+    } else {
+        $errors .= "Please select a valid program.";
+
+    }
 
     if(isset($_POST['program_name']) && $_POST['program_name'] != null) {
         $name = $_POST['program_name'];
@@ -24,11 +34,6 @@ if(isset($_POST['submit_add_program'])) {
         
     }
 
-    if(isset($_POST['program'])) {
-
-        $program_id = $_POST['program'];
-    }
-
     if(isset($_POST['program_version'])) {
 
         $version = $_POST['program_version'];
@@ -36,8 +41,8 @@ if(isset($_POST['submit_add_program'])) {
     
     if(strlen($errors) == 0) {
 
-        $program = new program($db);
-        $result = $program->add_program($name, $version);
+        $program = new program($db, $program_id);
+        $result = $program->edit_program($name, $version);
 
     
      html::write_message($result);
@@ -46,10 +51,28 @@ if(isset($_POST['submit_add_program'])) {
         echo(html::error_message($errors));
     }
 
+} else {
+
+    if(isset($_GET['program_id']) && $_GET['program_id'] != null) {
+        $program_id = $_GET['program_id'];
+        $program = new program($db, $program_id);
+        $name = $program->get_name(); 
+        $version = $program->get_version();
+
+    } else {
+        $errors .= "Please select a valid program.";
+        
+    }
+    if(strlen($errors) != 0) {
+
+        echo(html::error_message($errors));
+    }
 }
 
+    
 
-echo("<form name='add_program' action='add_program.php' method='POST'>");
+
+echo("<form name='edit_program' action='edit_program.php' method='POST'>");
 
 echo("<table class='table table-bordered display'>");
 echo("<tr><td width=20%>Program Name:</td><td><input type='text' "
@@ -62,26 +85,11 @@ echo("<tr><td width=20%>Program Version:".
         "></td></tr>");
 
 echo("</table>");
-echo("<input type='submit' name='submit_add_program' value='Add Program'>");
+echo("<input type='hidden' name='program_id' value='$program_id'>");
+echo("<input type='submit' name='submit_edit_program' value='Edit Program'>");
 echo("</form>");
 
 echo("<BR>");
 
-echo("Current programs:");
-echo("<table  class='table table-bordered table-hover table-striped display'><tr>");
-echo("<th>Program Name</th><th>Version</th>");
-$program = new program($db);
-
-$programs = program::get_programs($db);
-
-if(count($programs)== 0) {
-    echo "<tr><td>No programs have been added.</td></tr>";
-} else {
-foreach($programs as $program) {
-    echo("<tr><td><a href='edit_program.php?program_id=".$program->get_id()."'>".$program->get_name()."</a></td>");
-    echo("<td>".$program->get_version()."</td></tr>");
-}
-}
-echo("</table>");
-
+    
 require_once 'includes/footer.inc.php';

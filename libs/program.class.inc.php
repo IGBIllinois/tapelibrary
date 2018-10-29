@@ -40,6 +40,18 @@ class program {
     }
     
     
+    /** Adds a new program
+     * 
+     * @param string $name Name for the program
+     * @param string $vesrion Version for the program
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string],
+     *  "id"=>type)
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message,
+     * and "id" is the id of the newly created program, if successful
+     */
     public function add_program($name, $version) {
         try {
             $messages = "";
@@ -57,12 +69,46 @@ class program {
         $this->id = $result;
             return array('RESULT'=>true,
 			'MESSAGE'=>"Program $name successfully created.",
-			'type_id'=>$this->id);
+			'id'=>$this->id);
         } catch(Exception $e) {
             return array("RESULT"=>FALSE,
                         "MESSAGE"=>$e->getTraceAsString());
         }
     }
+    
+    
+    
+    /** Edits a program
+     * 
+     * @param type $name New name for this program
+     * @param type $version New version for this program
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message.
+     */
+    public function edit_program($name, $version) {
+        $program_exists = self::program_exists($this->db, $name, $version);
+        if(($program_exists > 0) && ($this->get_id() != $program_exists)) {
+            // A program with this name and version already exists
+            return array('RESULT'=>false,
+			'MESSAGE'=>"A Program with the name $name and version $version already exists.",
+			);
+        }
+        
+        $query = "UPDATE programs set name=:name, version=:version where id=:id";
+        $params = array("name"=>$name, "version"=>$version, "id"=>$this->get_id());
+        $this->db->get_update_result($query, $params);
+        
+        $this->name = $name;
+        $this->version = $version;
+        
+        return array('RESULT'=>true,
+			'MESSAGE'=>"The Program $name has been updated successfully.",
+			);
+        
+    }    
         
     /** 
      * Determines if a program already exists
@@ -111,7 +157,11 @@ class program {
         
     }
     
-    
+    /** Gets program data and loads it into this program object
+     * 
+     * @param int $program_id The ID of the program to load
+     * @return boolean
+     */
     private function get_program($program_id) {
         $query = "SELECT * from programs where id = :program_id LIMIT 1";
         $params = array("program_id"=>$program_id);
@@ -125,6 +175,7 @@ class program {
             return false;
         }
     }
+
 
 
     
