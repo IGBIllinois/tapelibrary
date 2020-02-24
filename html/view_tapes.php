@@ -51,9 +51,9 @@ echo("<table  class='table table-bordered display'><tr>");
       print "<tr >";
         print "<td>Tape Number(s)</td>";
         print "<td>From: ";
-        html::createInput("text","begin","");
+        html::createInput("text","begin",$begin);
         print "<br />To: ";
-        html::createInput("text","end","");
+        html::createInput("text","end",$end);
         print "</td>";
 
       print "</tr>";
