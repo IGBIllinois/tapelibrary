@@ -48,7 +48,7 @@ $current_tapes = $container->get_children();
 if(count($current_tapes)== 0) {
     echo "<tr><td>No tapes have been added.</td></tr>";
 } else {
-    echo("<thead><tr><th>Tape ID Number</th><th>Type</th><th>Tape Label</th><th>Backup Set</th></thead>");
+    echo("<thead><tr><th>Tape ID Number</th><th>Type</th><th>Tape Label</th><th>Backup Set</th><th>Total number of Tapes<BR>in Container</thead>");
     echo("<tbody>");
     foreach($current_tapes as $tape) {
 
@@ -65,7 +65,9 @@ if(count($current_tapes)== 0) {
         echo("<td><a href='view_container.php?container_id=".$tape->get_id()."'>".$tape->get_label()."</a></td>");
         echo("<td>".$tape->get_type_name()."</td>");
         echo("<td>".$tape->get_tape_label()."</td>");
-        echo("<td><a href='view_backupset_data.php?backupset_id=$backupset_id'>".$backupset_name."</a></td></tr>");
+        echo("<td><a href='view_backupset_data.php?backupset_id=$backupset_id'>".$backupset_name."</a></td>");
+        echo("<td>".(($tape->is_tape()) ? "" : $tape->get_total_tapes()). "</td>");
+        echo("</tr>");
         
     }
     echo("</tbody>");
