@@ -92,12 +92,14 @@ $current_containers = tape_library_object::get_containers($db, $name, $type, $pa
 if(count($current_containers)== 0) {
     echo "<tr><td>No containers have been added.</td></tr>";
 } else {
-    echo("<thead><tr><th>Name</th><th>Type</th><th>Parent Container</th></tr></thead>");
+    echo("<thead><tr><th>Name</th><th>Type</th><th>Parent Container</th><th>Total Number of Tapes in Container</th></tr></thead>");
     echo("<tbody>");
     foreach($current_containers as $container) {
         echo("<tr><td><a href=view_container.php?container_id=".$container->get_id().">".$container->get_label()."</a></td>");
         echo("<td>".$container->get_type_name()."</td>");
-        echo("<td><a href='view_container.php?container_id=".$container->get_container_id()."'>".$container->get_full_path()."</a></td></tr>");
+        echo("<td><a href='view_container.php?container_id=".$container->get_container_id()."'>".$container->get_full_path()."</a></td>");
+        echo("<td>".$container->get_total_tapes()."</td>");
+        echo("</tr>");
     }
 }
 

@@ -309,7 +309,23 @@ class tape_library_object {
 
         return $result;
     }
-
+    
+    /** Gets the total number of tapes in this object
+     * 
+     * @return the total number of tapes in this object (including tapes within sub-containers)
+     */
+    public function get_total_tapes() {
+        $total_tapes = 0;
+        $children = $this->get_children();
+        foreach($children as $child) {
+            if($child->is_tape()) {
+                $total_tapes++;
+            } else {
+                $total_tapes += $child->get_total_tapes();
+            }
+        }
+        return $total_tapes;
+    }
 
     /**
      * 
