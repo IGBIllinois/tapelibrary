@@ -233,15 +233,24 @@ class tape_library_object {
         }
 
         $curr_container = $current_tape->get_container_id();
+        $new_container = new tape_library_object($this->db, $container);
+        
         if($curr_container != $container) {
-
-            $new_container = new tape_library_object($this->db, $container);
 
             if(($new_container->get_max_slots() != -1) && ($new_container->get_object_count() >= $new_container->get_max_slots())) {                
                 return array("RESULT"=>FALSE,
                             "MESSAGE"=>"The container '".$new_container->get_label()."' is full. No changes have been made to this object.");
             }
         
+        }
+        
+        
+        if(!in_array($this->get_type() ,$new_container->can_contain_types())) {
+            
+            $type = new type($this->db, $this->get_type());
+            return array("RESULT"=>FALSE,
+                         "MESSAGE"=>"'".$this->get_label()."' was not updated. The container '".$new_container->get_label()."' cannot contain objects of type ".$type->get_name().".");
+            
         }
         $tape_exists = tape_library_object::does_tape_exist($this->db, $label, $current_tape->get_type());
         
