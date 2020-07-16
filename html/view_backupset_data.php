@@ -109,6 +109,13 @@ echo("<input type='submit' name='submit' value='Remove Tapes from Backup set'>")
 echo("</form>");
 }
 
+echo("<form method='POST' action='move_tapes_to_backupset.php' name='move_tapes'>");
+echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
+echo("<input type='submit' name='submit' value='Move tapes to a different Backup set'>");
+echo("</form>");
+
+
+
 echo("<form method='POST' action='edit_backupset.php' name='edit_backupset'>");
 echo("<input type='hidden' name='id' value='$backupset_id'>");
 echo("<input type='submit' name='submit' value='Edit this Backup set'>");

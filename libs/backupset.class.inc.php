@@ -133,25 +133,7 @@ class backupset {
                     "backupset_id"=>$result);
     }
     
-    /**
-     * 
-     * Determines if a backupset with a given name already exists
-     * 
-     * @param db $db Database Object
-     * @param string $name the name of the Backup Set to search for.
-     * @return int 1 if a Backup Set with the given name exists, else 0
-     */
-    public static function backupset_exists($db, $name) {
-        $search_query = "SELECT * from backupset where name=:name";
-        $search_params = array("name"=>$name);
-        $search_result = $db->get_query_result($search_query, $search_params);
-        
-        if(count($search_result) > 0) { 
-            return 1;
-        } else {
-            return 0;
-        }
-    }
+
     
 
 
@@ -263,9 +245,119 @@ class backupset {
         return $tape_array;
        
     }
-    
-    
 
+    /**
+     * Adds a Tape to this Backup Set
+     * @param type $tape_id
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message
+     */
+    public function add_tape_to_backupset($tape_id) {
+        if(!$this->is_active()) {
+            return  array("RESULT"=>FALSE,
+                            "MESSAGE"=>"Cannot add tapes to a deactivated backup set. Please re-activate it or use a different backup set.");
+        }
+        try {
+            $query = "UPDATE tape_library set backupset=:backupset_id where id=:tape_id";
+            $params = array("backupset_id"=>$this->id, "tape_id"=>$tape_id);
+            $result = $this->db->get_query_result($query, $params);
+            $tape = new tape_library_object($this->db, $tape_id);
+            return  array("RESULT"=>TRUE,
+                            "MESSAGE"=>"Tape ".$tape->get_label(). " successfully added to backup set ". $this->name . ".");
+        } catch(Exception $e) {
+            return  array("RESULT"=>FALSE,
+                            "MESSAGE"=>$e->getTraceAsString());
+        }
+    }
+    
+    
+    /**
+     * Removes a Tape to this Backup Set, setting the backup set of the tape 
+     * to NULL
+     * @param type $tape_id
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message
+     */
+    public function remove_tape_from_backupset($tape_id) {
+        try {
+            $backupset_id = $this->id;
+            $find_query = "SELECT * from tape_library where id=:tape_id and backupset = :backupset_id";
+            $params = array("tape_id"=>$tape_id, "backupset_id"=>$backupset_id);
+
+            $find_result = $this->db->get_query_result($find_query, $params);
+
+            if(count($find_result) == 0) {
+                
+                return array("RESULT"=>FALSE,
+                            "MESSAGE"=>"Tape not found.");
+            }
+
+            $query = "UPDATE tape_library set backupset = NULL where id=:tape_id and backupset = :backupset_id";
+            $result = $this->db->get_query_result($query, $params);
+            $tape = new tape_library_object($this->db, $tape_id);
+            return  array("RESULT"=>TRUE,
+                            "MESSAGE"=>"Tape ".$tape->get_label(). " successfully removed from backup set ". $this->name . ".");
+        } catch(Exception $e) {
+
+            return array("RESULT"=>FALSE,
+                            "MESSAGE"=>$e->getTraceAsString());
+        }
+        
+    }
+    
+        /**
+     * Removes a Tape to this Backup Set, setting the backup set of the tape 
+     * to NULL
+     * @param type $tape_id
+     * @return array An array of the format: 
+     *  ("RESULT"=>TRUE | FALSE,
+     *   "MESSAGE"=>[string])
+     * Where "RESULT" is FALSE if there was an error, else true,
+     * and "MESSAGE" is an output message
+     */
+    public function move_tape_to_new_backupset($tape_id, $new_backupset_id) {
+        try {
+            $backupset_id = $this->id;
+            $find_query = "SELECT * from tape_library where id=:tape_id and backupset = :backupset_id";
+            $params = array("tape_id"=>$tape_id, "backupset_id"=>$backupset_id);
+
+            $find_result = $this->db->get_query_result($find_query, $params);
+
+            if(count($find_result) == 0) {
+                
+                return array("RESULT"=>FALSE,
+                            "MESSAGE"=>"Tape not found.");
+            }
+
+            $new_backup_set = new backupset($this->db, $new_backupset_id);
+            if($new_backup_set == null) {
+                return array("RESULT"=>FALSE,
+                            "MESSAGE"=>"New backup set not found.");
+            }
+            
+            
+            $query = "UPDATE tape_library set backupset = :new_backupset_id where id=:tape_id and backupset = :backupset_id";
+            $update_params = array("tape_id"=>$tape_id, "new_backupset_id"=>$new_backupset_id, "backupset_id"=>$backupset_id);
+            $result = $this->db->get_query_result($query, $update_params);
+            $tape = new tape_library_object($this->db, $tape_id);
+            return  array("RESULT"=>TRUE,
+                            "MESSAGE"=>"Tape ".$tape->get_label(). " successfully moved from backup set ". $this->name . " to ". $new_backup_set->get_name().".");
+        } catch(Exception $e) {
+
+            return array("RESULT"=>FALSE,
+                            "MESSAGE"=>$e->getTraceAsString());
+        }
+        
+    }
+    
+    // Static functions
+    
     /**
      * Gets a list of all Backup Sets
      * 
@@ -298,72 +390,27 @@ class backupset {
         return $backupsets;
 
     }
-
     
-    /**
-     * Adds a Tape to this Backup Set
-     * @param type $tape_id
-     * @return array An array of the format: 
-     *  ("RESULT"=>TRUE | FALSE,
-     *   "MESSAGE"=>[string])
-     * Where "RESULT" is FALSE if there was an error, else true,
-     * and "MESSAGE" is an output message
+        /**
+     * 
+     * Determines if a backupset with a given name already exists
+     * 
+     * @param db $db Database Object
+     * @param string $name the name of the Backup Set to search for.
+     * @return int 1 if a Backup Set with the given name exists, else 0
      */
-    function add_tape_to_backupset($tape_id) {
-        if(!$this->is_active()) {
-            return  array("RESULT"=>FALSE,
-                            "MESSAGE"=>"Cannot add tapes to a deactivated backup set. Please re-activate it or use a different backup set.");
-        }
-        try {
-            $query = "UPDATE tape_library set backupset=:backupset_id where id=:tape_id";
-            $params = array("backupset_id"=>$this->id, "tape_id"=>$tape_id);
-            $result = $this->db->get_query_result($query, $params);
-            $tape = new tape_library_object($this->db, $tape_id);
-            return  array("RESULT"=>TRUE,
-                            "MESSAGE"=>"Tape ".$tape->get_label(). " successfully added to backup set ". $this->name . ".");
-        } catch(Exception $e) {
-            return  array("RESULT"=>FALSE,
-                            "MESSAGE"=>$e->getTraceAsString());
-        }
-    }
-    
-    
-    /**
-     * Removes a Tape to this Backup Set, setting the backup set of the tape 
-     * to NULL
-     * @param type $tape_id
-     * @return array An array of the format: 
-     *  ("RESULT"=>TRUE | FALSE,
-     *   "MESSAGE"=>[string])
-     * Where "RESULT" is FALSE if there was an error, else true,
-     * and "MESSAGE" is an output message
-     */
-    function remove_tape_from_backupset($tape_id) {
-        try {
-            $backupset_id = $this->id;
-            $find_query = "SELECT * from tape_library where id=:tape_id and backupset = :backupset_id";
-            $params = array("tape_id"=>$tape_id, "backupset_id"=>$backupset_id);
-
-            $find_result = $this->db->get_query_result($find_query, $params);
-
-            if(count($find_result) == 0) {
-                
-                return array("RESULT"=>FALSE,
-                            "MESSAGE"=>"Tape not found.");
-            }
-
-            $query = "UPDATE tape_library set backupset = NULL where id=:tape_id and backupset = :backupset_id";
-            $result = $this->db->get_query_result($query, $params);
-            $tape = new tape_library_object($this->db, $tape_id);
-            return  array("RESULT"=>TRUE,
-                            "MESSAGE"=>"Tape ".$tape->get_label(). " successfully removed from backup set ". $this->name . ".");
-        } catch(Exception $e) {
-
-            return array("RESULT"=>FALSE,
-                            "MESSAGE"=>$e->getTraceAsString());
-        }
+    public static function backupset_exists($db, $name) {
+        $search_query = "SELECT * from backupset where name=:name";
+        $search_params = array("name"=>$name);
+        $search_result = $db->get_query_result($search_query, $search_params);
         
+        if(count($search_result) > 0) { 
+            return 1;
+        } else {
+            return 0;
+        }
     }
+
     
     // Private Functions
     
