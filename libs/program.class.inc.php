@@ -135,7 +135,7 @@ class program {
      * @return array An array of all existing Program objects 
      */
     public static function get_programs($db) {
-        $query = "SELECT id from programs";
+        $query = "SELECT id from programs order by name";
         $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $programs = $db->query($query);
         $results = array();
