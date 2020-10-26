@@ -160,7 +160,7 @@ class type {
 
             $this->id = $result;
             return array('RESULT'=>TRUE,
-			'MESSAGE'=>"Type $type_name successfully created.</div>",
+			'MESSAGE'=>"Type $type_name successfully created.",
 			'type_id'=>$this->id);
 
         } catch(Exception $e) {
