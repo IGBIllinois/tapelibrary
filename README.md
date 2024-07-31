@@ -1,4 +1,5 @@
 # Tape Library
+[![Build Status](https://github.com/IGBIllinois/tapelibrary/actions/workflows/main.yml/badge.svg)](https://github.com/IGBIllinois/tapelibrary/actions/workflows/main.yml)
 
 - Keep track of Backup Tapes
 - Use on https://www-app.igb.illinois.edu/tapelibrary/
