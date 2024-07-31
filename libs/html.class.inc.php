@@ -54,7 +54,7 @@ class html {
            switch ($type) {
 
            case "select":
-             print "<select id='{$formName}' name='{$formName}' ". ($onChange != "" ? " onChange='$onChange' " : "") . (($id != "") ? " id='{$name}_{$id}' ": "") .">";
+             print "<select class='form-control' id='{$formName}' name='{$formName}' ". ($onChange != "" ? " onChange='$onChange' " : "") . (($id != "") ? " id='{$name}_{$id}' ": "") .">";
              print "<option value=''>None</option>";
              $i=0;
              foreach ($array as $value) {
@@ -70,13 +70,13 @@ class html {
              print "<input type=text id=datepicker class={$name} name={$formName} value={$default}>";
              break;
            case "begin":
-             print "<input type=text id=from class={$name} name={$formName} value={$default}>";
+             print "<input type='text' id='from' class='form-control' name={$formName} value={$default}>";
              break;
            case "end":
-             print "<input type=text id=to class={$name} name={$formName} value={$default}>";
+             print "<input type='text' id='to' class='form-control' name={$formName} value={$default}>";
              break;
            default:
-               print "<input class='{$name}' name='{$formName}' ".(($id != "") ? " id='{$formName}' " : "" ) . " value=\"{$default}\">";
+               print "<input class='form-control' name='{$formName}' ".(($id != "") ? " id='{$formName}' " : "" ) . " value=\"{$default}\">";
          }
        }
 

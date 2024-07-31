@@ -85,14 +85,14 @@ if(isset($_POST['container_name'])) {
 }
 
 
-echo("<h3>Edit $object_type:".$container->get_label()."</h3>");
+echo("<h3>Edit $object_type: ".$container->get_label()."</h3>");
 
 echo("<form name='edit_container' action='edit_container.php' method='POST'>");
 
 echo("<table class='table table-bordered display'>");
-echo("<tr><td width=20%>$object_type Name:</td><td><input type='text' name='container_name' id='container_name'". (isset($name) ? " value='$name' " : "")."></td></tr>");
+echo("<tr><td width=20%>$object_type Name:</td><td><input class='form-control' type='text' name='container_name' id='container_name'". (isset($name) ? " value='$name' " : "")."></td></tr>");
 if($container->is_tape()) {
-    echo("<tr><td width=20%>Tape Label:</td><td><input type='text' name='tape_label' id='tape_label'". (isset($tape_label) ? " value='$tape_label' " : "")."></td></tr>");
+    echo("<tr><td width=20%>Tape Label:</td><td><input class='form-control' type='text' name='tape_label' id='tape_label'". (isset($tape_label) ? " value='$tape_label' " : "")."></td></tr>");
 }
 echo("<tr><td>$object_type Type :");
 echo("<BR><a href='add_container_type.php'>(Add a new type?)</a>");
@@ -109,7 +109,7 @@ echo("<table>");
 $containers = $container_type->get_containers_for_type();
 
 
-echo "<select id='parent_container_id' name='parent_container_id'>";
+echo "<select class='form-control' id='parent_container_id' name='parent_container_id'>";
       echo "<option value=''>None</option>";
 foreach($containers as $curr_container) {
 
@@ -128,7 +128,7 @@ foreach($containers as $curr_container) {
 echo("</table>");
 echo("<input type='hidden' name='container_id' value='".$container_id."'>");
 echo("<input type='hidden' name='container_type' value='".$container->get_type()."'>");
-echo("<input type='submit' name='submit_edit_container' value='Edit $object_type'>");
+echo("<input type='submit' class='btn btn-primary' name='submit_edit_container' value='Edit $object_type'>");
 echo("</form>");
 echo("<BR>");
 if(strlen($messages) > 0) {

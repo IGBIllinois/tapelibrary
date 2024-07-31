@@ -65,13 +65,13 @@ echo("<BR>");
 echo("<form name='add_backupset' action='add_backupset.php' method='POST'>");
 
 echo("<table class='table table-bordered'>");
-echo("<tr><td width=30%>Backup Set Name:</td><td><input type='text' name='backupset_name' id='backupset_name' ".(isset($backupset_name) ? ("value='$backupset_name'") : "")."></td></tr>");
-echo("<tr><td>Start Date (YYYY-MM-DD):</td><td><input type='text' name='start_date' pattern='[0-9]{4}-[0-9]{2}-[0-9]{2}' id='start_date' ".(isset($start_date) ? ("value='$start_date'") : "")."></td></tr>");
-echo("<tr><td>End Date (YYYY-MM-DD):</td><td><input type='text' name='end_date' id='end_date' ".(isset($end_date) ? ("value='$end_date'") : "")."></td></tr>");
+echo("<tr><td width=30%>Backup Set Name:</td><td><input class='form-control' type='text' name='backupset_name' id='backupset_name' ".(isset($backupset_name) ? ("value='$backupset_name'") : "")."></td></tr>");
+echo("<tr><td>Start Date (YYYY-MM-DD):</td><td><input class='form-control' type='text' name='start_date' pattern='[0-9]{4}-[0-9]{2}-[0-9]{2}' id='start_date' ".(isset($start_date) ? ("value='$start_date'") : "")."></td></tr>");
+echo("<tr><td>End Date (YYYY-MM-DD):</td><td><input class='form-control' type='text' name='end_date' id='end_date' ".(isset($end_date) ? ("value='$end_date'") : "")."></td></tr>");
 echo("<tr><td>Program: <a href='add_program.php'>(Add a new program?)</a></td><td>");
 
 $all_programs = program::get_programs($db);
-      echo "<select id='program' name='program'>";
+      echo "<select class='form-control' id='program' name='program'>";
       echo "<option value=''>None</option>";
       $i=0;
       foreach ($all_programs as $curr_program) {
@@ -88,10 +88,10 @@ $all_programs = program::get_programs($db);
       
 echo("</td></tr>");
 
-echo("<tr><td>Notes:</td><td><textarea rows='2' name='notes' id='notes'>".(isset($notes) ? $notes : "")."</textarea></td></tr>");
+echo("<tr><td>Notes:</td><td><textarea rows='4' cols='50' name='notes' id='notes'>".(isset($notes) ? $notes : "")."</textarea></td></tr>");
 
 echo("</table>");
-echo("<input type='submit' name='submit' value='Add Backup Set'>");
+echo("<input class='btn btn-primary' type='submit' name='submit' value='Add Backup Set'>");
 echo("</form>");
 
 require_once 'includes/footer.inc.php';

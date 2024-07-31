@@ -35,9 +35,9 @@ if($container->is_tape()) {
     $object_type= "Container";
 }
 
-echo("Type:".$container->get_type_name());
+echo("Type: ". $container->get_type_name());
 echo("<BR>");
-echo("Located in:".$container->get_full_path()."<BR><BR>");
+echo("Located in: ". $container->get_full_path()."<BR><BR>");
 
 if(!$container->is_tape()) {
 echo("Current objects in ".$container->get_label().":<BR>") ;
@@ -79,30 +79,29 @@ echo("</table></fieldset>");
 echo("</fieldset>");
 
 if($container->can_contain_tapes()) {
-    echo("<form method='POST' action='add_tapes_to_container.php' id='add_tapes_to_container' name='add_tapes_to_container'>");
+    echo("<br><form method='POST' action='add_tapes_to_container.php' id='add_tapes_to_container' name='add_tapes_to_container'>");
     echo("<input type='hidden' name='container_id' value='$container_id'>");
-    echo("<input type='submit' name='report_submit' value='Add new tapes to this container'>");
+    echo("<input class='btn btn-primary' type='submit' name='report_submit' value='Add new tapes to this container'>");
     echo("</form>");
 }
  
  
-echo("<form method='POST' action='edit_container.php' id='edit_container_form' name='edit_container_form'>");
+echo("<br><form method='POST' action='edit_container.php' id='edit_container_form' name='edit_container_form'>");
 echo("<input type='hidden' name='container_id' value='$container_id'>");
-echo("<input type='submit' name='edit_container' value='Edit this $object_type'>");
+echo("<input type='submit' class='btn btn-primary' name='edit_container' value='Edit this $object_type'>");
 echo("</form>");
 
 }
 ?>
 
+<br>
 <form class='form-inline' action='report.php' method='post'>
  <!--<input class='btn btn-primary' type='submit'-->
-<input type='submit'
-                name='create_heirarchy_report' value='Download Report'>
-  <select
-                name='report_type' class='input-medium'>
-                <option value='xlsx'>Excel</option>
-                <option value='csv'>CSV</option>
-        </select>
+<input class='btn btn-primary' type='submit' name='create_heirarchy_report' value='Download Report'>
+<select class='form-control' name='report_type' class='input-medium'>
+	<option value='xlsx'>Excel</option>
+	<option value='csv'>CSV</option>
+</select>
  <?php       echo("<input type='hidden' name='container_id' value='$container_id'>"); ?>
 
 </form>

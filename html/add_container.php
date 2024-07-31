@@ -86,14 +86,14 @@ if(isset($_POST['container_name'])) {
 echo("<form name='add_container' action='add_container.php' method='POST'>");
 
 echo("<table class='table table-bordered display'>");
-echo("<tr><td width=20%>Container Name:</td><td><input type='text' name='container_name' id='container_name'". (isset($name) ? " value='$name' " : "")."></td></tr>");
+echo("<tr><td width=20%>Container Name:</td><td><input class='form-control' type='text' name='container_name' id='container_name'". (isset($name) ? " value='$name' " : "")."></td></tr>");
 echo("<tr><td>Container Type :");
 echo("<BR><a href='add_container_type.php'>(Add a new container type?)</a>");
 echo("</td><td>");
 
 // Select the Type for the new Container
 $container_types = type::get_container_types($db);
-      echo "<select id='container_type' name='container_type' onChange=hide('container_type','containerdiv')>";
+      echo "<select class='form-control' id='container_type' name='container_type' onChange=hide('container_type','containerdiv')>";
       echo "<option value=''>None</option>";
 
       foreach ($container_types as $curr_container_type) {
@@ -133,7 +133,7 @@ foreach($all_types as $type) {
 echo("</table>");
 echo(" </td></tr>");
 echo("</table>");
-echo("<input type='submit' name='submit_add_container' value='Add Container'>");
+echo("<input class='btn btn-primary' type='submit' name='submit_add_container' value='Add Container'>");
 echo("</form>");
 echo("<BR>");
 if(strlen($messages) > 0) {

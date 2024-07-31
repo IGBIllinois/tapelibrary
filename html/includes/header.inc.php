@@ -21,11 +21,11 @@ if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == ""){
                 <!-- Datatables -->
                 <!--
                 <script type='text/javascript' language='javascript' src='includes/jquery.dataTables.min.js'></script>
-                <link rel="stylesheet" type="text/css" href="includes/datatables.css"></link>
+                <link rel="stylesheet" type="text/css" href="includes/datatables.css">
                 -->
 
                 <script type='text/javascript' language='javascript' src='vendor/datatables/media/js/jquery.dataTables.min.js'></script>
-                <link rel="stylesheet" type="text/css" href="vendor/datatables/media/css/jquery.dataTables.css"></link>
+                <link rel="stylesheet" type="text/css" href="vendor/datatables/media/css/jquery.dataTables.css">
 
                 <!-- Bootstrap -->
                 <link rel="stylesheet" href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" type="text/css"/>

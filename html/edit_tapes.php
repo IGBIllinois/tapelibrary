@@ -64,7 +64,7 @@ echo("<table class='table table-bordered display'><tr>");
 echo("<tr><td>Tape Type :</td><td>");
 $tape_types = type::get_tape_types($db);
 
-      echo "<select id='type' name='type'>";
+      echo "<select class='form-control' id='type' name='type'>";
       echo "<option value=''>None</option>";
 
       foreach ($tape_types as $curr_tape_type) {
@@ -80,7 +80,7 @@ echo(" </td></tr>");
 
 echo("<tr><td>Parent Location:</td><td>");
 $containers = tape_library_object::get_containers($db);
-      echo "<select id='select_container' name='select_container'>";
+      echo "<select class='form-control' id='select_container' name='select_container'>";
       echo "<option value=''>None</option>";
 
       foreach ($containers as $curr_container) {
@@ -95,7 +95,7 @@ echo(" </td></tr>");
 
 
 echo("</table>");
-echo("<input type='submit' name='limit_submit' value='Select'>");
+echo("<input class='btn btn-primary' type='submit' name='limit_submit' value='Select'>");
 echo("</form><BR>");
 
 if(isset($_POST['submit'])) {

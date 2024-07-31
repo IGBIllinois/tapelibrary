@@ -119,26 +119,23 @@ if(isset($_POST['submit'])) {
     }
 
 
-echo("<form id='addform' name='add_tape' action='add_tape.php' method='POST'>");
-echo("<table class='table  display'><tr><td width=50% valign='top'>");
-echo("<table class='table table-bordered display'>");
-
-      print "<tr >";
-        print "<td width=40%>Tapes to add:</td>";
-         
-        print "<td>From:";
-        html::createInput("text","tape_from",isset($tape_from) ? $tape_from : "");
-        print "<br />To: ";
-        html::createInput("text","tape_to",isset($tape_to) ? $tape_to : "");
-        print "</td>";
-        
-      print "</tr>";
-echo("<tr><td>Tape Type: ");
-echo("<BR><a href=add_container_type.php>(Add a new tape type?)</a>");
-echo("</td><td>");
+echo "<form id='addform' name='add_tape' action='add_tape.php' method='POST'>\n";
+echo "<table class='table'><tr><td width=50% valign='top'>\n";
+echo "<table class='table table-bordered display'>\n";
+echo "<tr>";
+echo "<td width=40%>Tapes to add:</td>";
+echo "<td>From:";
+html::createInput("text","tape_from",isset($tape_from) ? $tape_from : "");
+echo "<p>To: ";
+html::createInput("text","tape_to",isset($tape_to) ? $tape_to : "");
+echo "</td>";    
+echo "</tr>\n";
+echo "<tr><td>Tape Type: ";
+echo "<br><a href=add_container_type.php>(Add a new tape type?)</a>";
+echo "</td><td>";
 
 $all_types = type::get_tape_types($db);
-      echo "<select id='tape_type' name='tape_type' onchange=hide('tape_type','tapediv')>";
+      echo "<select class='form-control' id='tape_type' name='tape_type' onchange=\"hide('tape_type','tapediv')\">\n";
       echo "<option value=''>None</option>";
 
       foreach ($all_types as $curr_type) {
@@ -150,66 +147,65 @@ $all_types = type::get_tape_types($db);
       }
       echo "</select>";
 
-echo(" </td></tr>");
-echo("<tr><td>Parent Location:");
-echo("<BR><a href=add_container.php>(Add a new container?)</a>");
-echo("</td><td>");
-echo("<table>");
+echo "</td></tr>\n";
+echo "<tr><td>Parent Location:";
+echo "<br><a href=add_container.php>(Add a new container?)</a>";
+echo "</td><td>";
+echo "<table>\n";
 $all_types = type::get_tape_types($db);
 foreach($all_types as $type) {
     $id = $type->get_id();
     
-    echo("<tr id='tapediv$id' ".((isset($tape_type) && $tape_type == $id) ? " style='visibility:visible' ": " style='visibility:collapse' ") ."><td> ");
+    echo "<tr id='tapediv$id' ".((isset($tape_type) && $tape_type == $id) ? "style='visibility:visible' ": " style='visibility:collapse' ") ."><td> ";
       $containers = $type->get_containers_for_type();
-      echo "<select id='container".$id."' name='container".$id."'>";
-      echo "<option value=''>None</option>";
+      echo "<select class='form-control' id='container".$id."' name='container".$id."'>";
+      echo "<option value=''>None</option>\n";
 
       foreach ($containers as $curr_container) {
         echo "<option value='".$curr_container->get_id()."'";
         if (isset($container_id) && $container_id == $curr_container->get_id())
           echo " selected";
         
-        echo ">".$curr_container->get_label()."</option>";
+        echo ">".$curr_container->get_label()."</option>\n";
       }
       echo "</select>";
     echo("</td></tr>");
 }
-echo("</table>");
-echo(" </td></tr>");
-echo("<tr><td>Backup Set:");
-echo("<BR><a href=add_backupset.php>(Add a new backup set?)</a>");
-echo("</td><td>");
+echo "</table>";
+echo "</td></tr>\n";
+echo "<tr><td>Backup Set:";
+echo "<br><a href=add_backupset.php>(Add a new backup set?)</a>";
+echo "</td><td>";
 
 $all_backupsets = backupset::get_all_backupsets($db);
-      echo "<select id='backupset' name='backupset'>";
-      echo "<option value=''>None</option>";
+      echo "<select class='form-control' id='backupset' name='backupset'>";
+      echo "<option value=''>None</option>\n";
 
       foreach ($all_backupsets as $curr_backupset) {
         echo "<option value='".$curr_backupset->get_id()."'";
         if (isset($backupset) && $backupset == $curr_backupset->get_id())
           echo " selected";
         
-        echo ">".$curr_backupset->get_name()."</option>";
+        echo ">".$curr_backupset->get_name()."</option>\n";
       }
       echo "</select>";
-echo("</td></tr>");
+echo "</td></tr>\n";
 
-echo("</table>");
+echo "</table>\n";
 
-echo("<input type='submit' name='submit' value='Add Tapes'>");
+echo "<input class='btn btn-primary' type='submit' name='submit' value='Add Tapes'>";
 
-echo("</td><td>");
-echo("<table class='table'><tr><td>");
+echo "</td><td>";
+echo "<table class='table'><tr><td>";
 
-print "<div id='add_multi_labels'>";
+echo "<div id='add_multi_labels'>";
+echo "</div>";
+echo "</td>";
+echo "</td></tr></table>";
+echo "</td></tr></table>";
+echo "</form>";
+echo "<br>";
 
-		print "</div>";
-        print "</td>";
-echo("</td></tr></table>");
-echo("</td></tr></table>");
-
-echo("</form>");
-echo("<BR>");
 if(strlen($errors) > 0) {
     echo($errors);
 }
@@ -220,3 +216,5 @@ if(strlen($messages) > 0) {
     echo($messages);
 }
 require_once 'includes/footer.inc.php';
+
+?>

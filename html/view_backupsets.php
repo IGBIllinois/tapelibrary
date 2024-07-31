@@ -44,7 +44,7 @@ if(count($current_backupsets)== 0) {
         echo("<td>".$end_date."</td>");
         echo("<td>".$program_name."</td>");
         $notes = $backupset->get_notes();
-        if(strlen($notes) > 256) {
+        if(!empty($notes) && strlen($notes) > 256) {
             $full_notes = $notes;
             $notes = "<div id=noteDiv".$id."-orig>".substr($notes, 0, 256) . "...".
                     "<a onClick=showText('noteDiv".$id."')>Show more</a></div>".

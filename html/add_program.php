@@ -52,17 +52,17 @@ if(isset($_POST['submit_add_program'])) {
 echo("<form name='add_program' action='add_program.php' method='POST'>");
 
 echo("<table class='table table-bordered display'>");
-echo("<tr><td width=20%>Program Name:</td><td><input type='text' "
+echo("<tr><td width=20%>Program Name:</td><td><input class='form-control' type='text' "
         . "name='program_name' id='program_name'". 
         (isset($name) ? " value='$name' " : "").
         "></td></tr>");
 echo("<tr><td width=20%>Program Version:".
-        "</td><td><input type='text' name='program_version' id='program_version'". 
+        "</td><td><input class='form-control' type='text' name='program_version' id='program_version'". 
         (isset($version) ? " value='$version' " : "").
         "></td></tr>");
 
 echo("</table>");
-echo("<input type='submit' name='submit_add_program' value='Add Program'>");
+echo("<input class='btn btn-primary' type='submit' name='submit_add_program' value='Add Program'>");
 echo("</form>");
 
 echo("<BR>");

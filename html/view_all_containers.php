@@ -50,7 +50,7 @@ echo("<table  class='table table-bordered display'><tr>");
       print "</tr>";
 echo("<tr><td>Container Type :</td><td>");
 $container_types = type::get_container_types($db);
-      echo "<select id='type' name='type'>";
+      echo "<select class='form-control' id='type' name='type'>";
       echo "<option value=''>None</option>";
 
       foreach ($container_types as $curr_container_type) {
@@ -65,7 +65,7 @@ echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
 
 $containers = tape_library_object::get_containers($db);
-      echo "<select id='container' name='container'>";
+      echo "<select class='form-control' id='container' name='container'>";
       echo "<option value=''>None</option>";
 
       foreach ($containers as $curr_container) {
@@ -80,7 +80,7 @@ echo(" </td></tr>");
 
 
 echo("</table>");
-echo("<input type='submit' name='submit' value='Select'>");
+echo("<input class='btn btn-primary' type='submit' name='submit' value='Select'>");
 echo("</form>");
 echo("<BR>");
 
@@ -110,11 +110,8 @@ echo("<BR>");
 
 
 <form class='form-inline' action='report.php' method='post'>
-<input  type='submit'
-                name='create_heirarchy_report' value='Download Full Container Report'>
-
- <select
-                name='report_type' class='input-medium'>
+<input class='form-control' type='submit' name='create_heirarchy_report' value='Download Full Container Report'>
+<select name='report_type' class='input-medium'>
                 <option value='xlsx'>Excel</option>
                 <option value='csv'>CSV</option>
 </select>         
