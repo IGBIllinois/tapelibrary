@@ -18,7 +18,7 @@ git clone https://github.com/IGBIllinois/tapelibrary.git
 2. Add apache config to apache configuration to point to html folder
 ```
 Alias /tapelibrary /var/www/tapelibrary/html
-<Location /accounting>
+<Location /tapelibrary>
 	AllowOverride None
 	Require all granted
 </Location>

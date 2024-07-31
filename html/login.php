@@ -61,10 +61,9 @@ if (isset($_POST['login'])) {
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title><?php echo __TITLE__; ?></title>
-		<link rel="stylesheet" href="vendor/components/bootstrap/css/bootstrap.min.css" type="text/css">
+		<link rel="stylesheet" href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" type="text/css">
 		<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 	</head>
 	<body OnLoad="document.login.username.focus();">
@@ -105,7 +104,21 @@ if (isset($_POST['login'])) {
 						echo $message;
                                         } ?>
 	<br>
-					<em>&copy 2018 University of Illinois Board of Trustees</em>
-				</div>
-			</div>
-		</div>
+	<footer class='page-footer mt-auto'>
+        <hr>
+        <div class='container'>
+                <p class='text-center'>
+                <span class='text-muted'>
+        <br><em>Computer & Network Resource Group - Carl R. Woese Institute for Genomic Biology</em>
+        <br><em><a target='_blank' href='https://www.igb.illinois.edu'>Carl R. Woese Institute for Genomic Biology Home Page</a></em>
+        <br><em><a target='_blank' href='https://www.vpaa.uillinois.edu/resources/web_privacy'>University of Illinois System Web Privacy Notice</a> </em>
+        <br><em>&copy; 2018-<?php echo date('Y'); ?> University of Illinois Board of Trustees</em>
+                </span>
+        </div>
+	</footer>
+	</div>
+	</div>
+</div>
+</body>
+</html>
+

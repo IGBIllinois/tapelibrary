@@ -1,19 +1,18 @@
 <?php
-	require_once 'includes/main.inc.php';
-        require_once 'includes/session.inc.php';
+require_once 'includes/main.inc.php';
+require_once 'includes/session.inc.php';
         
-        if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == ""){
-    $redirect = "https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-    header("HTTP/1.1 301 Moved Permanently");
-    header("Location: $redirect");
+if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == ""){
+	$redirect = "https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+	header("HTTP/1.1 301 Moved Permanently");
+	header("Location: $redirect");
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<title><?php echo __TITLE__.(isset($title)?" - $title":''); ?></title>
                 		
                 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -29,7 +28,7 @@
                 <link rel="stylesheet" type="text/css" href="vendor/datatables/media/css/jquery.dataTables.css"></link>
 
                 <!-- Bootstrap -->
-                <link rel="stylesheet" href="vendor/components/bootstrap/css/bootstrap.min.css" type="text/css"/>
+                <link rel="stylesheet" href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" type="text/css"/>
                 
                 <!-- Local javascript methods -->
                 <script type="text/javascript" language='javascript' src="includes/script.js"></script>

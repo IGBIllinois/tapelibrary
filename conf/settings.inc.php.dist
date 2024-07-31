@@ -14,12 +14,7 @@ define("__LDAP_SSL__",FALSE);
 define("__LDAP_PEOPLE_OU__","");
 define("__LDAP_ADMIN_GROUP__","");
 define("__LDAP_PORT__",389);
-define("__SESSION_TIMEOUT__",36000);
-define("__SESSION_NAME__","");
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+define("__SESSION_TIMEOUT__",14400);
+define("__SESSION_NAME__","tapelibrary");
 
 ?>
