@@ -35,16 +35,12 @@ if (isset($_POST['login'])) {
 		$success = $login_user->authenticate($password);
 		if ($success==0) {
 			$session_vars = array('login'=>true,
-                'username'=>$username,
-                'timeout'=>time(),
-                'ipaddress'=>$_SERVER['REMOTE_ADDR']
+				'username'=>$username,
+				'timeout'=>time(),
+				'ipaddress'=>$_SERVER['REMOTE_ADDR']
         	);
-            $session->set_session($session_vars);
-            $ldap->set_bind_user($login_user->get_user_rdn());
-            $ldap->set_bind_pass($password);
-
-
-			$location = "https://" . $_SERVER['SERVER_NAME'] . $webpage;
+		$session->set_session($session_vars);
+		$location = "https://" . $_SERVER['SERVER_NAME'] . $webpage;
         	header("Location: " . $location);
 		}
 		else {
@@ -62,7 +58,7 @@ if (isset($_POST['login'])) {
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title><?php echo __TITLE__; ?></title>
+		<title><?php echo settings::get_title(); ?></title>
 		<link rel="stylesheet" href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" type="text/css">
 		<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 	</head>

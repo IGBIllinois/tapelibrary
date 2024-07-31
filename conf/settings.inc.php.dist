@@ -1,20 +1,25 @@
 <?php
 
+define("TITLE", "Backup Tape Library");
+define("TIMEZONE","UTC");
+define("MYSQL_HOST", "localhost");
+define("MYSQL_DATABASE","");
+define("MYSQL_USER", "");
+define("MYSQL_PASSWORD", "");
+define("MYSQL_PORT",3306);
+define("MYSQL_SSL",false);
 
-define("mysql_host", "");
-define("mysql_user", "");
-define("mysql_password", "");
-define("mysql_database", "");
+define("LDAP_HOST","");
+define("LDAP_BASE_DN","");
+define("LDAP_BIND_USER","");
+define("LDAP_BIND_PASS","");
+define("LDAP_SSL",false);
+define("LDAP_TLS",false);
+define("LDAP_PORT",389);
+define("LDAP_PEOPLE_OU","");
+define("LDAP_ADMIN_GROUP","");
 
-define("__TITLE__", "Backup Tape Library");
-
-define("__LDAP_HOST__","");
-define("__LDAP_BASE_DN__","");
-define("__LDAP_SSL__",FALSE);
-define("__LDAP_PEOPLE_OU__","");
-define("__LDAP_ADMIN_GROUP__","");
-define("__LDAP_PORT__",389);
-define("__SESSION_TIMEOUT__",14400);
-define("__SESSION_NAME__","tapelibrary");
+define("SESSION_TIMEOUT",14400);
+define("SESSION_NAME","tapelibrary");
 
 ?>

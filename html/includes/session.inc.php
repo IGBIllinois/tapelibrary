@@ -1,19 +1,6 @@
 <?php
-//////////////////////////////////////////////////
-//						
-//	session.inc.php				
-//						
-//	Used to verify the user is		
-//	logged in before proceeding		
-//						
-//	David Slater				
-//	May 2009				
-//						
-//////////////////////////////////////////////////
-require_once 'main.inc.php';
-
-$session = new session(__SESSION_NAME__);
-
+$session = new \IGBIllinois\session(settings::get_session_name());
+$login_user;
 //If not logged in
 if (!($session->get_var('login'))) {
 	$webpage = $_SERVER['PHP_SELF'];
@@ -23,23 +10,23 @@ if (!($session->get_var('login'))) {
 	$session->set_session_var('webpage',$webpage);
 
 	header('Location: login.php');
-	die();
+	exit();
 }
 //If session timeout is reach
-elseif (time() > $session->get_var('timeout') + __SESSION_TIMEOUT__) {
+elseif (time() > $session->get_var('timeout') + settings::get_session_timeout()) {
 	header('Location: logout.php');
-	die();
 }
 //If IP address is different
 elseif ($_SERVER['REMOTE_ADDR'] != $session->get_var('ipaddress')) {
-    header('Location: logout.php');
-    die();
+        header('Location: logout.php');
 }
+
 else {
-	$login_user = new user($ldap,$session->get_var('username'));
-	$ldap->set_bind_user($login_user->get_user_rdn());
+	$login_user = new user($db,$ldap,0,$session->get_var('username'));	
 	//Reset Timeout
 	$session_vars = array('timeout'=>time());
 	$session->set_session($session_vars);
 }
+
+?>
 ?>

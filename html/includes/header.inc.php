@@ -13,7 +13,7 @@ if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == ""){
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title><?php echo __TITLE__.(isset($title)?" - $title":''); ?></title>
+		<title><?php echo settings::get_title() . (isset($title)?" - $title":''); ?></title>
                 		
                 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
                 <script type='text/javascript' language='javascript' src='vendor/components/jquery/jquery.min.js'></script>
