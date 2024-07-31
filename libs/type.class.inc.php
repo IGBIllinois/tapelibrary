@@ -160,7 +160,7 @@ class type {
 
             $this->id = $result;
             return array('RESULT'=>TRUE,
-			'MESSAGE'=>"Type $type_name successfully created.</div>",
+			'MESSAGE'=>"Type $type_name successfully created.",
 			'type_id'=>$this->id);
 
         } catch(Exception $e) {
@@ -386,7 +386,7 @@ class type {
     public function get_tape_types_for_container_type() {
         
         $can_contain_string = implode(",", $this->get_can_contain_types());
-        $query = "SELECT container_type_id as id, name, container from container_type ".
+        $query = "SELECT container_type_id as id, name from container_type ".
                 " where container_type_id in ($can_contain_string) and (can_contain_types is null or can_contain_types='')";
         $statement = $this->db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $result = $this->db->query($query);
@@ -409,7 +409,7 @@ class type {
      * @return \type An array of Type objects
      */
     public static function get_all_types($db) {
-        $query = "SELECT container_type_id as id, name, container from container_type order by name";
+        $query = "SELECT container_type_id as id, name from container_type order by name";
         $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $types = $db->query($query);
         
@@ -451,7 +451,7 @@ class type {
      */   
     public static function get_tape_types($db) {
         
-        $query = "SELECT container_type_id as id, name, container from container_type ".
+        $query = "SELECT container_type_id as id, name from container_type ".
                 " where can_contain_types is null or can_contain_types='' order by name";
 
         $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));

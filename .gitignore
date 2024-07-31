@@ -54,3 +54,5 @@ Temporary Items
 .apdisk
 
 
+composer.lock
+html/php_errors.log

@@ -71,7 +71,7 @@ if(isset($_POST['container_name'])) {
 
         $container = new tape_library_object($db, $container_id);
 
-        $result = $container->edit($name, $parent_id, $active, $tape_label);
+        $result = $container->edit($name, $parent_id, $active, $tape_label, $login_user->get_username());
 
         if ($result['RESULT']) {
             $messages .=(html::success_message($result['MESSAGE']));
