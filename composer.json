@@ -1,13 +1,42 @@
 {
+	"name": "igbillinois/tapelibrary",
+	"description": "A web interface to keep track of backup media and tapes",
+	"license": "GPL-3.0-only",
+	"repositories" : [
+        {
+                "type": "vcs",
+                "url": "https://www.github.com/IGBIllinois/IGBIllinois-php"
+        }
+	],
 	"require": {
-		"phpoffice/phpexcel": "1.8.1",
+		"php": ">=7.2",
+		"ext-pdo": "*",
+		"ext-mysqlnd": "*",
+		"ext-ldap": "*",
                 "components/jquery": "2.1.0",
 		"components/jqueryui": "1.10.4",
-		"components/bootstrap": "3.3.5",
+		"twbs/bootstrap": "v3.4.1",
                 "datatables/datatables": "1.10.19"
         },
-        "config": {
-		"component-dir": "html/vendor/components"
+	"scripts": {
+		"post-update-cmd": [
+			"mkdir -p html/vendor/twbs",
+			"mkdir -p html/vendor/components",
+			"mkdir -p html/datatables",
+			"cp -R vendor/twbs/bootstrap html/vendor/twbs",
+			"cp -R vendor/components/jquery html/vendor/components",
+			"cp -R vendor/components/jqueryui html/vendor/components",
+			"cp -R vendor/datatables/datatables html/vendor/datatables"
+
+		]
+
+	},
+       "require-dev": {
+		"phpmd/phpmd": "^2.13"
+       },
+	"config": {
+		"allow-plugins": {
+			"robloach/component-installer": true
+		}
 	}
-        
 }
