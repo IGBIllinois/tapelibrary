@@ -48,7 +48,7 @@ if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == ""){
 						<span class="icon-bar"></span>
 				    </button>
 					<div class="navbar-brand">
-						<?php echo __TITLE__; ?>
+						<?php echo settings::get_title(); ?>
 					</div>
 				</div>
 				<div class="collapse navbar-collapse" id="archive-accounting-nav-collapse">

@@ -22,11 +22,10 @@ elseif ($_SERVER['REMOTE_ADDR'] != $session->get_var('ipaddress')) {
 }
 
 else {
-	$login_user = new user($db,$ldap,0,$session->get_var('username'));	
+	$login_user = new user($ldap,$session->get_var('username'));	
 	//Reset Timeout
 	$session_vars = array('timeout'=>time());
 	$session->set_session($session_vars);
 }
 
-?>
 ?>

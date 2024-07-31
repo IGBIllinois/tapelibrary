@@ -1,5 +1,5 @@
 <?php
-
+define("DEBUG",false);
 define("TITLE", "Backup Tape Library");
 define("TIMEZONE","UTC");
 define("MYSQL_HOST", "localhost");

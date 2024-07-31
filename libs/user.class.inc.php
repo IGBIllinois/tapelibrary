@@ -5,14 +5,16 @@ class user {
 
 	private $username;
 	private $name;
-
 	private $ldap;
 	private $uidnumber;
 	private $email;
-
-
-	
-
+	private $ldap_attributes = array(
+			"uid",
+			"cn",
+			"sn",
+			"givenname",
+			"mail"
+	);
 
 	////////////////Public Functions///////////
 
@@ -45,7 +47,7 @@ class user {
 		$rdn = $this->get_user_rdn();
 		if ($this->ldap->bind($rdn, $password)){
 			if (user::is_ldap_user($this->ldap,$this->username)) {
-				$in_admin_group = $this->ldap->search("(memberuid=".$this->username.")", __LDAP_ADMIN_GROUP__);
+				$in_admin_group = $this->ldap->search("(memberuid=".$this->username.")", LDAP_ADMIN_GROUP);
 				if ($in_admin_group['count']>0) {
 					return 0;
 				} else {
@@ -66,7 +68,7 @@ class user {
 		$username = trim(rtrim($username));
 		$filter = "(uid=" . $username . ")";
 		$attributes = array('');
-		$result = $ldap->search($filter, __LDAP_PEOPLE_OU__, $attributes);
+		$result = $ldap->search($filter, LDAP_PEOPLE_OU, $attributes);
 		if ($result['count']) {
 			return true;
 		} else {
@@ -91,8 +93,7 @@ class user {
 
 	private function load_by_username($username) {
 		$filter = "(uid=".$username.")";
-		$attributes = array("uid","cn",'sn','givenname',"mail");
-		$result = $this->ldap->search($filter, __LDAP_PEOPLE_OU__, $attributes);
+		$result = $this->ldap->search($filter, LDAP_PEOPLE_OU, $this->ldap_attributes);
 		if($result['count']>0){
 			$this->name = $result[0]['cn'][0];
 			$this->sn = $result[0]['sn'][0];
