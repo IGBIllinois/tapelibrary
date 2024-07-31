@@ -201,7 +201,7 @@ class type {
                 " max_slots=:max_slots ".
                 " where container_type_id=:id";
         $params = array("id"=>$id, "name"=>$type_name, "can_contain_types"=>$can_contain_types, "max_slots"=>$max_slots);
-        $result = $this->db->get_query_result($query, $params);
+        $result = $this->db->non_select_query($query, $params);
         $this->load_by_id($this->db, $id);
         return array('RESULT'=>true,
 			'MESSAGE'=>"Type ".$type_name." successfully updated.",
@@ -316,7 +316,7 @@ class type {
                 $update_query = "UPDATE container_type set can_contain_types = :new_types where container_type_id=:container_type_id";
                 $update_params = array("container_type_id"=>$container_type_id, "new_types"=>$current_types_string);
 
-                $update_result = $this->db->get_query_result($update_query, $update_params);
+                $update_result = $this->db->non_select_query($update_query, $update_params);
                 $new_type = new type($new_type_id);
                 $new_type_name = $new_type->get_name();
                 
@@ -341,7 +341,7 @@ class type {
         $query = "SELECT can_contain_types from container_type where container_type_id=:container_type_id";
         $params = array("container_type_id"=>$container_type_id);
 
-        $result = $this->db->get_query_result($query, $params);
+        $result = $this->db->query($query, $params);
 
         if($result != null) {
             $result = $result[0];
@@ -361,7 +361,7 @@ class type {
 
             $update_params = array("container_type_id"=>$container_type_id, "new_types"=>$new_types_string);
 
-            $update_result = $this->db->get_query_result($update_query, $update_params);
+            $update_result = $this->db->non_select_query($update_query, $update_params);
 
             $removed_type = new type($remove_type);
             $removed_type_name = $removed_type->get_name();
@@ -507,7 +507,7 @@ class type {
             $find_query .= " where id != $id ";
         }
             $params = array("name"=>$name);
-            $result = $db->get_query_result($find_query, $params);
+            $result = $db->query($find_query, $params);
             if(count($result) > 0) {
                 return true;
             } else {
@@ -595,7 +595,7 @@ class type {
 
         $query = "SELECT * from container_type where container_type_id = :id";
         $params = array("id"=>$id);
-        $result = $db->get_query_result($query, $params);
+        $result = $db->query($query, $params);
         if(count($result)==1) {
             $result = $result[0];
             return $result;

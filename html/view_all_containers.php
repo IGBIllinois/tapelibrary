@@ -115,8 +115,7 @@ echo("<BR>");
 
  <select
                 name='report_type' class='input-medium'>
-                <option value='xls'>Excel 2003</option>
-                <option value='xlsx'>Excel 2007</option>
+                <option value='xlsx'>Excel</option>
                 <option value='csv'>CSV</option>
 </select>         
 <?php 

@@ -156,7 +156,7 @@ class backupset {
         $id = $this->id;
         $search_query = "SELECT * from backupset where name=:name and id != :id";
         $search_params = array("name"=>$name, "id"=>$id);
-        $search_result = $this->db->get_query_result($search_query, $search_params);
+        $search_result = $this->db->query($search_query, $search_params);
 
         if(count($search_result) > 0) {
 
@@ -165,7 +165,7 @@ class backupset {
         }
         $query = "UPDATE backupset set name=:name, begin=:begin, end=:end, program=:program, notes=:notes where id=:id";
         $params = array("id"=>$id, "name"=>$name, "begin"=>$begin, "end"=>$end, "program"=>$program, "notes"=>$notes);
-        $result = $this->db->get_query_result($query, $params);
+        $result = $this->db->non_select_query($query, $params);
 
         return array("RESULT"=>TRUE,
                     "MESSAGE"=>"Backup set $name edited successfully,");
@@ -186,7 +186,7 @@ class backupset {
         if(count($this->get_tapes_in_backupset()) == 0) {
         $query = "UPDATE backupset set active=0 where id=:id";
         $params = array("id"=>$this->get_id());
-        $result = $this->db->get_query_result($query, $params);
+        $result = $this->db->non_select_query($query, $params);
         $return_result = array("RESULT"=>TRUE,
                                 "MESSAGE"=>"Backupset ".$this->get_name() . " successfully deactivated.");
         } else {
@@ -212,7 +212,7 @@ class backupset {
         $backupset_id = $this->get_id();
         $query = "UPDATE backupset set active=1 where id=:id";
         $params = array("id"=>$backupset_id);
-        $result = $this->db->get_query_result($query, $params);
+        $result = $this->db->non_select_query($query, $params);
         $return_result = array("RESULT"=>TRUE,
                                 "MESSAGE"=>"Backupset ".$this->get_name() . " successfully activated.");
 
@@ -234,7 +234,7 @@ class backupset {
         $query = "SELECT * from tape_library where backupset=:backupset_id order by tape_label, label";
 
         $params = array("backupset_id"=>$backupset_id);
-        $tapes = $this->db->get_query_result($query, $params);
+        $tapes = $this->db->query($query, $params);
         
         foreach($tapes as $tape) {
             $new_tape = new tape_library_object($this->db, $tape['id']);
@@ -263,7 +263,7 @@ class backupset {
         try {
             $query = "UPDATE tape_library set backupset=:backupset_id where id=:tape_id";
             $params = array("backupset_id"=>$this->id, "tape_id"=>$tape_id);
-            $result = $this->db->get_query_result($query, $params);
+            $result = $this->db->non_select_query($query, $params);
             $tape = new tape_library_object($this->db, $tape_id);
             return  array("RESULT"=>TRUE,
                             "MESSAGE"=>"Tape ".$tape->get_label(). " successfully added to backup set ". $this->name . ".");
@@ -290,7 +290,7 @@ class backupset {
             $find_query = "SELECT * from tape_library where id=:tape_id and backupset = :backupset_id";
             $params = array("tape_id"=>$tape_id, "backupset_id"=>$backupset_id);
 
-            $find_result = $this->db->get_query_result($find_query, $params);
+            $find_result = $this->db->query($find_query, $params);
 
             if(count($find_result) == 0) {
                 
@@ -299,7 +299,7 @@ class backupset {
             }
 
             $query = "UPDATE tape_library set backupset = NULL where id=:tape_id and backupset = :backupset_id";
-            $result = $this->db->get_query_result($query, $params);
+            $result = $this->db->non_select_query($query, $params);
             $tape = new tape_library_object($this->db, $tape_id);
             return  array("RESULT"=>TRUE,
                             "MESSAGE"=>"Tape ".$tape->get_label(). " successfully removed from backup set ". $this->name . ".");
@@ -327,7 +327,7 @@ class backupset {
             $find_query = "SELECT * from tape_library where id=:tape_id and backupset = :backupset_id";
             $params = array("tape_id"=>$tape_id, "backupset_id"=>$backupset_id);
 
-            $find_result = $this->db->get_query_result($find_query, $params);
+            $find_result = $this->db->query($find_query, $params);
 
             if(count($find_result) == 0) {
                 
@@ -344,7 +344,7 @@ class backupset {
             
             $query = "UPDATE tape_library set backupset = :new_backupset_id where id=:tape_id and backupset = :backupset_id";
             $update_params = array("tape_id"=>$tape_id, "new_backupset_id"=>$new_backupset_id, "backupset_id"=>$backupset_id);
-            $result = $this->db->get_query_result($query, $update_params);
+            $result = $this->db->non_select_query($query, $update_params);
             $tape = new tape_library_object($this->db, $tape_id);
             return  array("RESULT"=>TRUE,
                             "MESSAGE"=>"Tape ".$tape->get_label(). " successfully moved from backup set ". $this->name . " to ". $new_backup_set->get_name().".");
@@ -371,7 +371,7 @@ class backupset {
         $query = "SELECT id from backupset ".(($active != null) ? " where active=:active " : ""). " order by name";
         if($active != null) {
             $params = array("active"=>$active);
-            $result = $db->get_query_result($query, $params);
+            $result = $db->query($query, $params);
         } else {
         
         $result = $db->query($query);
@@ -402,7 +402,7 @@ class backupset {
     public static function backupset_exists($db, $name) {
         $search_query = "SELECT * from backupset where name=:name";
         $search_params = array("name"=>$name);
-        $search_result = $db->get_query_result($search_query, $search_params);
+        $search_result = $db->query($search_query, $search_params);
         
         if(count($search_result) > 0) { 
             return 1;
@@ -424,7 +424,7 @@ class backupset {
     private function get_backupset_data($db, $id) {
         $query = "SELECT * from backupset where id=:id";
         $params = array("id"=>$id);
-        $result = $db->get_query_result($query, $params);
+        $result = $db->query($query, $params);
 
         if(count($result)==1) {
             $result = $result[0];

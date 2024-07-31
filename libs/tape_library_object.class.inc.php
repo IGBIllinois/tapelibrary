@@ -279,7 +279,7 @@ class tape_library_object {
             'active'=>$active, 
             'tape_label'=>$tape_label);
 
-        $result = $this->db->get_query_result($query, $params);
+        $result = $this->db->non_select_query($query, $params);
 
         $this->label = $label;
         $this->tape_label = $tape_label;
@@ -309,7 +309,7 @@ class tape_library_object {
         $container_id = $this->id;
         $query = "SELECT id from tape_library where container=:container_id order by label";
         $params = array("container_id"=>$container_id);
-        $children = $this->db->get_query_result($query, $params);
+        $children = $this->db->query($query, $params);
         $result = array();
         foreach($children as $child) {
             $new_child = new tape_library_object($this->db, $child['id']);
@@ -424,7 +424,7 @@ class tape_library_object {
 
         $query = "UPDATE tape_library set container = :container_id where id=:object_id";
         $params = array("container_id"=>$this->id, "object_id"=>$object_id);
-        $result = $this->db->get_query_result($query, $params);
+        $result = $this->db->non_select_query($query, $params);
         $result = array("RESULT"=>TRUE,
                         "MESSAGE"=>"".$object->get_label(). " successfully moved to ". $this->get_label());
         return $result;   
@@ -497,7 +497,7 @@ class tape_library_object {
             $search_params = array("label"=>$label, 'type'=>$type);
         }
         
-        $search_result = $db->get_query_result($search_query, $search_params);
+        $search_result = $db->query($search_query, $search_params);
         
         if(count($search_result) > 0) {
             return $search_result[0]['id'];
@@ -687,7 +687,7 @@ class tape_library_object {
         }
         $query .= " order by tape_library.label ASC ";
 
-        $tapes = $db->get_query_result($query, $params);
+        $tapes = $db->query($query, $params);
 
         foreach($tapes as $tape) {
             $new_tape = new tape_library_object($db, $tape['id']);
@@ -729,7 +729,7 @@ class tape_library_object {
             $query = "SELECT * from tape_library where id = :id";
             $params = array("id"=>$id);
 
-            $result = $this->db->get_query_result($query, $params);
+            $result = $this->db->query($query, $params);
 
             if($result) {
                 $this->id = $result[0]['id'];

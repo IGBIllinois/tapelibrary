@@ -121,7 +121,7 @@ class program {
     public static function program_exists($db, $name, $version) {
             $find_query = "SELECT * from programs where name=:name and version=:version";
             $params = array("name"=>$name, "version"=>$version);
-            $result = $db->get_query_result($find_query, $params);
+            $result = $db->query($find_query, $params);
             if(count($result) > 0) {   
                 return $result[0]["id"];
             } else {
@@ -166,7 +166,7 @@ class program {
         $query = "SELECT * from programs where id = :program_id LIMIT 1";
         $params = array("program_id"=>$program_id);
         
-        $result = $this->db->get_query_result($query, $params);
+        $result = $this->db->query($query, $params);
         if($result) {
             $this->id = $result[0]['id'];
             $this->name = $result[0]['name'];

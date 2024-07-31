@@ -100,8 +100,7 @@ echo("</form>");
                 name='create_heirarchy_report' value='Download Report'>
   <select
                 name='report_type' class='input-medium'>
-                <option value='xls'>Excel 2003</option>
-                <option value='xlsx'>Excel 2007</option>
+                <option value='xlsx'>Excel</option>
                 <option value='csv'>CSV</option>
         </select>
  <?php       echo("<input type='hidden' name='container_id' value='$container_id'>"); ?>
