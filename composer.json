@@ -17,7 +17,7 @@
 		"components/jqueryui": "1.12.1",
 		"twbs/bootstrap": "v3.4.1",
                 "datatables/datatables": "1.10.21",
-		"igbillinois/igbillinois-php": "1.4.0"
+		"igbillinois/igbillinois-php": "1.4.1"
         },
 	"scripts": {
 		"post-update-cmd": [
