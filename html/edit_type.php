@@ -125,9 +125,9 @@ echo("<form name='edit_type' action='edit_type.php' method='POST'>");
 echo("<input type='hidden' name='type_id' value='$type_id'>");
 echo("<table id='container_types' class='table table-bordered'>");
 echo("<tr><td width=40%> Location type name</td>");
-echo("<td><input type='text' name='container_type_name' value='$name' id='container_type_name'></td></tr>");
+echo("<td><input class='form-control' type='text' name='container_type_name' value='$name' id='container_type_name'></td></tr>");
 
-echo("<tr><td>How many objects can be put in a container? (if there is a limit)</td><td><input name='max_slots' value='$max_slots'></td></tr>");
+echo("<tr><td>How many objects can be put in a container? (if there is a limit)</td><td><input class='form-control' name='max_slots' value='$max_slots'></td></tr>");
 echo("</td></tr></table>");
 
 echo("</table>");
@@ -138,7 +138,7 @@ $types = type::get_all_types($db);
 foreach($types as $type) {
     $id = $type->get_id();
     if($id != $type_id) {
-        echo("<input type=checkbox ".(in_array($id, $can_contain_types) ? " CHECKED ": ""). (in_array($id, $container_types)? " disabled " : ""). " id='type$id' onclick=toggle('placedtype$id') name=types[".$type->get_id()."] value='".$type->get_id()."'>".$type->get_name()."<BR>");
+        echo("<input type='checkbox' ".(in_array($id, $can_contain_types) ? " CHECKED ": ""). (in_array($id, $container_types)? " disabled " : ""). " id='type$id' onclick=toggle('placedtype$id') name=types[".$type->get_id()."] value='".$type->get_id()."'> " . $type->get_name() . "<br>");
     }
 }
 echo("</td></tr><tr><td>");
@@ -148,11 +148,11 @@ $types = type::get_all_types($db);
 foreach($types as $type) {
     $id = $type->get_id();
     if($id != $type_id) {
-        echo("<input type=checkbox  ".(in_array($id, $container_types) ? " CHECKED " : ""). (in_array($id, $can_contain_types)? " disabled " : ""). " id='placedtype$id' onclick=toggle('type$id') name=placedtypes[".$type->get_id()."] value='".$type->get_id()."'>".$type->get_name()."<BR>");
+        echo("<input type=checkbox  ".(in_array($id, $container_types) ? " CHECKED " : ""). (in_array($id, $can_contain_types)? " disabled " : ""). " id='placedtype$id' onclick=toggle('type$id') name=placedtypes[".$type->get_id()."] value='".$type->get_id()."'> " . $type->get_name() . "<br>");
     }
 }
 echo("</td></tr></table>");
-echo("<input type='submit' name='submit_type_edit' value='Edit Type'>");
+echo("<input class='btn btn-primary' type='submit' name='submit_type_edit' value='Edit Type'>");
 echo("</form>");
 
 

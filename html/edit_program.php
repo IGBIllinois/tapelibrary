@@ -75,18 +75,18 @@ if(isset($_POST['submit_edit_program'])) {
 echo("<form name='edit_program' action='edit_program.php' method='POST'>");
 
 echo("<table class='table table-bordered display'>");
-echo("<tr><td width=20%>Program Name:</td><td><input type='text' "
+echo("<tr><td width=20%>Program Name:</td><td><input class='form-control' type='text' "
         . "name='program_name' id='program_name'". 
         (isset($name) ? " value='$name' " : "").
         "></td></tr>");
 echo("<tr><td width=20%>Program Version:".
-        "</td><td><input type='text' name='program_version' id='program_version'". 
+        "</td><td><input class='form-control' type='text' name='program_version' id='program_version'". 
         (isset($version) ? " value='$version' " : "").
         "></td></tr>");
 
 echo("</table>");
 echo("<input type='hidden' name='program_id' value='$program_id'>");
-echo("<input type='submit' name='submit_edit_program' value='Edit Program'>");
+echo("<input class='btn btn-primary' type='submit' name='submit_edit_program' value='Edit Program'>");
 echo("</form>");
 
 echo("<BR>");

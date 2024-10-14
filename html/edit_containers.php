@@ -53,7 +53,7 @@ echo("<table class='table table-bordered'><tr>");
       print "</tr>";
 echo("<tr><td>Container Type :</td><td>");
 $container_types = type::get_container_types($db);
-      echo "<select id='type' name='type'>";
+      echo "<select class='form-control' id='type' name='type'>";
       echo "<option value=''>None</option>";
 
       foreach ($container_types as $curr_container_type) {
@@ -61,14 +61,14 @@ $container_types = type::get_container_types($db);
         if (isset($container_type) && $container_type == $curr_container_type->get_id())
           echo " selected";
         
-        echo ">".$curr_container_type->get_name()."</option>";
+        echo ">".$curr_container_type->get_name()."</option>\n";
       }
       echo "</select>";
 echo(" </td></tr>");
 echo("<tr><td>Parent Location:</td><td>");
 
 $containers = tape_library_object::get_containers($db);
-      echo "<select id='select_container' name='select_container'>";
+      echo "<select class='form-control' id='select_container' name='select_container'>";
       echo "<option value=''>None</option>";
 
       foreach ($containers as $curr_container) {
@@ -76,15 +76,15 @@ $containers = tape_library_object::get_containers($db);
         if (isset($container) && $container == $curr_container->get_id())
           echo " selected";
         
-        echo ">".$curr_container->get_label()."</option>";
+        echo ">".$curr_container->get_label()."</option>\n";
       }
       echo "</select>";
 echo(" </td></tr>");
 
 
 echo("</table>");
-echo("<input type='submit' name='limit_submit' value='Select'>");
-echo("</form><BR>");
+echo("<input class='btn btn-primary' type='submit' name='limit_submit' value='Select'>");
+echo("</form><br>");
 
 
 
@@ -125,11 +125,11 @@ $containers = tape_library_object::get_containers($db, $begin, $select_type, $se
   print "<fieldset>";
 echo("<form name='edit_containers' method='POST'>");
 echo("<table id='edit_container' class='table table-bordered table-hover table-striped display'><thead><tr>");
-echo("<th><input type=checkbox onClick='toggleAll(this,\"checkbox\")' /></th><th>Label</th><th>Type</th><th>Location");
+echo("<th><input type='checkbox' onClick='toggleAll(this,\"checkbox\")' /></th><th>Label</th><th>Type</th><th>Location");
 
 echo("<BR>Move selected containers to:");
 $all_containers = tape_library_object::get_containers($db);
-      echo "<select id='tape_container' name='tape_container'>";
+      echo "<select class='form-control' id='tape_container' name='tape_container'>";
       echo "<option value=''>None</option>";
 
       foreach ($all_containers as $curr_container) {
@@ -137,7 +137,7 @@ $all_containers = tape_library_object::get_containers($db);
         if (isset($container) && $container == $curr_container->get_id())
           echo " selected";
         
-        echo ">".$curr_container->get_label()."</option>";
+        echo ">".$curr_container->get_label()."</option>\n";
       }
       echo "</select>";
 
@@ -174,8 +174,8 @@ foreach($containers as $container) {
 
 echo("</table>");
 echo("<BR><BR>");
-    echo("<input type=submit name=submit value='Edit Selected Records' class=icon_submit id=edit_submit href='edit_tapes.php'>");
-    echo("<input type=button onclick=\"window.location='edit_tapes.php'\" name=cancel value='Cancel'>");
+    echo("<input class='btn btn-primary' type='submit' name='submit' value='Edit Selected Records' class=icon_submit id=edit_submit href='edit_tapes.php'>");
+    echo("&nbsp;<input class='btn btn-warning' type=button onclick=\"window.location='edit_tapes.php'\" name=cancel value='Cancel'>");
     echo("</form>");
   print "</fieldset>";
   echo("<BR>");

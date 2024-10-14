@@ -95,39 +95,38 @@ echo("<form name='add_container_type' action='add_container_type.php' method='PO
 
 echo("<table id='container_types' class='table table-bordered'>");
 echo("<tr><td width=40%>New type name</td>");
-echo("<td><input type='text' name='container_type_name' id='container_type_name'".
-        "value='$container_type_name'></td></tr>");
+echo("<td><input class='form-control' type='text' name='container_type_name' id='container_type_name' value='$container_type_name'></td></tr>\n");
 
 echo("<tr><td>How many objects can be put in a container? (if there is a limit) ".
-        "</td><td><input name='max_slots' value='".
+        "</td><td><input class='form-control' name='max_slots' value='".
         ((is_numeric($max_slots) && $max_slots >=0) ? $max_slots : "Any").
-        "'></td></tr>");
-echo("</table>");
+        "'></td></tr>\n");
+echo("</table>\n");
 
 
 echo("<table class='table table-bordered'><tr><td>");
 
-echo("<tr><Td>What types can this container contain?</td></tr>");
+echo("<tr><Td>What types can this container contain?</td></tr>\n");
 echo("<TR><TD>");
 $types = type::get_all_types($db);
 foreach($types as $type) {
     $id = $type->get_id();
-    echo("<input type=checkbox  id='type$id' onclick=toggle('placedtype$id') ".
-            "name=types[".$id."] value='".$id."'>".$type->get_name()."<BR>");
+    echo("<input type='checkbox' id='type$id' onclick=\"toggle('placedtype$id')\" ".
+            "name=types[".$id."] value='".$id."'> " . $type->get_name() . "\n<br>");
 }
-echo("</td></tr><tr><td>");
+echo("</td></tr>\n<tr><td>");
 echo("In what types can this container be placed?<BR>".
         "(If it cannot be placed in anything, ".
-        "it will be considered a top-level location type)</td></tr><tr><td>");
+        "it will be considered a top-level location type)</td></tr>\n<tr><td>");
 
 $types = type::get_all_types($db);
 foreach($types as $type) {
     $id = $type->get_id();
-    echo("<input type=checkbox  id='placedtype$id' onclick=toggle('type$id') ".
-            "name=placedtypes[".$id."] value='".$id."'>".$type->get_name()."<BR>");
+    echo("<input type='checkbox' id='placedtype$id' onclick=\"toggle('type$id')\" ".
+            "name=placedtypes[".$id."] value='".$id."'> " . $type->get_name()."\n<br>");
 }
 echo("</td></tr></table>");
-echo("<input type='submit' name='submit' value='Add Location Type'>");
+echo("<input class='btn btn-primary' type='submit' name='submit' value='Add Location Type'>");
 echo("</form>");
 
 require_once 'includes/footer.inc.php';

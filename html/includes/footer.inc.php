@@ -17,14 +17,13 @@
 			<li><a href='add_container_type.php'>Add Container and Tape Types</a></li>
 			<li><a href='edit_types.php'>Edit Container and Tape Types</a></li>
 			<li><a href='add_program.php'>Add Program</a></li>
-			<li><a href='logout.php'>Log Out</a></li>
 		</ul>
 	</div>
 </div>
 </div>
 <footer class='page-footer mt-auto'>
 <hr>
-<div class='container'>
+	<div class='container'>
 	<p class='text-center'>
 	<span class='text-muted'>
 		<br><em>Computer & Network Resource Group - Carl R. Woese Institute for Genomic Biology</em>

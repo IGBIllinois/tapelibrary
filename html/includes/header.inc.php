@@ -47,13 +47,10 @@ if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == ""){
 				        <span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 				    </button>
-					<div class="navbar-brand">
-						<?php echo settings::get_title(); ?>
-					</div>
+					<div class="navbar-brand"><?php echo settings::get_title(); ?></div>
 				</div>
 				<div class="collapse navbar-collapse" id="archive-accounting-nav-collapse">
 					<a type="button" class="btn btn-danger btn-sm navbar-btn navbar-right hidden-xs" style="margin-right:0" href="logout.php">Logout</a>
-					<a type="button" class="btn btn-danger btn-sm btn-block visible-xs" style="margin-bottom:7px" href="logout.php">Logout</a>
 				</div>
 			</div>
 		</nav>

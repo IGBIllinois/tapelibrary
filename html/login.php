@@ -9,7 +9,7 @@ if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == ""){
 }
 
  
-$session = new session(__SESSION_NAME__);
+$session = new \IGBIllinois\session(settings::get_session_name());
 $message = "";
 $webpage = $dir = dirname($_SERVER['PHP_SELF']) . "/view_backupsets.php";
 if ($session->get_var('webpage') != "") {
@@ -67,7 +67,7 @@ if (isset($_POST['login'])) {
 			<div class="container-fluid">
 				<div class="navbar-header">
 					<div class="navbar-brand">
-						<?php echo __TITLE__; ?>
+						<?php echo settings::get_title(); ?>
 					</div>
 				</div>
 			</div>
