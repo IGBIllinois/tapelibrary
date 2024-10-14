@@ -6,6 +6,7 @@ CREATE TABLE `backupset` (
   `program` varchar(50) DEFAULT NULL,
   `notes` longtext,
   `active` tinyint(4) DEFAULT '1',
+  `time_created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -15,6 +16,7 @@ CREATE TABLE `container_type` (
   `container` tinyint(4) DEFAULT NULL,
   `can_contain_types` varchar(256) DEFAULT NULL,
   `max_slots` int(11) DEFAULT '-1',
+  `time_created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`container_type_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
@@ -22,6 +24,7 @@ CREATE TABLE `programs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
   `version` varchar(100) DEFAULT NULL,
+  `time_created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
