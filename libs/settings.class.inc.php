@@ -68,11 +68,24 @@ class settings {
 		return self::LDAP_PORT;
 	}
 	public static function get_ldap_base_dn() {
-		if (defined("LDAP_BASE_DN")) {
-			return LDAP_BASE_DN;
+                if (defined("LDAP_BASE_DN")) {
+                        return LDAP_BASE_DN;
+                }
+                return self::LDAP_BASE_DN;
+        }
+	public static function get_ldap_people_ou() {
+		if (defined("LDAP_PEOPLE_OU")) {
+			return LDAP_PEOPLE_OU;
 		}
-		return self::LDAP_BASE_DN;
+		return self::LDAP_PEOPLE_OU;
 	}
+	public static function get_ldap_admin_group() {
+                if (defined("LDAP_ADMIN_GROUP")) {
+                        return LDAP_ADMIN_GROUP;
+                }
+                return self::LDAP_ADMIN_GROUP;
+        }
+
 	public static function get_ldap_ssl() {
 		if (defined("LDAP_SSL")) {
 			return LDAP_SSL;

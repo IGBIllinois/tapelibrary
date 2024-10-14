@@ -7,7 +7,7 @@
 		<img src="images/imark_bw.gif" style="padding: 0 10px 10px 0; vertical-align: text-top;">
 		Tape Library
 	</h1>
-	<p>View and manage Tape Library</p>
+	<p>View and Manage Backup Tapes</p>
 </div>
 <?php
 

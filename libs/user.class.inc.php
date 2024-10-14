@@ -68,7 +68,7 @@ class user {
 		$username = trim(rtrim($username));
 		$filter = "(uid=" . $username . ")";
 		$attributes = array('');
-		$result = $ldap->search($filter, LDAP_PEOPLE_OU, $attributes);
+		$result = $ldap->search($filter, settings::get_ldap_people_ou(), $attributes);
 		if ($result['count']) {
 			return true;
 		} else {

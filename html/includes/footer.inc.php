@@ -17,9 +17,10 @@
 			<li><a href='add_container_type.php'>Add Container and Tape Types</a></li>
 			<li><a href='edit_types.php'>Edit Container and Tape Types</a></li>
 			<li><a href='add_program.php'>Add Program</a></li>
+			<hr>
+			<li><a href='about.php'>About</a></li>
 		</ul>
 	</div>
-</div>
 </div>
 <footer class='page-footer mt-auto'>
 <hr>

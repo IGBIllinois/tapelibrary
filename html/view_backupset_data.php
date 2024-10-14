@@ -97,38 +97,38 @@ if(count($tapes)== 0) {
 echo("</table></fieldset>");
 }
 if($backupset_data->is_active()) {
-echo("<form method='POST' action='add_tapes_to_backupset.php' name='add_tapes'>");
+echo("<br><form method='POST' action='add_tapes_to_backupset.php' name='add_tapes'>");
 echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
-echo("<input type='submit' name='submit' value='Add Tapes to Backup set'>");
+echo("<input class='btn btn-primary' type='submit' name='submit' value='Add Tapes to Backup set'>");
 echo("</form>");
 
 
-echo("<form method='POST' action='remove_tapes_from_backupset.php' name='remove_tapes'>");
+echo("<br><form method='POST' action='remove_tapes_from_backupset.php' name='remove_tapes'>");
 echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
-echo("<input type='submit' name='submit' value='Remove Tapes from Backup set'>");
+echo("<input class='btn btn-warning' type='submit' name='submit' value='Remove Tapes from Backup set'>");
 echo("</form>");
 }
 
-echo("<form method='POST' action='move_tapes_to_backupset.php' name='move_tapes'>");
+echo("<br><form method='POST' action='move_tapes_to_backupset.php' name='move_tapes'>");
 echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
-echo("<input type='submit' name='submit' value='Move tapes to a different Backup set'>");
+echo("<input class='btn btn-primary' type='submit' name='submit' value='Move tapes to a different Backup set'>");
 echo("</form>");
 
 
 
-echo("<form method='POST' action='edit_backupset.php' name='edit_backupset'>");
+echo("<br><form method='POST' action='edit_backupset.php' name='edit_backupset'>");
 echo("<input type='hidden' name='id' value='$backupset_id'>");
-echo("<input type='submit' name='submit' value='Edit this Backup set'>");
+echo("<input class='btn btn-primary' type='submit' name='submit' value='Edit this Backup set'>");
 echo("</form>");
 
 
 if($backupset_data->is_active()) {
-echo("<form method='POST' name='deactivate_backupset' action='view_backupset_data.php' onsubmit=\"return confirm('Do you really want to deactivate this backupset?')\">");
+echo("<br><form method='POST' name='deactivate_backupset' action='view_backupset_data.php' onsubmit=\"return confirm('Do you really want to deactivate this backupset?')\">");
 echo("<input type='hidden' name='backupset_id' value='".$backupset_id."'>");
-echo("<input type='submit' name='submit_deactivate' value='Deactivate Backup Set'>");
+echo("<input class='btn btn-danger' type='submit' name='submit_deactivate' value='Deactivate Backup Set'>");
 echo("</form>");
 } else {
- echo("<form method='POST' name='activate_backupset' action='view_backupset_data.php' onsubmit=\"return confirm('Do you really want to activate this backupset?')\">");
+ echo("<br><form method='POST' name='activate_backupset' action='view_backupset_data.php' onsubmit=\"return confirm('Do you really want to activate this backupset?')\">");
 echo("<input type='hidden' name='backupset_id' value='".$backupset_id."'>");
 echo("<input type='submit' name='submit_activate' value='Activate Backup Set'>");
 echo("</form>");   
@@ -138,12 +138,10 @@ echo("</form>");
 
 }
 ?>
+<br>
 <form class='form-inline' action='report.php' method='post'>
-
- <input  type='submit' 
-                name='create_backupset_report' value='Download Backup Set Report'>
-  <select
-                name='report_type' class='input-medium'>
+<input class='btn btn-primary' type='submit' name='create_backupset_report' value='Download Backup Set Report'>
+<select class='form-control' name='report_type' class='input-medium'>
                 <option value='xlsx'>Excel</option>
                 <option value='csv'>CSV</option>
         </select>

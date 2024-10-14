@@ -94,27 +94,16 @@ if (isset($_POST['login'])) {
 						</div>
 						<button type='submit' name='login' class='btn btn-primary'>Login</button>
 					</form>
-	
-	
-					<?php if (isset($message)) { 
+				</div>
+			</div>
+			<br>	
+			<div class='row'>
+				<div class='col-md-3 col-md-offset-4'>
+				<?php if (isset($message)) { 
 						echo $message;
-                                        } ?>
+						} ?>
+				</div>
+			</div>
 	<br>
-	<footer class='page-footer mt-auto'>
-        <hr>
-        <div class='container'>
-                <p class='text-center'>
-                <span class='text-muted'>
-        <br><em>Computer & Network Resource Group - Carl R. Woese Institute for Genomic Biology</em>
-        <br><em><a target='_blank' href='https://www.igb.illinois.edu'>Carl R. Woese Institute for Genomic Biology Home Page</a></em>
-        <br><em><a target='_blank' href='https://www.vpaa.uillinois.edu/resources/web_privacy'>University of Illinois System Web Privacy Notice</a> </em>
-        <br><em>&copy; 2018-<?php echo date('Y'); ?> University of Illinois Board of Trustees</em>
-                </span>
-        </div>
-	</footer>
-	</div>
-	</div>
-</div>
-</body>
-</html>
+<?php require_once 'includes/footer.inc.php'; ?>
 
