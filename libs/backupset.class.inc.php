@@ -125,7 +125,7 @@ class backupset {
 
         $params = array('name'=>$name, 'begin'=>$begin, 'end'=>$end, 'program'=>$program, 'notes'=>$notes);
 
-        $result = $this->db->get_insert_result($query, $params);
+        $result = $this->db->insert_query($query, $params);
 
         $this->id = $result;
         return array("RESULT"=>TRUE,

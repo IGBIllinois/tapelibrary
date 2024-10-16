@@ -65,7 +65,7 @@ class program {
         }
         $query = "INSERT INTO programs (name, version) VALUES (:name, :version)";
         $params = array("name"=>$name, "version"=>$version);
-        $result = $this->db->get_insert_result($query, $params);
+        $result = $this->db->insert_query($query, $params);
         $this->id = $result;
             return array('RESULT'=>true,
 			'MESSAGE'=>"Program $name successfully created.",
@@ -135,17 +135,13 @@ class program {
      * @return array An array of all existing Program objects 
      */
     public static function get_programs($db) {
-        $query = "SELECT id from programs order by name";
-        $statement = $db->get_link()->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-        $programs = $db->query($query);
-        $results = array();
-        foreach($programs as $program) {
-            $curr_program = new program($db, $program['id']);
-            $results[] = $curr_program;
-        }
-        
-        return $results;
-        
+		$sql = "SELECT id FROM programs ORDER BY programs.name ASC,programs.version DESC";
+		$programs = $db->query($sql);
+		foreach($programs as $program) {
+			$curr_program = new program($db, $program['id']);
+			$results[] = $curr_program;
+		}
+		return $results;
     }
     
     

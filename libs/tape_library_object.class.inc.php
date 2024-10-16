@@ -553,7 +553,7 @@ class tape_library_object {
             $backupset = -1;
         }
 
-        $query = "INSERT INTO tape_library ( ".
+        $sql = "INSERT INTO tape_library ( ".
                 "label, type, container, backupset, last_update_username, tape_label, last_update, active) ".
                 " VALUES(:label, :type, :container_id, :backupset, :username, :tape_label, NOW(),1)";
         
@@ -565,8 +565,7 @@ class tape_library_object {
             'tape_label'=>$tape_label);
 
         try {
-
-            $result = $db->get_insert_result($query, $params);
+		$result = $db->insert_query($sql,$params);
             return array("RESULT"=>TRUE,
                         "MESSAGE"=>"$label added successfully.",
                         "id"=>$result);

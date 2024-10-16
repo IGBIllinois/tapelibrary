@@ -136,16 +136,16 @@ echo "</td><td>";
 
 $all_types = type::get_tape_types($db);
       echo "<select class='form-control' id='tape_type' name='tape_type' onchange=\"hide('tape_type','tapediv')\">\n";
-      echo "<option value=''>None</option>";
+      echo "<option value=''>None</option>\n";
 
       foreach ($all_types as $curr_type) {
         echo "<option value='".$curr_type->get_id()."'";
         if (isset($tape_type) && $tape_type == $curr_type->get_id())
           echo " selected";
         
-        echo ">".$curr_type->get_name()."</option>";
+        echo ">".$curr_type->get_name()."</option>\n";
       }
-      echo "</select>";
+      echo "</select>\n";
 
 echo "</td></tr>\n";
 echo "<tr><td>Parent Location:";
@@ -157,16 +157,16 @@ foreach($all_types as $type) {
     $id = $type->get_id();
     
     echo "<tr id='tapediv$id' ".((isset($tape_type) && $tape_type == $id) ? "style='visibility:visible' ": " style='visibility:collapse' ") ."><td> ";
-      $containers = $type->get_containers_for_type();
+    $containers = $type->get_containers_for_type();
       echo "<select class='form-control' id='container".$id."' name='container".$id."'>";
-      echo "<option value=''>None</option>\n";
+      echo "<option value=''>None</option>";
 
       foreach ($containers as $curr_container) {
         echo "<option value='".$curr_container->get_id()."'";
         if (isset($container_id) && $container_id == $curr_container->get_id())
           echo " selected";
         
-        echo ">".$curr_container->get_label()."</option>\n";
+        echo ">".$curr_container->get_label()."</option>";
       }
       echo "</select>";
     echo("</td></tr>");
@@ -201,7 +201,7 @@ echo "<table class='table'><tr><td>";
 echo "<div id='add_multi_labels'>";
 echo "</div>";
 echo "</td>";
-echo "</td></tr></table>";
+echo "</tr></table>";
 echo "</td></tr></table>";
 echo "</form>";
 echo "<br>";
@@ -216,5 +216,4 @@ if(strlen($messages) > 0) {
     echo($messages);
 }
 require_once 'includes/footer.inc.php';
-
 ?>

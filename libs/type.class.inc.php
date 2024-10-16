@@ -153,10 +153,11 @@ class type {
 					'MESSAGE'=>$message);
             }
             
-            $query = "INSERT INTO container_type (name, can_contain_types, max_slots) VALUES(:type_name, :can_contain_types, :max_slots)";
+	    $sql = "INSERT INTO container_type (name, can_contain_types, max_slots) ";
+	    $sql .= "VALUES(:type_name, :can_contain_types, :max_slots)";
 
             $params = array('type_name'=>$type_name, 'can_contain_types'=>$can_contain_types, 'max_slots'=>$max_slots);
-            $result = $this->db->get_insert_result($query, $params);
+            $result = $this->db->insert_query($sql, $params);
 
             $this->id = $result;
             return array('RESULT'=>TRUE,
