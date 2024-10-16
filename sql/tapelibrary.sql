@@ -35,7 +35,6 @@ CREATE TABLE `tape_library` (
   `container` int(11) DEFAULT NULL,
   `type` int(11) DEFAULT NULL,
   `backupset` int(11) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
   `last_update_username` varchar(50) DEFAULT NULL,
   `last_update` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `active` tinyint(4) DEFAULT '1',

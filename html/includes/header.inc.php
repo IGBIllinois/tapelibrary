@@ -15,18 +15,13 @@ if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == ""){
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title><?php echo settings::get_title() . (isset($title)?" - $title":''); ?></title>
                 		
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script type='text/javascript' language='javascript' src='vendor/components/jquery/jquery.min.js'></script>
 	<script type='text/javascript' language='javascript' src='vendor/datatables/media/js/jquery.dataTables.min.js'></script>
+        <script type="text/javascript" language='javascript' src="includes/script.js"></script>
+	
 	<link rel="stylesheet" type="text/css" href="vendor/datatables/media/css/jquery.dataTables.css">
-
-	<!-- Bootstrap -->
 	<link rel="stylesheet" type="text/css" href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
                 
-	<!-- Local javascript methods -->
-	<script type="text/javascript" language='javascript' src="includes/script.js"></script>
-
-	<!-- Icon -->
 	<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
 
 </head>

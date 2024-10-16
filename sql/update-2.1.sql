@@ -5,4 +5,4 @@ UPDATE container_type SET time_created="0000-00-00 00:00:00";
 ALTER TABLE programs ADD COLUMN time_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
 UPDATE programs SET time_created="0000-00-00 00:00:00";
 
-
+ALTER TABLE tape_library DROP COLUMN user_id;

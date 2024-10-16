@@ -16,7 +16,7 @@ if(isset($_POST['tape_type']) && $_POST['tape_type'] != null) {
 <?php
 }
 echo("<H3>Add Tapes</H3>");
-    
+   	print_r($_POST); 
     $tape_type=null;
     $container_id=null;
 
