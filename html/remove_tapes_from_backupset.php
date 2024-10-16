@@ -1,11 +1,4 @@
-
 <?php
-
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 require_once 'includes/header.inc.php';
 ?>
@@ -80,3 +73,5 @@ echo("<input type=submit name=submit_remove value='Remove Selected Tapes from Ba
     
 }
 require_once 'includes/footer.inc.php';
+
+?>

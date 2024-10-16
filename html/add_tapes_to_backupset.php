@@ -1,4 +1,3 @@
-
 <?php
 /* 
 This page allows a user to add existing tapes to a Backup Set
@@ -116,3 +115,5 @@ if($messages != "") {
 }
 }
 require_once 'includes/footer.inc.php';
+
+?>

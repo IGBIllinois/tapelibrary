@@ -8,7 +8,7 @@ require_once 'includes/session.inc.php';
 <div class='row'>
 <div class='col-md-8 col-lg-8 col-xl-8'>
 <table class='table table-bordered table-condensed'>
-<tr><td>Code Website</td></td><td><a href='<?php echo settings::get_website_url(); ?>' target='_blank'><?php echo settings::get_website_url(); ?></a></td></tr>
+<tr><td>Code Website</td><td><a href='<?php echo settings::get_website_url(); ?>' target='_blank'><?php echo settings::get_website_url(); ?></a></td></tr>
 <tr><td>App Version</td><td><?php echo settings::get_version(); ?></td></tr>
 <tr><td>Webserver Version</td><td><?php echo \IGBIllinois\Helper\functions::get_webserver_version(); ?></td></tr>
 <tr><td>MySQL Version</td><td><?php echo $db->get_version(); ?></td>

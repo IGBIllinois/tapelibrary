@@ -1,13 +1,6 @@
-
-
 <?php
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 require_once 'includes/header.inc.php';
+
 echo("<h3>Edit Backup Set</H3>");
 if(isset($_POST['id'])) {
 
@@ -115,3 +108,4 @@ echo("</form>");
 }
 require_once 'includes/footer.inc.php';
 
+?>

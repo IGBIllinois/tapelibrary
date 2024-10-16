@@ -215,6 +215,4 @@ switch ($type) {
 		break;
 }
 
-
-
 ?>

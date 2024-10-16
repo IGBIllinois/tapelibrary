@@ -1,4 +1,3 @@
-
 <?php
 
 /* 
@@ -7,9 +6,7 @@
  */
 
 require_once 'includes/header.inc.php';
-?>
 
-<?php
 if(!isset($_POST['backupset_id'])) {
     echo("Error: Please select a backup set.");
     
@@ -96,3 +93,5 @@ echo("<input type=submit name=submit_move value='Move Selected Tapes to New Back
     
 }
 require_once 'includes/footer.inc.php';
+
+?>

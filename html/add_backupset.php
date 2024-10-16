@@ -95,3 +95,5 @@ echo("<input class='btn btn-primary' type='submit' name='submit' value='Add Back
 echo("</form>");
 
 require_once 'includes/footer.inc.php';
+
+?>

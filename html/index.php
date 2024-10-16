@@ -1,5 +1,6 @@
 <?php 
-	require_once 'includes/header.inc.php';
+require_once 'includes/header.inc.php';
+
 ?>
 
 <div class='jumbotron'>
@@ -9,9 +10,8 @@
 	</h1>
 	<p>View and Manage Backup Tapes</p>
 </div>
+
 <?php
-
-
 
 require_once "includes/footer.inc.php";
 

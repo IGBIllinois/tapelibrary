@@ -1,11 +1,5 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 require_once 'includes/header.inc.php';
 echo("<H3>Tape Types</H3>");
 if(isset($_POST['tape_type_name'])) {
@@ -46,3 +40,5 @@ echo("<input type='submit' name='submit' value='Add Tape Type'>");
 echo("</form>");
 
 require_once 'includes/footer.inc.php';
+
+?>

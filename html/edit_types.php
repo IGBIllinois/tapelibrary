@@ -1,15 +1,7 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 require_once 'includes/header.inc.php';
-?>
 
-<?php
 echo("<H3>Edit Container and Tape Types</H3>");
 if(isset($_GET['add_success']) && $_GET['add_success'] == 1) {
     $type = new type($db, $_GET['type_id']);
@@ -107,5 +99,6 @@ if(count($current_tape_types)== 0) {
 
 echo("<BR>");
 
-
 require_once 'includes/footer.inc.php';
+
+?>

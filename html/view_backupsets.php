@@ -1,10 +1,4 @@
-
 <?php
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 require_once 'includes/header.inc.php';
 echo("<H3>View Backup Sets</H3>");
@@ -64,4 +58,4 @@ echo("</table></fieldset>");
 echo("</fieldset>");
 require_once 'includes/footer.inc.php';
 
-
+?>
