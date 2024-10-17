@@ -15,6 +15,8 @@ class user {
 			"givenname",
 			"mail"
 	);
+	private $sn;
+	private $givenName;
 
 	////////////////Public Functions///////////
 
