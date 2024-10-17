@@ -370,7 +370,7 @@ class backupset {
 
         $query = "SELECT id from backupset ".(($active != null) ? " where active=:active " : ""). " order by name";
         if($active != null) {
-            $params = array("active"=>$active);
+            $params = array(":active"=>$active);
             $result = $db->query($query, $params);
         } else {
         

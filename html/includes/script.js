@@ -1,7 +1,3 @@
-
-
-
-
 $(document).ready(function(){
 
     $('#view_tapes').DataTable( {
@@ -141,7 +137,6 @@ function showText(id) {
 
 var current = -1;
 function set_new_tapes() {
-
     if($('.tape_from').val() != 0 && ($('.tape_to').val() == 0 || !jQuery.isNumeric($('.tape_to').val()))) {
         // If "From" field is not empty, and "To" field is empty or contains alphabetical characters...
         var i = 0;
@@ -192,3 +187,4 @@ function set_new_tapes() {
         inputboxes.append("");
     }
 }
+

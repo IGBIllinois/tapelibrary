@@ -16,7 +16,6 @@ if(isset($_POST['tape_type']) && $_POST['tape_type'] != null) {
 <?php
 }
 echo("<H3>Add Tapes</H3>");
-   	print_r($_POST); 
     $tape_type=null;
     $container_id=null;
 
@@ -171,8 +170,8 @@ echo "</td></tr>\n";
 echo "<tr><td>Backup Set:";
 echo "<br><a href=add_backupset.php>(Add a new backup set?)</a>";
 echo "</td><td>";
-
-$all_backupsets = backupset::get_all_backupsets($db);
+$active = 1;
+$all_backupsets = backupset::get_all_backupsets($db,$active);
       echo "<select class='form-control' id='backupset' name='backupset'>";
       echo "<option value=''>None</option>\n";
 

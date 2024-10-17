@@ -67,16 +67,16 @@ class html {
              print "</select>";
              break;
            case "date":
-             print "<input type=text id=datepicker class={$name} name={$formName} value={$default}>";
+             print "<input type=text id='datepicker' class={$name} name={$formName} value={$default}>";
              break;
            case "begin":
-             print "<input type='text' id='from' class='form-control' name={$formName} value={$default}>";
+             print "<input type='text' id='from' class={$name} name={$formName} value={$default}>";
              break;
            case "end":
-             print "<input type='text' id='to' class='form-control' name={$formName} value={$default}>";
+	     print "<input type='text' id='to' class={$name} name={$formName} value={$default}>";
              break;
            default:
-               print "<input class='form-control' name='{$formName}' ".(($id != "") ? " id='{$formName}' " : "" ) . " value=\"{$default}\">";
+               print "<input class={$name} name='{$formName}' ".(($id != "") ? " id='{$formName}' " : "" ) . " value=\"{$default}\">";
          }
        }
 
