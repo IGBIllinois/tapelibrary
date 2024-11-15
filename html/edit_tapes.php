@@ -169,8 +169,8 @@ foreach($tapes as $tape) {
 
 echo("</table>");
 echo("<BR><BR>");
-    echo("<input type=submit name=submit value='Edit Selected Records' class=icon_submit id=edit_submit href='edit_tapes.php'>");
-    echo("<input type=button onclick=\"window.location='edit_tapes.php'\" name=cancel value='Cancel'>");
+    echo("<input class='btn btn-primary' type='submit' name='submit' value='Edit Selected Records' class='icon_submit' id='edit_submit' href='edit_tapes.php'>");
+    echo("&nbsp;<input class='btn btn-warning' type='button' onclick=\"window.location='edit_tapes.php'\" name='cancel' value='Cancel'>");
     echo("</form>");
   print "</fieldset>";
 

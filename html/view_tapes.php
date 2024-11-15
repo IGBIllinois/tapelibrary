@@ -125,8 +125,6 @@ if(count($current_tapes)== 0) {
 
 echo("</table></fieldset>");
 
-echo("<BR><a href='add_tape.php'>Add new tapes</a><BR>");
-
 echo("</fieldset>");
 require_once 'includes/footer.inc.php';
 

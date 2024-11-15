@@ -66,8 +66,8 @@ if(count($tapes)== 0) {
 }
 
 echo("</table></fieldset>");
-echo("<input type=submit name=submit_remove value='Remove Selected Tapes from Backupset' class=icon_submit id=remove_tapes_from_backup_submit>");
-    echo("<input type=button onclick=\"window.location='view_backupsets.php'\" name=cancel value='Cancel'>");
+echo("<input class='btn btn-primary' type='submit' name='submit_remove' value='Remove Selected Tapes from Backupset' class=icon_submit id=remove_tapes_from_backup_submit>");
+    echo("&nbsp;<input class='btn btn-warning' type='button' onclick=\"window.location='view_backupsets.php'\" name='cancel'` value='Cancel'>");
     echo("</form>");
 
     

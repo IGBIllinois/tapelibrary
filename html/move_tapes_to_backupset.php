@@ -54,7 +54,7 @@ if($messages != "") {
     echo($messages);
 }
 echo("Tapes currently in <B>".$backupset_data->get_name()."</B>:<BR>");
-echo("<form name='remove_tapes_form' method='POST'>");
+echo("<form class='form-inline' name='remove_tapes_form' method='POST'>");
 echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
 echo("<fieldset><table id='remove_tapes' class='table table-bordered table-hover table-striped display'>");
 
@@ -79,15 +79,15 @@ if(count($tapes)== 0) {
 
 echo("</table></fieldset>");
 
-echo("<select id='new_backupset_id' name='new_backupset_id'>");
+echo("<div class='row'><select class='form-control' id='new_backupset_id' name='new_backupset_id'>");
 $all_backup_sets = backupset::get_all_backupsets($db,1);
 foreach($all_backup_sets as $backup_set) {
     echo("<option value=".$backup_set->get_id(). ">".$backup_set->get_name(). "</option>");
 }
 echo("</select>");
 
-echo("<input type=submit name=submit_move value='Move Selected Tapes to New Backupset' class=icon_submit id=move_tapes_from_backup_submit>");
-    echo("<input type=button onclick=\"window.location='view_backupsets.php'\" name=cancel value='Cancel'>");
+echo("&nbsp;<input class='btn btn-primary' type='submit' name='submit_move' value='Move Selected Tapes to New Backupset' class='icon_submit' id='move_tapes_from_backup_submit'>");
+    echo("&nbsp;<input class='btn btn-warning' type='button' onclick=\"window.location='view_backupsets.php'\" name='cancel' value='Cancel'></div>");
     echo("</form>");
 
     
