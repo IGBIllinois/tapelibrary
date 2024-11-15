@@ -14,7 +14,7 @@ class backupset {
     private $begin_date;
     private $end_date;
     private $program;
-    private $notes;
+    private $notes = "";
     
     private $active;
     
@@ -41,8 +41,8 @@ class backupset {
             $this->name = $result['name'];
             $this->begin_date = $result['begin'];
             $this->end_date = $result['end'];
-            $this->active = $result['active'];
-            $this->notes = $result['notes'];
+	    $this->active = $result['active'];
+	    $this->notes = $result['notes'];
             $this->program = $result['program'];
             
         } else {
@@ -110,7 +110,7 @@ class backupset {
      * and "MESSAGE" is an output message,
      * and "backupset_id" is the id of the newly created backup set
      */
-    function add_backupset($name, $begin, $end, $program, $notes) {
+    function add_backupset($name, $begin, $end, $program, $notes = "") {
 
         //print_r($search_result);
 
@@ -122,7 +122,9 @@ class backupset {
         if( $program == "") {
             $program = null;
         }
-
+	if (empty($notes)) {
+		$notes = "";
+	}
         $params = array('name'=>$name, 'begin'=>$begin, 'end'=>$end, 'program'=>$program, 'notes'=>$notes);
 
         $result = $this->db->insert_query($query, $params);

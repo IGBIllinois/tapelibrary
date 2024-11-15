@@ -4,7 +4,7 @@ CREATE TABLE `backupset` (
   `begin` date NOT NULL,
   `end` date NOT NULL,
   `program` varchar(50) DEFAULT NULL,
-  `notes` longtext,
+  `notes` longtext DEFAULT '',
   `active` tinyint(4) DEFAULT '1',
   `time_created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -34,7 +34,7 @@ CREATE TABLE `tape_library` (
   `tape_label` varchar(50) DEFAULT NULL,
   `container` int(11) DEFAULT NULL,
   `type` int(11) DEFAULT NULL,
-  `backupset` int(11) DEFAULT NULL,
+  `backupset` int(11) DEFAULT "-1",
   `last_update_username` varchar(50) DEFAULT NULL,
   `last_update` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `active` tinyint(4) DEFAULT '1',

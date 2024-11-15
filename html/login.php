@@ -55,55 +55,52 @@ if (isset($_POST['login'])) {
 
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title><?php echo settings::get_title(); ?></title>
-		<link rel="stylesheet" href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" type="text/css">
-		<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
-	</head>
-	<body OnLoad="document.login.username.focus();">
-		<nav class="navbar navbar-inverse navbar-static-top">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<div class="navbar-brand">
-						<?php echo settings::get_title(); ?>
-					</div>
-				</div>
-			</div>
-		</nav>
-		
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title><?php echo settings::get_title(); ?></title>
+	<link rel="stylesheet" href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" type="text/css">
+	<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+</head>
+<body OnLoad="document.login.username.focus();">
+	<nav class="navbar navbar-inverse navbar-static-top">
 		<div class="container-fluid">
+			<div class="navbar-header">
+				<div class="navbar-brand">
+					<?php echo settings::get_title(); ?>
+				</div>
+			</div>
+		</div>
+	</nav>
+		
+	<div class="container-fluid">
 
-			<div class='row'>
-				<div class='col-md-3 col-md-offset-4'>
-					<form action='login.php' method='post' name='login'>
-						<div class="form-group">
-							<label for="username">Username: </label>
-							<div class="input-group">
-								<input class='form-control' type='text' name='username' id="username" tabindex='1' placeholder='Username' value='<?php if (isset($username)) { echo $username; } ?>'> 
-								<span class="input-group-addon"><span class='glyphicon glyphicon-user'></span></span>
-							</div>
+		<div class='row'>
+			<div class='col-md-3 col-md-offset-4'>
+				<form action='login.php' method='post' name='login'>
+					<div class="form-group">
+						<label for="username">Username: </label>
+						<div class="input-group">
+							<input class='form-control' type='text' name='username' id="username" tabindex='1' placeholder='Username' value='<?php if (isset($username)) { echo $username; } ?>'> 
+							<span class="input-group-addon"><span class='glyphicon glyphicon-user'></span></span>
 						</div>
-						<div class="form-group">
-							<label>Password: </label>
-							<div class="input-group">
-								<input class='form-control' type='password' name='password' placeholder='Password' tabindex='2'>
-								<span class="input-group-addon"><span class='glyphicon glyphicon-lock'></span></span>
-							</div>
+					</div>
+					<div class="form-group">
+						<label>Password: </label>
+						<div class="input-group">
+							<input class='form-control' type='password' name='password' placeholder='Password' tabindex='2'>
+							<span class="input-group-addon"><span class='glyphicon glyphicon-lock'></span></span>
 						</div>
-						<button type='submit' name='login' class='btn btn-primary'>Login</button>
-					</form>
-				</div>
+					</div>
+					<button type='submit' name='login' class='btn btn-primary'>Login</button>
+				</form>
 			</div>
-			<br>	
-			<div class='row'>
-				<div class='col-md-3 col-md-offset-4'>
-				<?php if (isset($message)) { 
-						echo $message;
-						} ?>
-				</div>
+		</div>
+		<br>	
+		<div class='row'>
+			<div class='col-md-3 col-md-offset-4'>
+			<?php if (isset($message)) { echo $message; } ?>
 			</div>
-	<br>
+		</div>
 <?php require_once 'includes/footer.inc.php'; ?>
 

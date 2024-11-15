@@ -81,7 +81,7 @@ if(count($current_unassigned_tapes)== 0) {
         echo("<td>".$tape->get_full_path()."</td>");
         // Shouldn't have a backupset
         $curr_backupset_id = $tape->get_backupset();
-
+	$tape_backupset_name = "";
         if($curr_backupset_id == -1) {
             $tape_backupset_name = "None";
         } else {
@@ -103,8 +103,8 @@ echo("</table>");
 
 echo("<BR><BR>");
 echo("<input type='hidden' name='backupset_id' value='$backupset_id'>");
-    echo("<input type=submit name=add_tapes_submit value='Add selected tapes to backup set'>");
-    echo("<input type=button onclick=\"window.location='view_backupsets.php'\" name=cancel value='Cancel'>");
+    echo("<input class='btn btn-primary' type='submit' name='add_tapes_submit' value='Add selected tapes to backup set'>");
+    echo("&nbsp;<input class='btn btn-warning' type='button' onclick=\"window.location='view_backupsets.php'\" name=cancel value='Cancel'>");
     echo("</form>");
 
 echo("</fieldset>");
